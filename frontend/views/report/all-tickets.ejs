@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+    <script src="/js/common.min.js"></script>
+    <script src="/js/jquery.sumoselect.js"></script>
+    <link href="/css/sumoselect.css" rel="stylesheet" />
+    <script src="/js/jspdf.debug.js"></script>
+    <script src="/js/pagination.js"></script>
+    
+    <script>
+        $(document).ready(function(){
+            $("#search").hide();
+
+            $(".searchbtn").click(function(){
+                $("#search").toggle();
+            });
+        });
+    </script>
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+    <!--Top Header-->
+    <% include ../../partials/mainheader %>
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+
+    <!--Start Content-->
+    <div id="page_content">
+    <div id="page_content_inner">
+        <div class="searchbtn"><i class="uk-icon-search"></i></div>
+        <form method="post">
+            <div class="dwnbtn" id="exl">
+                <a><i class="uk-icon-download padright"></i></a>
+            </div>
+            <div class="dwnbtn" id="pdf">
+                <a><i class="uk-icon-file-pdf-o padright"></i></a>
+            </div>
+            <input type="hidden" name="sqlquery" id="sqlquery" value="<%= sqlquery %>">
+        </form>
+        <!--Dashboard-->
+        <h3 class="heading_b uk-margin-bottom">All Tickets</h3>
+        <!--End Dashboard-->
+        <form action = "/report/all-tickets" method="get" id="frmpageid">
+        <div class="md-card" id="search">
+            <div class="md-card-content">
+                <div class="uk-grid uk-dropdown-grid">
+                    <div class="uk-width-1-4">
+                        <div class="searchlabel">SITE ID</div>
+                         <select multiple="multiple" name="siteid" onchange="console.log($(this).children(':selected').length)" id="siteid" class="md-input testSelAll">
+                        </select>
+                    </div>
+                    <div class="uk-width-1-4">
+                        <div class="searchlabel">FROM DATE</div>
+                    <input type="text" class="md-input md-input-success" placeholder="From Date" name="fromdate" id="fromdate" value="<%= moment(fromdate).format('MM/DD/YYYY') %>">
+                    </div>
+                    <div class="uk-width-1-4">
+                        <div class="searchlabel">TO DATE</div>
+                        <input type="text" class="md-input md-input-success" placeholder="To Date" name="todate" id="todate" value="<%= moment(todate).format('MM/DD/YYYY') %>">
+                    </div>
+                    <div class="uk-width-1-4" >
+                        <div class="searchlabel"></div>
+                        <input type="text" class="md-input md-input-success" style="display:none"  name="nextval" id="nextval" value="<%= nextpagevalue %>">
+                    </div>
+                    <div class="uk-width-1-4" >
+                        <div class="searchlabel"></div>
+                        <input type="text" class="md-input md-input-success" style="display:none" name="statusvalue" id="statusvalue" >
+                    </div>    
+                    <div class="uk-width-1-4" style="margin-top: 20px;">
+                        <button type="submit" class="md-btn md-btn-success">
+                         <i class="uk-icon-search white padright"></i>Search</button>
+                        <button type="button" class="md-btn md-btn-success" onClick="refreshPage()">
+                        <i class="uk-icon-refresh white padright"></i>Reset</button>
+                    </div>  
+                    
+                </div>  
+            </div>
+        </div>
+
+       
+        <div class="md-card ">
+            <div class="md-card-content">
+                 <div class="uk-grid">
+
+                </div>
+    </form>
+                <div class="uk-overflow-container ">
+                    <table class="uk-table uk-table-striped uk-table-hover">
+                        <thead>
+                            <tr>
+                                <th>Ticket Id</th>
+                                <th>SiteID</th>
+                                <th>Ticket Remark</th>
+                                <th>Assign To</th>
+                                <th>Assigned Date</th>
+                                 <th>Updated Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                          <%  
+                            if(totalDatas == '0'){ %>
+                                <tr>
+                                    <td colspan='8'  align="center">No Data Found</td>
+                                </tr>
+                          <%        
+                            }else{
+                                 var tempval = "";
+                                outageDatas.forEach(function(d) { %>
+                                    <tr>
+                                     <% if(tempval != d.site_id){ 
+                                          tempval = d.site_id;
+
+                                        %>
+                                        <td><%= d.ticket_id %></td>
+                                        <td><%= d.site_id %></td>
+                                     <% }else{ %>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                     <% } %>
+                                        <td><%= d.ticket_remark %></td>
+                                        <td><%= d.assign_to %></td>
+                                        <td><%= moment(d.assign_date).format('DD-MM-YYYY H:mm:ss') %></td>
+                                        <td><%= moment(d.recorded_date).format('DD-MM-YYYY H:mm:ss') %></td>
+                                    </tr>
+                            <%  });
+                            } %>         
+                        </tbody> 
+                    </table>
+                </div>
+                 <ul id="navigation" class="uk-pagination">
+                </ul>
+           
+             </div>   
+        </div>
+        </div>
+        <div class="uk-overflow-container " id="k1" style="visibility: hidden" ></div>
+    </div>
+    </div>
+    <!--End Content--> 
+
+
+<!--Start Script-->
+<script src="/moment/min/moment.min.js"></script>
+
+<script src="/js/uikit_custom.min.js"></script>
+<script src="/js/altair_admin_common.min.js"></script>
+<script>
+    var siteid="<%= siteid%>";
+</script>
+<script>
+var siteid;
+siteid = "<%= siteid %>";
+var currentposition = "<%= currentposition %>";
+var endposition="<%= endposition %>";
+var lastposition = "<%= lastposition %>";
+pagination(currentposition,endposition,lastposition);
+</script>
+<script src="/js/chestDoorFiles.js"></script>
+
+</body>
+</html>

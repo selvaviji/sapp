@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+    <script src="/moment/min/moment.min.js"></script>
+
+    <script>
+        $(document).ready(function(){
+            $("#search").hide();
+            $(".searchbtn").click(function(){
+                $("#search").toggle();
+            });
+            $("#fromdate").datepicker();
+        });
+    </script>
+    <!--Filter-->
+    
+    <!--Filter-->
+</head>
+
+<body class="sidebar_main_swipe">
+    <!--Top Header-->
+    <% include ../../partials/mainheader %>
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+    
+     <!--Start Content-->
+    <div id="page_content">
+   
+    <div id="page_content_inner">
+        <div class="searchbtn"><i class="uk-icon-search black"></i></div>
+        <!--Dashboard-->
+        <h3 class="heading_b uk-margin-bottom">Active Alarm2</h3>
+        <!--End Dashboard-->
+        <div class="md-card" id="search" style="margin-bottom:10px;">
+        <div class="md-card-content">
+            <div class="uk-grid uk-dropdown-grid">
+                <div class="uk-width-1-5">
+                    <input type="text" class="md-input md-input-success" id="siteid" placeholder="Site Id">
+                </div>
+                <div class="uk-width-1-5">
+                    <input type="text" class="md-input md-input-success" id="pin_id" placeholder="Alarm">
+                    <input type="text" style="display:none" id="pin_id1" placeholder="Alarm">
+                </div>
+                <div class="uk-width-1-5">
+                        <input type="text" class="md-input md-input-success" placeholder="From Date" name="fromdate" id="fromdate" value="<%= moment().format('MM/DD/YYYY') %>">
+                </div>
+                <div class="uk-width-1-5 ">
+                    <button class="md-btn md-btn-success" id="searchbtn">
+                        <i class="uk-icon-search white padright"></i>Search
+                    </button>
+                </div> 
+            </div>  
+        </div>
+        </div>
+
+        <div class="uk-grid uk-grid-small">
+            <div class="uk-width-1-1">
+                <div class="md-card uk-margin-medium-bottom"> 
+                    <div class="md-card-content">
+                         <div class="uk-grid">
+                            <% if(sess_id==1 || sess_id==2){%>
+                                <div class="customer" style="visibiity:visible;">
+                                    CUSTOMER :
+                                     <select id="customer_id" name="customer_id">
+                                     </select>
+                                </div>
+                            <%}else{ %> 
+                                <div class="customer" style=" visibility:hidden;">
+                                    CUSTOMER :
+                                    <select id="customer_id" name="customer_id">
+                                    </select>
+                                </div>
+                            <%}%>                             
+                            <div class="uk-width-1-1" style="text-align:right;">
+                                Rows Per Page
+                                <select style="width:50px; display:inline"  name="rowsperpageval" id="rowsperpageval">
+                                <% for(var i=minRange;i<=maxRange;i=i+stepRange){ %>
+                                <option value=<%= i%>> <%= i%> </option>
+                                <% } %>
+                                </select>
+                            </div> 
+                        </div>    
+
+                        <div class="uk-width-1-4" >
+                            <div class="searchlabel"></div>
+                            <input type="text" class="md-input md-input-success"  style="display:none" name="nextval" id="nextval"  >
+                        </div>
+                        <div class="uk-width-1-4" >
+                            <div class="searchlabel"></div>
+                            <input type="text" class="md-input md-input-success" style="display:none" name="statusvalue" id="statusvalue" >
+                        </div>
+
+                        <!-- Data Table Area -->
+                        <div class="uk-overflow-container">
+                           
+                            <table class="uk-table uk-table-striped uk-table-hover">
+                                <thead>
+                                    <tr>
+                                        <th><strong>Priority</strong></th> 
+                                        <th><strong>Ack</strong></th>   
+                                        <th><strong>Open Time</strong></th>
+                                        <th><strong>Customer</strong></th>
+                                        <th><strong>Site ID</strong></th>
+                                        <th><strong>Site Name</strong></th>
+                                        <th><strong>Location</strong></th>
+                                        <th><strong>Alarm</strong></th>
+                                        <th><strong>SMS</strong></th>
+                                        <th><strong>IP</strong></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="alarm-tbl">
+                                </tbody>
+                            </table>    
+                        </div>
+
+                        <!-- End of Data Table Area -->
+
+                        <!-- Pagination Area -->
+                        <ul id="navigation" class="uk-pagination">
+                        </ul>
+                        <!-- End of Pagination -->
+                    </div> 
+                </div>       
+            </div>   
+
+
+            <div id="dialog_box" class="mnk-modal-bg" style="display:none">
+                <div id="dbg" class="mnk-modal-box">
+                    <i class="uk-icon-exclamation-triangle"  style="color:#757575; padding-right:5px;">
+                    </i>Acknowledge?
+			        <p class='uk-text-small'>One alarm will be acknowledged.</p>
+                    <div class="uk-text-center" style="margin-top:10px;">
+		                <button class="md-btn md-btn-small md-btn-primary" id="ok_btn">
+				            <i class="uk-icon-save" style="padding-right:3px;"></i>Yes
+                        </button>
+			            <button class="md-btn md-btn-small md-btn-danger" id="close_btn" onclick="close()">
+                            <i class="uk-icon-remove" style="padding-right:3px;"></i>No
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+               <div id="dialog_box2" class="mnk-modal-bg" style="display:none">
+                        <div id="dbg" class="mnk-modal-box">
+                            <i class="uk-icon-exclamation-triangle"  style="color:#757575; padding-right:5px;">
+                            </i>Already Acknowledged.
+                           <div class="uk-text-center" style="margin-top:10px;">
+                                <button class="md-btn md-btn-small md-btn-primary" id="ok_btn2">
+                                    <i class="uk-icon-save" style="padding-right:3px;"></i>Ok
+                                </button>
+                           </div>
+                        </div>
+                    </div>
+    </div>
+    </div>
+<!--End page inner-->
+
+<!--Start Script-->
+
+<script src="/js/common.min.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/js/uikit_custom.min.js"></script>
+<script src="/js/altair_admin_common.min.js"></script>
+<script src="/js/pagination.js"></script>
+<script src="/js/export.js"></script>
+<script>
+   
+    var custid;
+    var currentposition;
+    var endposition;
+    var lastposition;
+    var nextbuttonstatus;
+    var sms_status;
+    var video_status;
+    var session_id = "<%= sess_id %>";
+    
+    var objJSON = {};
+
+    initialize = function(){
+        $.ajax({
+            beforeSend: function(){
+                //$("#ajaxBusy").show();
+            },
+            url: '/sbimonit/getSiteInfo',
+            type: 'POST',
+            cache: false, 
+            data: {},
+            success: function(data){
+                //console.log("Data :"+JSON.stringify(data));
+                var i = null;
+                for (i = 0; data.length > i; i += 1) {
+                    //console.log("Site_Code :"+data[i].site_code);
+                    objJSON[data[i].site_code] = data[i];
+                }
+                refreshing();
+                //console.log("Data :"+JSON.stringify(objJSON))
+            },error: function(jqXHR, textStatus, err){
+                alert('text status '+textStatus+', err '+err);
+                //$("#ajaxBusy").hide();  
+            },complete: function(jqXHR, textStatus, err){
+                //console.log("completed Triggered : "+JSON.stringify(objJSON));
+                //$("#ajaxBusy").hide();
+            }
+        });
+    }
+
+    initialize();
+    $("#customer_id").change(function(){
+        changeSite();
+        changePin();
+        statuschange();
+        tabledata();
+    });
+    $("#searchbtn").click(function(){
+        statuschange();
+        tabledata(); 
+    })
+
+    var active = function (){
+        /*document.getElementById("esca").style.display="block";*/
+        document.getElementById("sec").style.display="block";
+        document.getElementById("num1").style.background="#CCCCCC";
+        document.getElementById("card").style.marginRight="400px";
+        /*document.getElementById("card").style.height="370px";*/
+    }
+
+
+    var searchSite = function (siteid){
+        var object;   
+        //console.log('siteObject :'+objJSON); 
+        $.each(objJSON, function(i, obj) {
+            //console.log("sc :"+obj.site_code+" "+siteid);
+            if (obj.site_code === siteid){
+                object = obj;
+                //console.log("Object Data :"+object.customer_id+" "+object.site_name);
+            } 
+        });
+        
+    }
+    
+    
+
+    var tabledata = function (){    
+        //console.log("TableData Fn Triggered");
+        var dataCollection = {
+            nextval : $("#nextval").val(),
+            siteid : $("#siteid").val(),
+            pinid : $("#pin_id1").val(),
+            rowsperpageval: $("#rowsperpageval").val(),
+            statusvalue: $("#statusvalue").val()
+        }
+        
+        console.log("nextttttt"+nextval);
+        $.ajax({
+            beforeSend: function(){
+                //("#progress-bar").css("visibility:visible");
+            },
+            url: '/sbimonit/getdata',
+            type: 'POST',
+            cache: false, 
+            data: dataCollection,
+            success: function(data){
+                //console.log("TableData**** :"+JSON.stringify(data));
+                render(data);     
+            },error: function(jqXHR, textStatus, err){
+                alert('text status '+textStatus+', err '+err);
+                //$("#progress-bar").css("visibility:hidden");  
+            },complete: function(jqXHR, textStatus, err){
+                //console.log("completed Triggered");
+                //$("#progress-bar").css("visibility:hidden");
+                setTimeout(tabledata, 20000);
+            }
+        });
+    } 
+    
+    
+    var render=function(data){
+        //console.log("Obj :"+objJSON);
+        currentposition=data.currentposition;
+        endposition=data.endposition;
+        lastposition=data.lastposition;
+        nextbuttonstatus=data.nextbuttonstatus;
+        sms_status=data.sms;
+        video_status=data.video;
+        //console.log("nextpagevalue......."+data.nextpagevalue);
+        document.getElementById("nextval").value=data.nextpagevalue;
+        //console.log("currentposition"+currentposition+"endposition"+endposition+"nextbuttonstatus"+nextbuttonstatus);
+        //console.log("sms_status"+sms_status);
+        //console.log("video_status"+video_status);
+
+        var newcontent = '';
+        var site_name = site_address = split_data  = siteID = '';
+        var siteclass = '';
+        var siteobject = '';
+        var ackid ='';
+        var location="";
+        var priority="";
+        var priority_name="";
+                
+        if(data.datas.length>0){
+            for (var i = 0; i < data.datas.length; i++){
+                siteID = data.datas[i].Siteid;
+                //console.log("SiteID :"+siteID);
+                siteclass = "siteid_"+siteID;
+                siteobject = hasSite(siteID);
+                //console.log("siteobj: "+JSON.stringify(siteobject));
+                if(siteobject == undefined){
+                    //console.log("SiteName :"+JSON.stringify(siteobject));
+                    site_name = "Not found";
+                    site_address = "Not found";
+                    customer_name = "Not found";
+                    split_data[0] = "Not found";
+                }else{
+                    site_name = siteobject.site_name;
+                    customer_name = siteobject.customer_name;
+                    site_address = siteobject.site_address;
+                    split_data = site_address.split(",");  
+                }    
+                   
+                   location="";
+                    priority="";
+                    priority_name="";
+                
+                    //console.log("SiteName ****:"+siteobject.customer_id);
+                    ackid = "ackby_"+data.datas[i].id;
+                    smsid = "sms_"+data.datas[i].id;
+                    if(data.datas[i].alarmpin_priority == "3"){ //critical
+                        priority = "uk-icon-circle red";
+                        priority_name = "critical";
+                    }else if(data.datas[i].alarmpin_priority == "2"){ //major
+                        priority = "uk-icon-circle green";
+                        priority_name = "major";
+                    }else if(data.datas[i].alarmpin_priority == "1"){ //minor
+                        priority = "uk-icon-circle blue";
+                        priority_name = "minor";
+                    }
+
+                    if(split_data.length>1){
+                        location = split_data[0]+",<br/>"+split_data[split_data.length-1];
+                    }else{
+                        location = site_address;
+                    }
+                    //console.log("Site ID:"+siteID);
+                    // We store html as a var then add to DOM after for efficiency
+                    opentime = moment(data.datas[i].Opentime).format('DD-MM-YYYY H:mm:ss');
+                    newcontent += "<tr >"+
+                                "<td><i class='"+priority+"' data-uk-tooltip='{pos:'bottom'}' title="+priority_name+"></i></td>"+
+                                "<td onclick='test("+'"'+data.datas[i].Siteid+'",'+'"'+site_name+'",'+' "'+data.datas[i].id+'",'+'"'+data.datas[i].ackflag+'"'+");' id='"+ackid+"'>";
+                              if(data.datas[i].ackflag=='1'){
+                                newcontent +=  "<i class='uk-icon-thumbs-up green' data-uk-tooltip='{pos:'bottom'}' title="+data.datas[i].user_name+">";
+                              }else{
+                                //newcontent += data[i].ackflag;
+                              }
+                              newcontent +="</td>"+ 
+                             "<td>"+opentime+"</td>";
+                              if(session_id=="1" || session_id=="2" || session_id=="3" || session_id=="4"){  
+                                newcontent += "<td>"+customer_name+"</td>";
+                              }  
+                              newcontent += "<td>"+data.datas[i].Siteid+"</td>"+
+                              "<td>"+site_name+"</td>"+
+                              "<td>"+location+"</td>"+
+                              "<td>"+data.datas[i].alarmpin_name+"</td>"+
+                              "<td><div id='sms"+i+"'></div><input type='button' onclick='sendsms("+'"'+data.datas[i].alarmpin_name+'",'+'"'+opentime+'",'+'"'+site_name+'",'+'"sms'+i+'"'+");' id='btnsms"+i+"' value='SMS'></td>"+
+                              "<td><div id='ip"+i+"'></div><input id='btnip"+i+"' type='button' onclick='getIP("+'"'+data.datas[i].Siteid+'",'+'"ip'+i+'"'+");' value='GetIP'></td>";
+                              newcontent+="</tr>";
+                //}//if condition              
+            }//for loop
+        }else{
+                newcontent += "<tr><td colspan='8' text-align='center'>No Data Found</td></tr>";
+        }
+        document.getElementById("alarm-tbl").innerHTML = newcontent;
+        pagination();
+    }
+
+    var hasSite = function(siteid) {
+        //console.log("Obj :::::"+objJSON[siteid]);
+        //console.log("hasSite_siteid :"+siteid);
+        //console.log("objJSON :"+objJSON[siteid]);
+        return objJSON[siteid];
+    }
+    
+    var test = function(siteid,sitename,ids,ackflag){
+        var count=0;
+        
+        ackresponse = getRemote(siteid,ids);
+        if(ackresponse === '{}'){ //ackflag==1 || 
+            $("#dialog_box").show();
+            $("#close_btn").click(function(){
+                $("#dialog_box").hide();
+            });
+        }else{ // if(ackflag==0)
+            $("#dialog_box2").show();
+        }
+       
+         
+        $("#ok_btn").click(function(){
+            $("#dialog_box").hide();
+            if(count<1){
+                acknowledge(siteid,ids,ackflag);
+                count++;
+            }
+        });
+
+        $("#ok_btn2").click(function(){
+            $("#dialog_box2").hide();
+               //ticketdisplay(siteid,sitename,ids,username);
+        });
+    }
+    
+
+    var getRemote = function(siteid,ids) {
+        return $.ajax({
+            type: "POST",
+            data: { siteid: siteid,sno: ids},
+            url: '/sbimonit/get-ack',
+            async: false
+        }).responseText;
+    }
+   
+    var getIP = function(siteid,position) {
+        //console.log("Pos :"+position);
+        $.ajax({
+            type: "POST",
+            crossDomain: true,
+            dataType: "json",
+            data: { siteid: siteid},
+            url: '/sbimonit/getIP',
+            async: false,
+            success: function (data){
+                //console.log("DATa: "+JSON.stringify(data));
+                if(JSON.stringify(data)==='{}'){
+                    $("#"+position).text("No IP");
+                    $("#btn"+position).hide();
+                }else{
+                    //console.log("IP :"+data[0].IP);
+                    $("#"+position).text((data[0].IP).replace("::ffff:",""));
+                    $("#btn"+position).hide();
+                }
+                   
+            }
+        }); 
+    }
+
+    /* SMS */
+    var sendsms = function (alarmname,alarmtime,sitename,smsid){
+        if(sitename == 'Phillaur'){
+            //mobilenos = ['08691026206','08288011082','08691026199'];
+            mobilenos = ['09876606353','08288011082','09619265816','08691026199'];
+        }else if(sitename == 'Miran Sahib'){
+            //mobilenos = ['08691026206','08288011082','08691026199'];
+            mobilenos = ['08437007017','08288011082','09619265816','08691026199'];
+        }else{
+            mobilenos = ['08691026199','08691026206','08691026110'];
+        }
+        
+        $("#"+smsid).text("Done");
+        $("#btn"+smsid).hide();
+        for(i=0;i<mobilenos.length;i++){
+            mobileno = mobilenos[i];
+            message = "_"+alarmname+"_Alert generated Site _"+sitename+"_@_"+alarmtime+"_";   
+            url = "http://api.textlocal.in/send?username=ananth.menon%40nisatechsolutions.com&message="+message+"&numbers="+mobileno+"&sender=TXTLCL&hash=f34ba10d16bea04e62478f4d8a2d61e26ad710ba";
+            
+            $.ajax({
+                url: url,
+                type:'post',
+                cache: false,
+                data:{},
+                async: false,
+                success: function (data){
+                    console.log("Success:"+data);
+                }
+            }); 
+        } 
+    }    
+
+    /* Ack */
+    var acknowledge = function (siteid,ids,ackflag){
+        //console.log("ackflag"+ackflag);
+        if(ackflag != '1'){   
+           console.log("update acknowledge calling above"); 
+            $.ajax({
+                url: '/sbimonit/update-ack',
+                type:'post',
+                cache: false,
+                data: { siteid: siteid,sno: ids},
+                async: false,
+                success: function (data){
+                    console.log("siteid"+siteid+"sno"+ids);
+                   
+                }
+            }); 
+           
+             
+            $.ajax({
+                    url: '/sbimonit/get-ack',
+                    type:'post',
+                    cache: false,
+                    data: { siteid: siteid,sno: ids},
+                    async: false,
+                    success: function (data){
+                       console.log(data.length);
+                       if(data.length!=undefined)
+                       {
+                         $("#ackby_"+ids).html("<i class='uk-icon-thumbs-up green' data-uk-tooltip='{pos:'bottom'}' title='"+data[0].user_name+"'>");
+                       }
+                       else if(data.length==undefined){
+                        console.log("undefined");
+                       }
+                    }
+            });   
+            
+        }    
+    }
+
+   
+</script>
+
+</body>
+</html>

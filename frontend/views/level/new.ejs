@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+    <link rel="stylesheet" href="/css/style.css" media="all">
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+    <!--Top Header-->
+    <% include ../../partials/mainheader %>
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+    
+     <!--Start Content-->
+
+    <div id="page_content">
+      <div id="page_content_inner">
+          <h3 class="heading_b uk-margin-bottom">Level</h3>
+          <form id="form" class="new" action="/level/savelevel" method="post" onsubmit="return levelvalidate('err1')">
+            <div class="md-card" style="height:auto; padding:20px;">
+                <div class="uk-grid">
+                  <div class="uk-width-medium-1-2" >
+                      <div class="uk-form-row valid" >
+                        <input type="text" class="md-input md-input-success mustdata alpha" id="levelname" name="levelname" placeholder="Level Name" /><span class="req">*</span><span style=color:red id="err1"></span>
+                      </div>
+                      <div class="uk-form-row" >
+                        <select name="levelstatus" id="levelstatus" class="md-input">
+                          <option value="0">Enable</option>
+                          <option value="1">Disable</option>
+                        </select>
+                      </div>
+                      
+                      <div class="uk-form-row" id="modules" >
+                          <ul class="treeview" id="modules_data">
+                          </ul>  
+                      </div>
+                      <div class="uk-form-row" >
+                         <button type="button" onClick="saveLevel();" class="md-btn md-btn-success"><i class="uk-icon-save white paddingleft"></i>Save</button>
+                         <button type="button" onClick="cancelLevel();" class="md-btn md-btn-success"><i class="uk-icon-remove white paddingleft"></i>Cancel</button>
+                      </div>
+                  </div>
+                </div>   
+            </div>
+          </form>  
+      </div>
+    </div>
+  <!--End Content--> 
+  <!--Start Script-->
+  <% include ../../partials/footer %>
+    <script type="text/javascript">
+        $("#levelname").on('keyup','blur',function(){
+          alpha('levelname','err1');
+        });
+    </script>
+    <script>
+      var reportids = [];
+      function initialize() {
+          $.ajax({
+              url :'/level/module_data',
+              type: 'POST',
+              cache: false,
+              data:{},
+              success: function(data){
+                //console.log(data);
+                render(data.custdata);
+              },
+              error: function(jqXHR, textStatus, err){
+                console.log('Text Status :'+textStatus +' Error:'+err);
+              }
+          });
+      }
+      initialize();
+
+      function render(data){
+          //console.log("render :"+data);
+          var dataString="";
+          var columnid="";
+          for(var i=0; i<data.length; i++){
+            columnid = "mainmod_columns"+data[i].id;
+            reportids.push(data[i].id);
+            dataString += "<li><input type='checkbox' name='mainmodule' id='report_"+data[i].id+"' onClick='setCheckBoxClicked("+'"'+data[i].id+'"'+");'><i id='report_icon_"+data[i].id+"' class='uk-icon-plus black' onClick='setIconClicked("+'"'+data[i].id+'"'+");'></i> "+data[i].module_name+"<ul name='"+columnid+"' id='"+columnid+"' style='display:none'></ul></li>";
+            getSubModules(data[i].id);
+          }
+          //console.log(dataString);
+          document.getElementById("modules_data").innerHTML=dataString;
+      }  
+
+      function getSubModules(dataid){
+          $.ajax({
+              url :'/level/submodule_data',
+              type: 'POST',
+              cache: false,
+              data:{module_id:dataid},
+              success: function(data){
+                //console.log(data);
+                SubModuleRender(data.submoduledata,dataid);
+              },
+              error: function(jqXHR, textStatus, err){
+                console.log('Text Status :'+textStatus +' Error:'+err);
+              }
+          });
+      }
+
+      function SubModuleRender(moduledata,id){
+          var dataString="";
+          var columnid="";
+          var submod = 'submodule_'+id;
+          for(var i=0; i<moduledata.length; i++){
+            columnid = "submod_columns"+moduledata[i].id;
+            dataString += "<li><input type='checkbox' name='"+submod+"' id='"+columnid+"' value='"+moduledata[i].id+"' onClick='subModuleValues("+'"'+moduledata[i].id+'"'+");'>"+moduledata[i].submodule_name+"</li>";
+          }
+          //console.log(dataString);
+          document.getElementById("mainmod_columns"+id).innerHTML=dataString; 
+      }
+
+
+      function setIconClicked(id){
+          var toggle = document.getElementById("mainmod_columns"+id);
+          var icon = document.getElementById("report_icon_"+id);
+          if(toggle.style.display == "block"){
+            document.getElementById("mainmod_columns"+id).style.display="none";
+            document.getElementById("report_icon_"+id).className="uk-icon-plus black";
+            
+          }else{
+            document.getElementById("mainmod_columns"+id).style.display="block";
+            document.getElementById("report_icon_"+id).className="uk-icon-minus black";
+          }
+      }
+
+
+      function setCheckBoxClicked(id){
+        
+        var toggle = document.getElementById("report_"+id);
+        if(document.getElementById("report_"+id).checked == true){
+            document.getElementsByName("submodule_"+id).checked =true;
+            checkboxes = document.getElementsByName("submodule_"+id);
+            for(var i=0, n=checkboxes.length;i<n;i++) {
+              checkboxes[i].checked = true;
+            }
+        }else{
+            document.getElementsByName("submodule_"+id).checked =true;
+            checkboxes = document.getElementsByName("submodule_"+id);
+            for(var i=0, n=checkboxes.length;i<n;i++) {
+              checkboxes[i].checked = false;
+            }
+        }  
+        //}
+        /*if(document.getElementById("report_"+id).checked == true){
+            document.getElementById("submod_columns"+id).style.display="block";
+        }else{
+            document.getElementById("mainmod_columns"+id).style.display="none";
+        }*/
+      }
+
+      function subModuleValues(id){
+        console.log("submodules "+id);
+      }
+
+
+      function saveLevel(){
+          console.log("saveuser Triggered");
+          var level_name = document.getElementById("levelname").value;
+          var level_status = document.getElementById("levelstatus").value;
+          //var user_type = document.getElementById("user_type").value;
+          checkboxes = document.getElementsByName("mainmodule");
+          var mainmodule= new Array(checkboxes.length);
+          var mainmodule1= new Array(checkboxes.length);
+          var submodule = "";
+          for(var i=0, n=checkboxes.length;i<n;i++) {
+              if(checkboxes[i].checked == true){
+                  mvar = i+1;
+                  mainmodule[i] = mvar;
+                  mainmodule1[i] = mvar;
+              }
+          }
+
+          for (var i=0; i<mainmodule.length;i++) {
+            console.log("mainmodule :"+mainmodule[i]);
+            if(typeof mainmodule[i] != 'undefined'){
+              mvar = mainmodule[i];
+              subchkboxes = document.getElementsByName("submodule_"+mvar);
+              var sublength = subchkboxes.length;
+              console.log("Array Value :"+mainmodule[i]);
+              
+              if(subchkboxes.length>0){
+                  mainmodule1[i] = new Array(sublength);
+                  for(var j=0, n=subchkboxes.length;j<n;j++) {
+                      console.log("subchk:"+subchkboxes[j].value);
+                      if(subchkboxes[j].checked == true){
+                          mainmodule1[i][j] = subchkboxes[j].value;
+                      }
+                  }     
+              }else{
+                mainmodule1[i]=0;
+              }
+            }  
+          }    
+          
+          /*finalvalue=[];
+          var cnt=0
+          for(i=0;i<mainmodule.length;i++){
+              if(typeof mainmodule[i] != 'undefined'){
+                console.log("MM :"+mainmodule[i]);
+                console.log("SS :"+mainmodule1[i]);
+                values="";
+                values = mainmodule[i];
+                subvalues='';
+                for(j=0; j<mainmodule1[i].length;j++){
+                    if(typeof mainmodule1[i][j] != 'undefined'){
+                        subvalues += mainmodule1[i][j] +",";
+                    }          
+                }
+                finalvalue[cnt] = values + "-" + subvalues.substr(0,subvalues.length-1)+"*";
+
+                cnt++;
+              }  
+          }
+          console.log("Values :"+finalvalue);*/
+          /*$.ajax({ 
+            url: '/level/savelevel',
+            type: 'POST',
+            cache: false, 
+            data: { levelname: level_name, levelstatus: level_status, mainmod:mainmodule,submod:mainmodule1 }, 
+              success: function(data){
+                alert('Success!');
+              }
+              ,error: function(jqXHR, textStatus, err){
+                alert('text status '+textStatus+', err '+err);
+              }
+          });
+          window.location.href = '/level';*/
+    } 
+    </script>
+
+</body>
+</html>

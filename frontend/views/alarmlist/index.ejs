@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+    <script src="/js/common.min.js"></script>
+    <script>
+      var sid = "<%= sess_id %>";
+      var sname = "<%= sess_name %>";
+
+        $(document).ready(function(){
+            $("#search").hide();
+                $(".searchbtn").click(function(){
+                $("#search").toggle();
+            });
+            $("#fromdate").datepicker();
+            $("#todate").datepicker();     
+        });
+    
+      //console.log("session id:"+sid+"::session name:"+sname);
+    </script>
+    <!--Filter-->
+    
+    <!--Filter-->
+</head>
+
+<body class="sidebar_main_swipe">
+    <!--Top Header-->
+    <% include ../../partials/mainheader %>
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+    <!--Dashboard-->
+        <div id="page_content">
+        <div id="ajaxBusy"><p id="ajaxBusyMsg">Please wait...</p></div>
+        <div id="page_content_inner">
+        <div class="searchbtn"><i class="uk-icon-search"></i></div>
+        <h3 class="heading_b uk-margin-bottom">Alarm List</h3>
+        <!--End Dashboard-->
+     <!--Start Content-->
+        <div class="md-card" id="search">
+            <div class="md-card-content">
+                <div class="uk-grid uk-grid-small">
+                    <div class="uk-width-1-4">
+                        <div class="searchlabel">Site ID</div>
+                        <input type="text" class="md-input md-input-success"  name="siteid" id="siteid"  >
+                    </div>
+                                    
+                    <div class="uk-width-1-4">
+                        <div class="searchlabel">FROM DATE</div>
+                        <input type="text" class="md-input md-input-success" placeholder="From Date" name="fromdate" id="fromdate" value="<%= moment().format('MM/DD/YYYY') %>">
+                    </div>
+
+                    <div class="uk-width-1-4">
+                        <div class="searchlabel">TO DATE</div>
+                        <input type="text" class="md-input md-input-success" placeholder="To Date" name="todate" id="todate" value="<%= moment().format('MM/DD/YYYY') %>">
+                    </div>
+                    <div class="uk-width-1-4">
+                        <div class="searchlabel">Alarm</div>
+                            <input type="text" class="md-input md-input-success"  name="pin_id" id="pin_id" >
+                            <input style="display:none;" class="md-input md-input-success"  name="pin_id1" id="pin_id1">
+                    </div>
+                </div>
+                <div class="uk-grid">
+                    <div class="uk-width-1-4" style="">
+                        <button type="button"  class="md-btn md-btn-success" id="searchbtn1">
+                            <i class="uk-icon-search white padright"></i>Search</button>
+                        <button type="button" class="md-btn md-btn-success" onClick="refreshPage()">
+                            <i class="uk-icon-refresh white padright"></i>Reset</button>
+                    </div>
+                </div>    
+            </div>    
+        </div>    
+
+            <div class="uk-width-1-4" style="display:none;">
+             <div class="searchlabel"></div>
+             <input type="text" class="md-input md-input-success"  style="display:none" name="nextval" id="nextval"  >
+           </div>
+
+           <div class="uk-width-1-4" style="display:none;">
+              <div class="searchlabel"></div>
+             <input type="text" class="md-input md-input-success" style="display:none;" name="statusvalue" id="statusvalue" >
+           </div>
+  
+                    <div class="md-card ">
+                        <div class="md-card-content">
+                            <div class="uk-width-1-1" style="text-align:right;">
+                                Rows Per Page
+                                <select style="width:50px; display:inline"  name="rowsperpageval" id="rowsperpageval">
+                                <% for(var i=minRange;i<=maxRange;i=i+stepRange){ %>
+                                <option value=<%= i%>> <%= i%> </option>
+                                <% } %>
+                                </select>
+                            </div> 
+                            <% if(sess_id==1 || sess_id==2){%>
+                                <div class="uk-width-2-10 " style="visibiity:visible;">
+                                    <div class="customer">  CUSTOMER :
+                                     <select id="customer_id" name="customer_id" onClick="changeCustomer();changeCustomer1();">
+                                     </select></div>
+                                </div>
+                            <%}else{ %> 
+                                <div class="uk-width-2-10 " style=" visibility:hidden;">
+                                     <div class="customer"> CUSTOMER :
+                                    <select id="customer_id" name="customer_id">
+                                    </select></div>
+                                </div>
+                            <%}%> 
+                           
+
+                        <!-- Data Table Area -->
+                         <div class="uk-overflow-container"  > 
+                            <table class="uk-table uk-table-striped uk-table-hover">
+                                <thead>
+                                    <tr>
+                                        <th><strong>Site ID</strong></th>
+                                        <th><strong>Site Name</strong></th>
+                                        <th><strong>Adress</strong></th>
+                                        <th><strong>Open Time</strong></th>
+                                        <th><strong>Close Time</strong></th>
+                                        <th><strong>Alarm</strong></th>
+                                        <th><strong>Ack Name</strong></th>
+                                        <th><strong>Ack DateTime</strong></th>
+                                        <th><strong>Duration</strong></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="alarm-tbl">
+                                </tbody>
+                            </table>
+                         <!-- Pagination Area -->
+                         <ul id="navigation" class="uk-pagination">
+                         </ul>
+                         <!-- End of Pagination -->
+                         </div>
+                        <!-- End of Data Table Area -->
+
+                        
+                    </div> 
+                </div>       
+            </div>   
+
+    
+<!--End page inner-->
+
+<!--Start Script-->
+<script src="/js/pagination.js"></script>
+<script>
+   
+    var custid;
+    var siteid;
+    var pin_id;
+    var session_id = "<%= sess_id %>";
+    var currentposition;
+    var endposition;
+    var lastposition;
+    var nextbuttonstatus;
+    refreshing();
+    
+
+    function refreshing(){  
+
+        //siteid combo
+        $.ajax({
+            url: '/common/getsiteinfo',
+            type:'get',
+            cache: false,
+            success: function (data1){
+                var data=[];
+                var arr2=data1;
+                for( var i=0;i<arr2.custdata.length;i++) {
+                    var obj={"value":arr2.custdata[i].site_code,"label":arr2.custdata[i].site_code};
+                    data.push(obj);
+                }renderSiteCombo(data);                  
+            }
+        });
+
+
+        //pinid combo 
+        $.ajax({
+            url: '/common/getpinInfo',
+            type:'get',
+            cache: false,
+            success: function (data1){
+                var data=[];
+                var arr3=data1;
+               
+                 for( var i=0;i<arr3.custdata.length;i++) {
+                    var obj={"value":arr3.custdata[i].pin_id,"label":arr3.custdata[i].alarmpin_name};
+                    data.push(obj);
+                }renderPinCombo(data);    
+            }
+        });
+
+
+        //customer combo     
+        $.ajax({
+            url: '/common/getcustInfo',
+            type:'post',
+            cache: false,
+            success: function (data1){
+                var data=[];
+                var arr1=data1;
+                var options = '<option value="">--ALL--</option>';
+                 for( var i=0;i<arr1.custdata.length;i++) {
+                    if(custid == arr1.custdata[i].customer_id){
+                        options += '<option value="' + arr1.custdata[i].customer_id + '" selected>' + arr1.custdata[i].customer_name + '</option>';    
+                    }else{    
+                        options += '<option value="' + arr1.custdata[i].customer_id + '">' + arr1.custdata[i].customer_name + '</option>';
+                    }
+                }
+                $('#customer_id').html(options);
+            }
+        });
+        
+        tabledata();
+    }
+
+    //pin combo function
+    function renderPinCombo(data){
+        console.log("Before autocomplete");
+        $("#pin_id").autocomplete({
+            source: data,
+            select: function( event, ui ) {
+                console.log(ui.item.label);
+                $( "#pin_id" ).val( ui.item.label); //ui.item is your object from the array
+                $( "#pin_id1" ).val(ui.item.value);
+                return false;
+            },
+            minLength: -1,
+        });
+    }
+    
+    //site combo function
+    function renderSiteCombo(data){
+        $("#siteid").autocomplete({
+                    source: data,
+                    minLength: -1,
+        });
+    }
+
+    //onchange #pin_id box change value in #pin_id(hidden box) 
+    $("#pin_id").on('change keyup',function(){
+            $( "#pin_id1" ).val("");
+    });
+
+
+    //Function for Change of alarmpin name based on customer selection
+    function changeCustomer(){
+        var customerid=document.getElementById("customer_id").value;
+        $.ajax({
+            url: '/common/getpinInfo',
+            type:'get',
+            cache: false,
+            data:{custid:customerid},
+            success: function (data1){
+                var data=[];
+                var arr3=data1;
+               
+                 for( var i=0;i<arr3.custdata.length;i++) {
+                    var obj={"value":arr3.custdata[i].pin_id,"label":arr3.custdata[i].alarmpin_name};
+                    data.push(obj);
+                }
+                renderPinCombo(data);    
+            }
+        });
+    }
+
+    //Function for change of siteID based on customer selection
+    function changeCustomer1(){
+        var customerid=document.getElementById("customer_id").value;
+        $.ajax({
+            url:'/common/getsiteinfo',
+            type:'get',
+            cache:false,
+            data:{custid:customerid},
+            success:function(data1){
+                var data=[];
+                var arr2=data1;
+                for(var i=0;i<arr2.custdata.length;i++){
+                    var obj={"value":arr2.custdata[i].site_code,"label":arr2.custdata[i].site_code};
+                    data.push(obj);
+                }renderSiteCombo(data); 
+            }
+        });    
+    }
+
+    //getdata function
+    function tabledata(){    
+        var customerid=document.getElementById("customer_id").value;
+        var siteid=document.getElementById("siteid").value;
+        var nextval=document.getElementById("nextval").value;
+        var fromdate=document.getElementById("fromdate").value;
+        var todate=document.getElementById("todate").value;
+        var pin_id=document.getElementById("pin_id1").value;
+        console.log("PIN ID: "+pin_id);
+         $.ajax({
+            beforeSend:function(){
+                $('#ajaxBusy').show();
+            },    
+            url: '/alarmlist/getdata',
+            type: 'post',
+            cache: false, 
+            data:{siteid:siteid,fromdate:fromdate,todate:todate,pin_id:pin_id,custid:customerid,rowsperpageval:document.getElementById("rowsperpageval").value,statusvalue:document.getElementById("statusvalue").value,nextval:document.getElementById("nextval").value},
+            success: function(data){
+                render(data);     
+            },error: function(jqXHR, textStatus, err){
+                alert('text status '+textStatus+', err '+err);
+                 $('#ajaxBusy').hide();
+            },complete: function(jqXHR, textStatus, err){
+                //console.log("completed Triggered");
+                $('#ajaxBusy').hide();
+            }    
+        });
+    }
+     
+    //render function start
+    function render(data){
+        currentposition=data.currentposition;
+        endposition=data.endposition;
+        lastposition=data.lastposition;
+        nextbuttonstatus=data.nextbuttonstatus;
+        document.getElementById("nextval").value=data.nextpagevalue;
+        
+        var newcontent = '';
+        if(data.datas.length>0){
+            for (var i = 0; i < data.datas.length; i++){
+                var site_address = data.datas[i].site_address;
+                var split_data = site_address.split(",");
+                var location="";
+                if(split_data.length>1){
+                    location = split_data[0]+",<br/>"+split_data[split_data.length-1];
+                }else{
+                    location = site_address;
+                }
+                newcontent += "<tr><td >"+data.datas[i].Siteid+"</td>"+
+                             "<td>"+data.datas[i].site_name+"</td>"+
+                             "<td>"+location+"</td>"+
+                             "<td>"+moment(data.datas[i].Opentime).format('DD-MM-YYYY H:mm:ss')+"</td>"+
+                             "<td>"+moment(data.datas[i].Closetime).format('DD-MM-YYYY H:mm:ss')+"</td>"+
+                             "<td>"+data.datas[i].alarmpin_name+"</td>";
+
+                             if(data.datas[i].user_name!= null){
+                                newcontent+="<td>"+data.datas[i].user_name+"</td>";
+                             }else{
+                                newcontent+="<td>"+""+"</td>";
+                             }
+                             
+
+                            if(moment(data.datas[i].acktime).isValid()){
+                             newcontent+="<td>"+moment(data.datas[i].acktime).format('DD-MM-YYYY H:mm:ss')+"</td>";
+                            }else{
+                                newcontent+="<td>"+""+"</td>";
+                            }
+                newcontent+="<td>"+moment.utc(moment((data.datas[i].Closetime),"DD-MM-YYYY HH:mm:ss").diff(moment((data.datas[i].Opentime),"DD-MM-YYYY HH:mm:ss"))).format("HH:mm:ss")+"</td>";
+                newcontent+="</tr>";
+            }
+        }else{
+            newcontent+="<tr><td colspan='10'  align='center'>No Data Found</td></tr>";
+        }
+        
+        document.getElementById("alarm-tbl").innerHTML = newcontent;
+        pagination();
+    }
+    //render function end
+
+        
+    function refreshPage(){
+        window.location.href="/alarmlist";
+    }
+    
+</script>
+<script src="/moment/min/moment.min.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/js/uikit_custom.min.js"></script>
+<script src="/js/altair_admin_common.min.js"></script> 
+
+</body>
+</html>

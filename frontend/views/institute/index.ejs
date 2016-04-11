@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>     
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+    <% include ../../partials/mainheader %>
+    <% include ../../partials/sidemenu %>
+
+     <!--Start Content-->
+
+<div id="page_content">
+    <div id="page_content_inner">
+        <h3 class="heading_b uk-margin-bottom">Institute List</h3>
+        <!--Content Page-->
+        <div class="md-card">
+            <form>
+            <div class="md-card-content">
+                <div class="uk-grid" data-uk-grid-margin>
+                    <div class="uk-width-medium-1-1">
+                        <table class="display" id="example" width="100%">
+                           <thead>
+                                    <tr>
+                                        <th><strong>Institute Name</strong></th>
+                                        <th><strong>Contact Name</strong></th>
+                                        <th><strong>Contact No</strong></th>
+                                        <th><strong>Email ID</strong></th>
+                                        <th><strong>Edit</strong></th>
+                                       
+                                            
+                                    </tr>
+                           </thead>
+                            <tbody>
+                            <%  if(JSON.stringify(datas) === '{}'){
+                                    console.log("step-2");
+                                }else{
+                                    datas.forEach(function(d) { %>
+                                        <tr>
+                                            
+                                            <td><%= d.institute_name%></td>
+                                            <td><%= d.full_name%></td>
+                                            <td><%= d.contact_number%></td>
+                                            <td><%= d.contact_mailid%></td>
+                                            <td><a href='/institute/edit/<%=d.id%>' class='uk-icon-edit editicon' title='Edit'></td>
+                                        </tr>
+                                    <%  });  
+                                }        
+                            %> 
+                    
+                        </tbody> 
+                        </table>
+                    </div>
+                </div>
+            </div>
+            </form>
+        </div>   
+        <!--End of Content Page-->
+    </div>
+</div>
+
+<!--End Content--> 
+
+
+<!--Start Script-->
+<% include ../../partials/footer %>
+<script type="text/javascript" charset="utf-8">
+   $(document).ready(function() {
+    $('#example').DataTable();
+     //$('<button id="refresh">Refresh</button>').appendTo('div.uk-width-1-4');
+     $('#example')
+    .removeClass( 'display' )
+    .addClass('uk-table uk-table-striped');
+  } );
+</script>
+</body>
+</html>

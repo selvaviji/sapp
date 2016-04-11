@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+    <link rel="stylesheet" href="/css/style.css" media="all">
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+ 	  <!--Top Header-->
+    <% include ../../partials/mainheader %>
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+    
+     <!--Start Content-->
+
+    <div id="page_content">
+      <div id="page_content_inner">
+		      <h3 class="heading_b uk-margin-bottom">PIN</h3>
+          <form id="form" class="new" action="/pinmaster/save" onsubmit="return pintextvalidate()" method="post">
+  			    <div class="md-card" style="height:auto; padding:20px;">
+                <div class="uk-grid">
+                  <div class="uk-width-medium-1-2" >
+                      <div class="uk-form-row valid" >
+                        <input type="text" class="md-input md-input-success" id="pinname" name="pinname" placeholder="Pin Name"/><span class="req">*</span>
+                      </div>
+                      <div class="uk-form-row valid" >
+                        <input type="text" class="md-input md-input-success" id="pinscode" name="pinscode" placeholder="Pin Short Code"/>
+                      </div>
+                      <div class="uk-form-row valid" >
+                        <input type="text" class="md-input md-input-success" id="pindesc" name="pindesc" placeholder="Pin Description"/>
+                      </div>
+                      <div class="uk-form-row" >
+                         <button type="submit"  class="md-btn md-btn-success"><i class="uk-icon-save white paddingleft"></i>Save</button>
+                         <button type="submit" onClick="cancelPinMaster();" class="md-btn md-btn-success"><i class="uk-icon-remove white paddingleft"></i>Cancel</button>
+                      </div>
+                  </div>
+                </div>   
+  			    </div>
+          </form>  
+      </div>
+    </div>
+  <!--End Content--> 
+  <!--Start Script-->
+  <% include ../../partials/footer %>
+  <script>
+    $("#pinname").on('blur keyup',function(e){
+        alpha1('pinname');
+    });
+    $("#pinscode").on('blur keyup',function(e){
+        alpha1('pinscode');
+    });
+  </script>
+</body>
+</html>

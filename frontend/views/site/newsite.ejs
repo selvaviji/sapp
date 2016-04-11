@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+   
+    <script>
+        var user = <%- data %>;
+    </script>  
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+ 	
+     <!--Top Header-->
+    <% include ../../partials/mainheader %>
+ 
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+    
+    <!--Start Content-->
+
+<div id="page_content">
+    <div id="page_content_inner">
+		<h3 class="heading_b uk-margin-bottom">Add Site</h3>
+        <!--Geographical Select-->
+        <form id="form" class="new" method="post">
+        <div class="md-card">
+            <div class="md-card-content">
+              <div class="uk-grid">
+                    <div class="uk-width-medium-1-2">
+                      <% if(sess_id == '1' || sess_id == '2'){ %> 
+                        <div class="uk-form-row valid">
+                            <select id="customer_id" name="customer_id" class="md-input">
+                            </select><span class="req">*</span>
+                        </div>
+                      <% }else{ %>  
+                            <input type="hidden" id="customer_id" name="customer_id" class="md-input" value="<%= sess_cid%>">  
+                      <% } %>  
+                      <div class="uk-form-row valid">
+                        <label for="area"></label>
+                        <input type="text" class="md-input md-input-success" id="area_name"  name="area_name" placeholder="Area Name"/><span class="req">*</span>
+                      </div>   
+                      <div class="uk-form-row valid">
+                        <input type="text" class="md-input md-input-success" id="site_code" name="site_code" placeholder="Site Code"/><span class="req">*</span>
+                      </div> 
+                      <div class="uk-form-row valid">
+                        <input type="text" class="md-input md-input-success" id="site_name" name="site_name" placeholder="Site Name"/><span class="req">*</span>
+                               
+                      </div>
+                      <div class="uk-form-row">
+                        <select id="site_msp" name="site_msp" class="md-input">
+                        </select>
+                      </div>
+                      <div class="uk-form-row">
+                        <textarea  class="md-input" id="site_address" name="site_address" placeholder="Address"></textarea>
+                      </div>
+                      <div class="uk-form-row valid">
+                        <input type="text" class="md-input md-input-success" id="site_pincode" name="site_pincode" placeholder="Pincode"/><span class="req">*</span>
+                             
+                      </div>
+                      <div class="uk-form-row">
+                        <input type="text" class="md-input md-input-success" id="site_lng" name="site_lng" placeholder="Longitude"/>
+                      </div>
+                      <div class="uk-form-row">
+                            <input type="text" class="md-input md-input-success" id="site_lat" name="site_lat" placeholder="Latitude"/>
+                       </div>
+                        <input type="hidden" class="md-input md-input-success" id="name" name="name"/>
+                    </div>  
+                    <div class="uk-width-medium-1-2">
+                        <div class="uk-form-row">
+                            <input type="text" class="md-input md-input-success" id="no_atm" name="no_atm" placeholder="No of ATMs"/>
+                        </div>
+                        <div class="uk-form-row">
+                            <input type="text" class="md-input md-input-success" id="site_vid" name="site_vid" placeholder="Video Link"/>
+                        </div>
+                        <div class="uk-form-row">   
+                            <input type="checkbox" id="chklink"/><span class="paddingright">Use this link</span>
+                        </div> 
+                        <div class="uk-form-row"> </div>
+                        <div class="uk-form-row"> </div>
+                        <div class="uk-width-1-1">
+                        <ul class="uk-tab" data-uk-tab="{connect:'#tabs_1'}">
+                            <li class="uk-active"><a href="#">QRT</a></li>
+                            <li><a href="#">Customer</a></li>
+                            <li><a href="#">Police</a></li>
+                            <li><a href="#">Fire</a></li>
+                        </ul>
+                        <ul id="tabs_1" class="uk-switcher uk-margin">
+                          <li>
+                            <div class="uk-grid" data-uk-grid-margin>
+                              <div class="uk-width-medium-6-10">
+                                <div class="uk-form-row">
+                                  <input id="qrtname[]" name="qrtname[]" type="text" class="md-input md-input-success"  placeholder="QRT Name1"/>
+                                 </div>
+                                <div class="uk-form-row ">
+                                    <input id="qrtname[]" name="qrtname[]" type="text" class="md-input md-input-success" placeholder="QRT Name2"/>
+                                </div>
+                                <div class="uk-form-row">
+                                    <input id="qrtname[]" name="qrtname[]" type="text" class="md-input md-input-success" placeholder="QRT Name3"/>
+                                </div>
+                              </div>
+                              <div class="uk-width-medium-4-10">
+                                <div class="uk-form-row">
+                                  <input id="qrtno[]" name="qrtno[]" type="text" class="md-input md-input-success"  placeholder="QRT Number 1"/>
+                                 </div>
+                                <div class="uk-form-row ">
+                                    <input id="qrtno[]" name="qrtno[]" type="text" class="md-input md-input-success" placeholder="QRT Number 2"/>
+                                </div>
+                                <div class="uk-form-row">
+                                    <input type="text" id="qrtno[]" name="qrtno[]" class="md-input md-input-success" placeholder="QRT Number 3"/>
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                          <li>
+                            <div class="uk-grid" data-uk-grid-margin>
+                              <div class="uk-width-medium-6-10">
+                                <div class="uk-form-row">
+                                  <input type="text" id="cname[]" name="cname[]" class="md-input md-input-success" placeholder="Customer Name1"/>
+                                 </div>
+                                <div class="uk-form-row ">
+                                    <input type="text" id="cname[]" name="cname[]" class="md-input md-input-success" placeholder="Customer Name2"/>
+                                </div>
+                                <div class="uk-form-row">
+                                    <input type="text" id="cname[]" name="cname[]" class="md-input md-input-success" placeholder="Customer Name3"/>
+                                </div>
+                              </div>
+                              <div class="uk-width-medium-4-10">
+                                <div class="uk-form-row">
+                                  <input type="text" id="cno[]" name="cno[]" class="md-input md-input-success"  placeholder="Customer Number 1"/>
+                                 </div>
+                                <div class="uk-form-row ">
+                                    <input type="text" id="cno[]" name="cno[]" class="md-input md-input-success" placeholder="Customer Number 2"/>
+                                </div>
+                                <div class="uk-form-row">
+                                    <input type="text" id="cno[]" name="cno[]" class="md-input md-input-success" placeholder="Customer Number 3"/>
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                          <li>
+                            <div class="uk-grid" data-uk-grid-margin>
+                              <div class="uk-width-medium-6-10">
+                                <div class="uk-form-row">
+                                  <input type="text" id="pname[]" name="pname[]" class="md-input md-input-success"  placeholder="Police Name1"/>
+                                 </div>
+                                <div class="uk-form-row ">
+                                    <input type="text" id="pname[]" name="pname[]" class="md-input md-input-success" placeholder="Police Name2"/>
+                                </div>
+                                <div class="uk-form-row">
+                                    <input type="text" id="pname[]" name="pname[]" class="md-input md-input-success" placeholder="Police Name3"/>
+                                </div>
+                              </div>
+                              <div class="uk-width-medium-4-10">
+                                <div class="uk-form-row">
+                                  <input type="text" id="pno[]" name="pno[]" class="md-input md-input-success"  placeholder="Police Number1"/>
+                                 </div>
+                                <div class="uk-form-row ">
+                                    <input type="text" id="pno[]" name="pno[]" class="md-input md-input-success" placeholder="Police Number2"/>
+                                </div>
+                                <div class="uk-form-row">
+                                    <input type="text" id="pno[]" name="pno[]" class="md-input md-input-success" placeholder="Police Number3"/>
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                          <li>
+                            <div class="uk-grid" data-uk-grid-margin>
+                              <div class="uk-width-medium-6-10">
+                                <div class="uk-form-row">
+                                  <input type="text" id="fname[]" name="fname[]" class="md-input md-input-success"  placeholder="Name1"/>
+                                 </div>
+                                <div class="uk-form-row ">
+                                    <input type="text" id="fname[]" name="fname[]" class="md-input md-input-success" placeholder="Name2"/>
+                                </div>
+                                <div class="uk-form-row">
+                                    <input type="text" id="fname[]" name="fname[]" class="md-input md-input-success" placeholder="Name3"/>
+                                </div>
+                              </div>
+                              <div class="uk-width-medium-4-10">
+                                <div class="uk-form-row">
+                                  <input type="text" id="fno[]" name="fno[]" class="md-input md-input-success"  placeholder="Number 1"/>
+                                 </div>
+                                <div class="uk-form-row ">
+                                    <input type="text" id="fno[]" name="fno[]" class="md-input md-input-success" placeholder="Number 2"/>
+                                </div>
+                                <div class="uk-form-row">
+                                    <input type="text" id="fno[]" name="fno[]" class="md-input md-input-success" placeholder="Number 3"/>
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                        </ul>
+                        </div> 
+                        <div class="uk-form-row text-right">
+                            <button type="button" class="md-btn md-btn-success" onclick="if(sitevalidate() == true){saveSite('');}"><i class="uk-icon-save white paddingleft"></i>Save</button>
+                           
+                            <button type="button" class="md-btn md-btn-success" onclick="if(sitevalidate() == true){saveSite('sc');}"><i class="uk-icon-save white paddingleft"></i>Save & Continue</button>
+                            <button type="button" class="md-btn md-btn-success" onclick="reset();"><i class="uk-icon-remove white paddingleft"></i>Clear</button>
+                             <button type="button" class="md-btn md-btn-success" onclick="cancelSite();"><i class="uk-icon-remove white paddingleft"></i>Cancel</button>
+                        </div>
+                    </div>
+                </div>                    
+          </div>
+      </div>
+    </form>
+    <!-- End Geographical Select-->  
+    </div>
+</div>
+
+<!--End Content--> 
+
+
+<!--Start Script-->
+
+ 
+
+    <script type="text/javascript" src="/js/site.js">
+    </script>
+
+    <script>
+        
+        $(function(){
+           // console.log("user :"+user);
+            var arr=user;
+            //console.log("Json :"+JSON.stringify(user));
+
+            var arr1=[];
+            var val="";
+            for( var i=0;i<arr.length;i++)
+            {
+                var obj={"id":arr[i].area_name,"value":arr[i].area_name,"label":arr[i].area_name+" / "+arr[i].district_name+" / "+arr[i].state_name+" / "+arr[i].zone_name+" /"+arr[i].country_name};
+                arr1.push(obj);
+                val=arr[i].area_name;
+            }
+                
+            $("#area_name").autocomplete(
+                {
+                    source: arr1,
+                    minLength: -1,
+                }); 
+        })      
+        
+    </script>
+    <script src="/moment/min/moment.min.js"></script>
+    <script src="/js/uikit_custom.min.js"></script>
+    <script src="/js/altair_admin_common.min.js"></script>
+    <script src="/js/valid.js"></script>
+    <script type="text/javascript" src="/js/datatables.js"></script>
+    <script src="/js/export.js"></script>
+   
+    
+</body>
+</html>

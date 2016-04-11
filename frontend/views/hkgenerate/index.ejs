@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+</head>
+
+<body class="sidebar_main_swipe">
+ 
+     <!--Top Header-->
+    <% include ../../partials/mainheader %>
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+
+    <!--Content-->
+    <!--Start Content-->
+
+    <div id="page_content">
+        <div id="page_content_inner">
+        <h3 class="heading_b uk-margin-bottom">HK Generate</h3>
+        <!--Content Page-->
+        <div class="md-card">
+            <div class="md-card-content">
+                <div class="uk-grid" data-uk-grid-margin>
+                    <div class="uk-width-medium-1-1">
+                        <table class="display" id="hkreport" width="100%">
+                       
+                           
+                        </table>
+                        <button id="next" class="md-btn md-btn-success">Next</button>
+                        
+                        <p id="demo1" ></p>
+                        <div id="output" class="uk-alert uk-alert-success">
+                            <center>
+                                <span class="test uk-text-large uk-text-danger"></span>
+                            </center>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>   
+        <!--End of Content Page-->
+    </div>
+</div>
+
+<!--End Content--> 
+
+
+<!--Start Script-->
+<% include ../../partials/footer %> 
+
+<script type="text/javascript" charset="utf-8">
+    
+    var i=0;
+    var siteinfos = [];
+    var rows = 2;
+    var columns = 5;
+   
+        $.ajax({
+            beforeSend: function(){
+                //$("#ajaxBusy").show();
+            },
+            url: '/hkgenerate/getSiteInfo',
+            type: 'POST',
+            cache: false, 
+            data: {},
+            success: function(data){
+                siteinfos = data;
+                //console.log("Datas :"+JSON.stringify(siteinfos));
+                $("#output").hide();
+                render();
+              
+            },error: function(jqXHR, textStatus, err){
+                alert('text status '+textStatus+', err '+err);
+                //$("#ajaxBusy").hide();  
+            },complete: function(jqXHR, textStatus, err){
+                //console.log("completed Triggered : "+JSON.stringify(objJSON));
+                //$("#ajaxBusy").hide();
+            }
+        }); 
+    
+
+
+    var render = function(){
+        var tablecontents ="";
+        if (i < siteinfos.length) {
+            for (var j = 0; j<rows ; j++) {
+                tablecontents +="<tr>";
+                for(var k = 0; k<columns; k++){
+                    if(i < siteinfos.length){
+                        console.log("i ="+i+" L="+siteinfos.length);
+                       
+                        tablecontents += "<td style='border:1px solid #EFEFEF; text-align:center;'><div class='uk-alert'>"+siteinfos[i].siteid+"</div>";
+                        tablecontents += "<img id="+i+" style='width:250px;height:230px;padding:0px; ' src="+siteinfos[i].imgpath+ ">";
+                        tablecontents += "<div style='text-align:center; padding-top:8px; font-size:15px; verticle-align:middle;'>";
+                        tablecontents += "<div class='uk-button-group ' data-uk-button-radio>";
+                        var subcontent="";
+                    if(siteinfos[i].status == "clean"){
+                        subcontent += "<label id="+siteinfos[i].siteid+" class='uk-button uk-button-success uk-active' value='clean' for='clean'>Clean</label>"
+                        subcontent += "<label id="+siteinfos[i].siteid+" class='uk-button' value='notclean' for='notclean'>Not Clean</label>"
+                        subcontent += "<label id="+siteinfos[i].siteid+" class='uk-button uk-button-danger' value='faulty' for='faulty'>Faulty</label>"
+                    }else if(siteinfos[i].status == "faulty"){
+                        subcontent += "<label id="+siteinfos[i].siteid+" class='uk-button uk-button-success' value='clean' for='clean'>Clean</label>"
+                        subcontent += "<label id="+siteinfos[i].siteid+" class='uk-button' value='notclean' for='notclean'>Not Clean</label>"
+                        subcontent += "<label id="+siteinfos[i].siteid+" class='uk-button uk-button-danger uk-active' value='faulty' for='faulty'>Faulty</label>"
+                    }else{
+                        subcontent += "<label id="+siteinfos[i].siteid+" class='uk-button uk-button-success ' value='clean' for='clean'>Clean</label>"
+                        subcontent += "<label id="+siteinfos[i].siteid+" class='uk-button uk-active' value='notclean' for='notclean'>Not Clean</label>"
+                        subcontent += "<label id="+siteinfos[i].siteid+" class='uk-button uk-button-danger' value='faulty' for='faulty'>Faulty</label>"
+                    }
+
+                       
+                        subcontent += "<input id="+siteinfos[i].siteid+" type='radio' name="+
+                                            siteinfos[i].siteid+" value='clean' style='display:none;'/> Clean "+
+                                        "<input id="+siteinfos[i].siteid+" type='radio' name="+siteinfos[i].siteid+" value='notclean' style='display:none;'/>NotClean "+
+                                        "<input id="+siteinfos[i].siteid+" type='radio' name="+siteinfos[i].siteid+" value='faulty' style='display:none;'/>Faulty ";
+                       
+                        tablecontents += subcontent +'</div></div>';
+                        tablecontents += "</td>";          
+                        i++;
+                    }    
+                }
+                tablecontents += "</tr>";
+            }  
+            document.getElementById("hkreport").innerHTML = tablecontents;
+
+            //all images are displayed means display finish button instead of next button
+            if(i >= siteinfos.length){
+               $('button').val('Finish');
+               $("button").text('Finish');
+            }else{
+               $("button").text('Next');
+               $('button').val('Next');
+            } 
+
+             //radio button onclick effect using class(label class)
+            $(".uk-button").click(function(){
+                console.log("checked value: "+$(this).attr('value')+"  id: "+this.id);
+
+                for (var k=0;k<siteinfos.length; k++) {
+                    if(siteinfos[k].siteid == this.id){
+                        siteinfos[k].status = $(this).attr('value');
+                    }
+                }
+
+                //display updated array after on click finish button
+                if(i >= siteinfos.length){               
+                //document.getElementById("demo1").innerHTML =JSON.stringify(siteinfos);  
+                }
+            }) 
+
+        }//if
+ 
+    }//end of function
+
+    
+    //button onclick event
+    $("#next").click(function() {
+
+        //checking if all images are displayed(onclick finish button)
+        if(i >= siteinfos.length){               
+            //document.getElementById("demo1").innerHTML =JSON.stringify(siteinfos);  
+            SubmitToServer();
+        }else {
+            render();
+        }
+    })  
+    
+    var SubmitToServer = function() {
+            $.ajax({
+                beforeSend: function(){
+                    //$("#ajaxBusy").show();
+                },
+                url: '/hkgenerate/save',
+                type: 'POST',
+                cache: false, 
+                data: {siteinfo: siteinfos},
+                success: function(data){
+                    console.log("success :"+data);
+                    $("#output").show();
+                    $("span.test", "#output").text("Sucessfully Submitted");
+                },error: function(jqXHR, textStatus, err){
+                    alert('text status '+textStatus+', err '+err);
+                    //$("#ajaxBusy").hide();  
+                },complete: function(jqXHR, textStatus, err){
+                    //console.log("completed Triggered : "+JSON.stringify(objJSON));
+                    //$("#ajaxBusy").hide();
+                }
+            }); 
+          // console.log("onclick triggered :"+JSON.stringify(siteinfos));
+       
+    }   
+</script>           
+</body>
+</html>

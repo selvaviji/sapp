@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>    
+    <script src="/js/xls.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js"></script>
+    <script>
+        var script = '<script type="text/javascript" src="/js/markerclusterer';
+        if (document.location.search.indexOf('compiled') !== -1) {
+          script += '_compiled';
+        }
+        script += '.js"><' + '/script>';
+        document.write(script);
+    
+        $(document).ready(function(){
+            $("#search").hide();
+
+            $(".searchbtn").click(function(){
+                $("#search").toggle();
+            });
+        });
+    </script>
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+ 
+     <!--Top Header-->
+    <% include ../../partials/mainheader %>
+ 
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+
+     <!--Content-->
+
+     <!--Start Content-->
+
+<div id="page_content">
+    <div id="page_content_inner" style="padding:7px 0px 0px;">
+          <div style="padding:6px 14px 10px;">
+                <div class="md-btn md-btn-success" onclick="data()" id="dsp" style="width:60px;">
+                    <i class="uk-icon-list white paddingleft"></i>Data
+                </div>
+          </div>
+        <!--End Button-->
+        <!--Content Page-->
+        <div id="googleMap">
+            <div id="map-container"><div id="map"></div></div>
+        </div>
+        <!--End of Content Page-->
+
+        <div class="" id="data-content" style="display:none; padding:0px 14px 100px;">
+            <table class="display" id="example" width="100%">
+                <thead>
+                  <tr>
+                    <th><strong>Emp ID</strong></th>
+                    <th><strong>Emp Name </strong></th>
+                    <th><strong>Designation</strong></th>
+                    <th><strong>Contact #</strong></th>
+                    <th><strong>Reporting Manager</strong></th>
+                    <th><strong>Remark</strong></th>
+                    <th><strong>Location</strong></th> 
+                    <th><strong>State</strong></th>                       
+                  </tr>
+                </thead>
+                <tbody>
+                  <%  if(JSON.stringify(datas) === '{}'){
+                        console.log("step-2");
+                      }else{
+                        datas.forEach(function(d) { %>
+                          <tr>
+                            <td><%= d.emp_id%></td>
+                            <td><%= d.emp_name%></td>
+                            <td><%= d.design_name%></td>
+                            <td><%= d.contact_no%></td>
+                            <td><%= d.report_manager%></td>
+                            <td><%= d.remark_name%></td>
+                            <td><%= d.location_name%></td>
+                            <td><%= d.state_name%></td>
+                          </tr>
+                      <%  });  
+                       }        
+                      %> 
+                </tbody> 
+            </table>    
+        </div>
+
+
+        <!--Upload Page-->
+        <div class="mnk-modal-bg" style="display:none;" id="data-file">
+            <div class="mnk-modal-box" style="padding:0px">
+                <div class="mnk-modal-head" style="20px;">
+                  <h3 class="heading_b ">Please Wait</h3>
+                </div> 
+                <div class="mnk-modal-body">
+                <img src="img/loading.gif" style="padding-right:3px;">Loading..... 
+                </div> 
+            </div>
+        </div>
+        <!--End of upload Page-->
+    </div>
+
+</div>
+
+<!--End Content--> 
+
+
+<!--Start Script-->
+<script src="/moment/min/moment.min.js"></script>
+
+<script src="/js/uikit_custom.min.js"></script>
+<script type="text/javascript" src="/js/jsgrid.min.js"></script> 
+<script src="/js/gridmodule.js"></script>
+<script src="/js/altair_admin_common.min.js"></script>
+<script type="text/javascript" src="/js/datatables.js"></script>
+<script src="/js/export.js"></script>
+
+
+    <script>
+    $(document).ready(function() {
+    $('#example').DataTable();
+     //$('<button id="refresh">Refresh</button>').appendTo('div.uk-width-1-4');
+     $('<div class="md-btn md-btn-success "><a href="#" onclick="people()"><i class="uk-icon-user white paddingleft"></i>Geo People</a></div>').appendTo('div.btn1');
+     $('<div class="md-btn md-btn-success "><a href="#" onclick="data()"><i class="uk-icon-list white paddingleft"></i>Data</a></div>').appendTo('div.btn2');
+     $('<div class="" id="search" ><input type="file" name="xlfile"  id="xlf" class="md-input"/></div>').appendTo('div.upl');
+     $('#example')
+    .removeClass( 'display' )
+    .addClass('uk-table uk-table-striped');
+  } );
+      var center;
+      var map;
+     // console.log("serverDatas :"+serverData);
+      function initialize() {
+        var serverData = <%- JSON.stringify(datas) %>;
+          center = new google.maps.LatLng(21.0000, 78.0000);
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 5,
+                center: center,
+                minZoom: 3, 
+                /*maxZoom: 15,*/
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            });
+          console.log("Load :"+serverData);
+          renderMap(serverData,map);
+      }
+
+      function renderMap(data,map){
+            var infowindow = new google.maps.InfoWindow();
+            var lineSymbol = {
+            path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW
+          };
+          var path_coords = [];
+
+            var markers = [];
+            //console.log("Length :"+data.length);
+            for (var i = 0; i < data.length; i++) {
+                //console.log("Lat :"+data.photos[i].site_latitude+","+"Long :"+data.photos[i].site_longitude);
+                //var dataPhoto = data.photos[i];
+                //var latLng = new google.maps.LatLng(data.photos[i].site_latitude,data.photos[i].site_longitude);
+                console.log(data[i].lat_value+"   "+data[i].lng_value);
+                path_coords.push({lat:parseFloat(data[i].lat_value),lng:parseFloat(data[i].lng_value)});
+                var latLng = new google.maps.LatLng(data[i].lat_value,data[i].lng_value);
+              
+                var siteinfo = '<div id="iw-container">' +
+                      '<div class="iw-title">'+data[i].emp_name+'</div>' +
+                      '<div class="iw-content">' +
+                        '<p>Report To :'+data[i].report_manager+'<br>'+
+                        'Site :'+data[i].remark_name+'<br>'+
+                        'City :'+data[i].state_name+","+data[i].location_name+'<br>'+'</p>'+
+                      '<div class="iw-bottom-gradient"></div>' +
+                    '</div>';
+                //console.log(sitetitle);
+                var marker = new google.maps.Marker({position: latLng,titles: siteinfo,map: map});
+
+                // Create Info Windows       
+                var infowindow = new google.maps.InfoWindow({
+                  content: '',
+                  disableAutoPan: true
+                });
+               
+                google.maps.event.addListener(marker, 'mouseover', function(e) {
+                    //infowindow.removeAttribute('title');
+                    //infowindow.setPosition(e.getCenter());
+                    infowindow.setContent(this.titles);
+                    infowindow.open(map, this);
+                });
+                google.maps.event.addListener(marker, 'mouseout', function(e) {
+                    infowindow.close();
+                });  
+                /*google.maps.event.addListener(infowindow, 'mouseover', function (e) {
+                  e.mb.target.removeAttribute('title');  
+                }); */
+                // Event that closes the Info Window with a click on the map
+                /*google.maps.event.addListener(map, 'click', function() {
+                  infowindow.close();
+                });*/
+                google.maps.event.addListener(infowindow, 'domready', function() {
+                      // Reference to the DIV that wraps the bottom of infowindow
+                      var iwOuter = $('.gm-style-iw');
+                      var iwBackground = iwOuter.prev();
+                      // Removes background shadow DIV
+                      iwBackground.children(':nth-child(2)').css({'display' : 'none'});
+                      // Removes white background DIV
+                      iwBackground.children(':nth-child(4)').css({'display' : 'none'});
+                      // Moves the infowindow 115px to the right.
+                      iwOuter.parent().parent().css({left: '115px'});
+                      // Moves the shadow of the arrow 76px to the left margin.
+                      iwBackground.children(':nth-child(1)').attr('style', function(i,s){ return s + 'left: 76px !important;'});
+                      // Moves the arrow 76px to the left margin.
+                      iwBackground.children(':nth-child(3)').attr('style', function(i,s){ return s + 'left: 76px !important;'});
+                      // Changes the desired tail shadow color.
+                      iwBackground.children(':nth-child(3)').find('div').children().css({'box-shadow': 'rgba(72, 181, 233, 0.6) 0px 1px 6px', 'z-index' : '1'});
+                      // Reference to the div that groups the close button elements.
+                      var iwCloseBtn = iwOuter.next();
+                      // Apply the desired effect to the close button
+                      iwCloseBtn.css({opacity: '1', right: '58px', top: '16px', border: '7px solid #48b5e9', 'border-radius': '13px', 'box-shadow': '0 0 0px #3990B9'});
+                      // If the content of infowindow not exceed the set maximum height, then the gradient is removed.
+                      if($('.iw-content').height() < 140){
+                        $('.iw-bottom-gradient').css({display: 'none'});
+                      }
+
+                      // The API automatically applies 0.7 opacity to the button after the mouseout event. This function reverses this event to the desired value.
+                      iwCloseBtn.mouseout(function(){
+                        $(this).css({opacity: '1'});
+                      });
+                  });
+
+                  markers.push(marker);
+            }//for loop
+            var markerCluster = new MarkerClusterer(map, markers);
+
+            var flightPath = new google.maps.Polyline({
+        path: path_coords,
+        geodesic: true,
+        icons: [{
+          icon: lineSymbol,
+          offset: '100%'
+        }],
+        strokeColor: '#FF0000',
+        strokeOpacity: 0,
+        strokeWeight: 0
+      });
+
+      flightPath.setMap(map);
+      resize();
+
+      google.maps.event.addDomListener(window, 'resize', resize);
+      }//end of renderfunction
+
+function resize() {
+  map.setCenter(center);
+}
+//initialize();
+
+      function getCustomerMap(){
+          var custid = $("#customer_id").val();
+          console.log("customer id:"+custid);
+          $.ajax({
+            url: '/geopeople/geo',
+            type:'post',
+            cache: false,
+            data:{customerid:custid},
+            success: function (data1){
+                console.log("AJAX:"+data1.datas);
+                renderMap(data1.datas);
+            }
+        });
+      }
+      function people(){
+            document.getElementById("googleMap").style.display="block";
+            document.getElementById("data-content").style.display="none";
+            document.getElementById("search").style.display="none";
+             document.getElementById("dsp").style.display="block";
+      }
+      function data(){
+            $('#example').DataTable();
+            document.getElementById("googleMap").style.display="none";
+            document.getElementById("data-content").style.display="block";
+            document.getElementById("search").style.display="block";
+            document.getElementById("dsp").style.display="none";
+            serverData;
+      }
+      function file(){
+            //$('#imageLoad').css("visibility", "hidden"); 
+            // document.getElementById("imageLoad").style.visibility = "hidden";
+            document.getElementById("data-file").style.display="block";
+      }
+      function closes(){
+            document.getElementById("data-file").style.display="none";
+      }
+      $(document).ready(function() {
+          $.ajax({
+              url: '/geopeople/getRemark',
+              type:'post',
+              cache: false,
+              data:{},
+              success: function (data1){
+                var data=[];
+                var arr1=data1;
+                var options = '<option value="">--ALL--</option>';
+                for( var i=0;i<arr1.custdata.length;i++) {
+                    options += '<option value="' + arr1.custdata[i].id + '">' + arr1.custdata[i].remark_name + '</option>';
+                }
+                $('#customer_id').html(options);
+              }
+          });
+          google.maps.event.addDomListener(window, 'load', initialize);
+      });
+    </script>
+    
+
+    <script>
+        
+        var X = XLS;
+        var appenddata=[];
+        var result="";
+        var errordata=[];
+        var formatdata= ['SL#','EMPID','EmployeeName','Designation','ReportingManager','ContactNo','Remark','Location','State'];
+
+
+        function verifyTemplate(columnArray){
+            var returndata=true;
+
+            for(var i=0; i<formatdata.length;i++){
+
+                console.log("FormData :"+formatdata[i]+"   "+"arraydata :"+columnArray[i]);
+                if(formatdata[i] == columnArray[i]){
+                  returndata=true
+                }else{
+                  return false;
+                }
+            }
+            return returndata;
+        }
+
+        function to_json(workbook) {
+            workbook.SheetNames.forEach(function(sheetName) {
+                var arrDatas= X.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+                var sheet_name_list = workbook.SheetNames;
+                var columns = ['A1','B1','C1','D1','E1','F1','G1','H1','I1'];
+                var columnNames = [];  
+                for(i=0;i<columns.length;i++){
+                  columnNames[i] = workbook.Sheets[sheet_name_list[0]][columns[i]].v;
+                }
+               
+                if(verifyTemplate( columnNames) == true){ 
+                    var address;
+                    var i=0;
+                    
+                    for(i=0;i<arrDatas.length;i++){ 
+                        if(arrDatas[i].EMPID != '' && typeof arrDatas[i].EMPID != 'undefined'){
+
+                            var designid = getDataFromServer('Design',arrDatas[i].Designation);
+                            arrDatas[i].Designation = designid;
+                            address = arrDatas[i].Location+","+arrDatas[i].State+","+"India";
+                            var locationid = getDataFromServer('Location',arrDatas[i].Location);
+                            arrDatas[i].Location = locationid;
+
+                            var stateid = getDataFromServer('State',arrDatas[i].State);
+                            arrDatas[i].State = stateid;
+
+                            var positions = getPositionData(address);
+                            arrDatas[i].latvalue= positions.lat;
+                            arrDatas[i].lngvalue= positions.lng;
+                           
+                            updateStatus = SaveDatatoDB(arrDatas[i]);
+                        }
+                         
+                    }//for 
+                    document.getElementById("data-file").style.display="none";
+                   
+                }else{
+                   
+                    errordata.push("Data Format Error");
+                    for(i=0;i<formatdata.length;i++){ 
+                      errordata.push(arrDatas[i]);
+                    }  
+                   
+                    //var data = errordata;
+                    JSONToCSVConvertor(errordata, "log file", true);
+                }
+            });
+        }
+
+        //downloading log file
+        function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
+            //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
+            var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
+            var CSV = '';    
+            //Set Report title in first row or line
+            CSV += ReportTitle + '\r\n\n';
+            //This condition will generate the Label/Header
+            if (ShowLabel){
+                var row = "";
+                 //This loop will extract the label from 1st index of on array
+                for (var index in arrData[0]) {
+                    //Now convert each value to string and comma-seprated
+                    row += index.toUpperCase() + ',';
+                }
+                 row = row.slice(0, -1);
+                 //append Label row with line break
+                 CSV += row + '\r\n';
+            }
+            //1st loop is to extract each row
+            for (var i = 0; i <= arrData.length; i++) {
+                var row = "";
+                //2nd loop will extract each column and convert it in string comma-seprated
+                for (var index in arrData[i]) {
+                    row += '"' + arrData[i][index] + '",';
+                }
+                row.slice(0, row.length - 1);
+                //add a line break after each row
+                CSV += row + '\r\n';
+            }
+
+            if (CSV == '') {        
+                alert("Invalid data");
+                return;
+            }   
+            //Generate a file name
+            var fileName = "siteLog_"+moment(Date().slice(0,24)).format('DD-MM-YYYY H:mm:ss');
+            //this will remove the blank-spaces from the title and replace it with an underscore
+            fileName += ReportTitle.replace(/ /g,"_");   
+            //Initialize file format you want csv or xls
+            var uri = 'data:text/xls;charset=utf-8,' + escape(CSV);
+            // Now the little tricky part.
+            // you can use either>> window.open(uri);
+            // but this will not work in some browsers
+            // or you will not get the correct file extension    
+            //this trick will generate a temp <a /> tag
+            var link = document.createElement("a");    
+            link.href = uri;
+            //set the visibility hidden so it will not effect on your web-layout
+            link.style = "visibility:hidden";
+            link.download = fileName +moment(Date().slice(0,24)).format('DD-MM-YYYY H:mm:ss') +".csv";
+            //this part will append the anchor tag and remove it after automatic click
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }//end of function
+
+        //appending xls-file datas to DB
+        function SaveDatatoDB(udata){
+            //var udata = $("#uploaddata").val();
+            //console.log("ArrayData :"+udata);
+           
+            $.ajax({
+                url: '/geopeople/appendserverdata',
+                type: 'POST',
+                cache: false,
+                async:false,
+                data: {uploaddata:udata}
+            })    
+            .done(function (data1){
+                console.log("Done :"+data1);
+            });    
+           
+        }
+
+        //get Location
+        function getPositionData(address){
+             var retdata;
+            $.ajax({
+                url: 'https://maps.googleapis.com/maps/api/geocode/json?address='+address+'&sensor=false',
+                type: 'GET',
+                cache:false,
+                async:false,
+            })    
+            .done(function (data){ 
+                p = data.results[0].geometry.location;
+                retdata = p;
+            });
+            return retdata;
+        }
+        //get area_id 
+        function getDataFromServer(dataid,dataname){
+            var retdata;
+            $.ajax({
+                url: '/geopeople/serverdata',
+                type: 'POST',
+                cache:false,
+                async:false,
+                data:{dataid:dataid,dataname:dataname}
+            })    
+            .done(function (data1){ 
+                  //console.log("Done :"+JSON.stringify(data1));
+                  retdata = data1.custdata;
+
+            });
+            return retdata;
+              
+        }
+        //end area_id 
+
+        function b64it() {
+            if(typeof console !== 'undefined') console.log("onload", new Date());
+            var wb = X.read( {type: 'base64',WTF:wtf_mode});
+            //console.log("triggers");
+            location.reload();
+            process_wb(wb);
+        }
+
+        function process_wb(wb) {
+            JSON.parse(to_json(wb), 2, 2);
+            if(typeof console !== 'undefined') console.log("output", new Date());
+        }
+
+        function handleFile(e) {
+            var files = e.target.files;
+            //console.log("files"+files);
+            var f = files[0];
+            {
+              var reader = new FileReader();
+              //console.log(reader+"reader");
+              var name = f.name;
+              reader.onload = function(e) {
+                  var data = e.target.result;
+                  var arr = fixdata(data);
+                  wb = X.read(btoa(arr), {type: 'base64'});
+                  process_wb(wb);
+              };
+              reader.readAsArrayBuffer(f);
+            }
+
+        }
+
+        function loadPopup(e){
+          //open popup window
+          document.getElementById("data-file").style.display="block";
+          //process 
+          handleFile(e);
+          //document.getElementById("data-file").style.display="none";
+        }
+        function fixdata(data) {
+            var o = "", l = 0, w = 10240;
+            for(; l<data.byteLength/w; ++l) o+=String.fromCharCode.apply(null,new Uint8Array(data.slice(l*w,l*w+w)));
+            o+=String.fromCharCode.apply(null, new Uint8Array(data.slice(l*w)));
+            return o;
+        }
+
+        if(xlf.addEventListener) xlf.addEventListener('change', loadPopup, false);
+
+</script>
+
+</body>
+</html>

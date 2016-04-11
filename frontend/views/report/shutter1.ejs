@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <% include ../../partials/head %>
+    <script src="/js/common.min.js"></script>
+    <script src="/js/jquery.sumoselect.js"></script>
+    <link href="/css/sumoselect.css" rel="stylesheet" />
+    <script src="/js/jspdf.debug.js"></script>  
+    <script>
+        var count=-1;
+        var timestamparr=[];
+        var diarr=[];
+        var opentimestatus=0;
+        var closetimestatus=0;
+        var closetimedata;
+        outageDatas=<%-JSON.stringify(outageDatas)%>;
+
+        $(document).ready(function(){
+            $("#search").hide();
+                $(".searchbtn").click(function(){
+                $("#search").toggle();
+            });
+            $("#fromdate").datepicker();
+            $("#todate").datepicker();
+           
+        });
+        //reset page
+        function refreshPage(){
+            window.location.href= "/report/shutter";
+        }
+        //end reset
+    </script>
+</head>
+<body class="sidebar_main_open sidebar_main_swipe">
+    <!--Top Header-->
+    <% include ../../partials/mainheader %>
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+
+    <!--Start Content-->
+    <div id="page_content">
+    <div id="page_content_inner">
+        <div class="searchbtn"><i class="uk-icon-search"></i></div>
+        <form method="post">
+            <div class="dwnbtn" id="exl">
+                <a><i class="uk-icon-download padright"></i></a>
+            </div>
+            <div class="dwnbtn" id="pdf">
+                <a><i class="uk-icon-file-pdf-o padright"></i></a>
+            </div>
+            <input type="hidden" name="sqlquery" id="sqlquery" value="<%= sqlquery %>">
+        </form>
+        <!--Dashboard-->
+        <h3 class="heading_b uk-margin-bottom">Shutter</h3>
+        <!--End Dashboard-->
+    <form action = "/report/shutter" method="get"  name="frmpageid" id="frmpageid">
+            <div class="md-card" id="search">
+                <div class="md-card-content">
+                    <div class="uk-grid uk-dropdown-grid">
+                        <div class="uk-width-1-4">
+                            <div class="searchlabel">SITE ID</div>
+                            <select multiple="multiple" name="siteid" onchange="console.log($(this).children(':selected').length)" id="siteid" class="md-input testSelAll">
+                            </select>
+                        </div>
+                        <div class="uk-width-1-4">
+                            <div class="searchlabel">FROM DATE</div>
+                        <input type="text" class="md-input md-input-success" placeholder="From Date" name="fromdate" id="fromdate" value="<%= moment(fromdate).format('MM/DD/YYYY') %>">
+                        </div>
+                        <div class="uk-width-1-4" >
+                            <div class="searchlabel">TO DATE</div>
+                            <input type="text" class="md-input md-input-success" placeholder="To Date" name="todate" id="todate" value="<%= moment(todate).format('MM/DD/YYYY') %>">
+                        </div>
+                       
+                        <div class="uk-width-1-4" style="display:none">
+                            <div class="searchlabel"></div>
+                            <input type="text" class="md-input md-input-success" placeholder="To Date" name="nextval" id="nextval" value="<%= nextpagevalue %>">
+                        </div>
+                        <div class="uk-width-1-4" style="display:none">
+                            <div class="searchlabel"></div>
+                            <input type="text" class="md-input md-input-success"  name="statusvalue" id="statusvalue" value="0">
+                        </div>
+                      
+                         
+                        <div class="uk-width-1-4" style="margin-top: 16px;">
+                            <button type="submit" class="md-btn md-btn-success">
+                             <i class="uk-icon-search white padright"></i>Search</button>
+                            <button type="button" class="md-btn md-btn-success" onClick="refreshPage()">
+                            <i class="uk-icon-refresh white padright"></i>Reset</button>
+                        </div>  
+                       </div>  
+                </div>
+            </div>
+
+       <div class="md-card ">
+            <div class="md-card-content">
+             <% if(sess_id==1){ %>
+                <div class="uk-grid uk-grid-collapse" style="display:block">
+                <div class="uk-width-8-10" style="text-align:right; margin-bottom:6px;">
+                    Rows Per Page
+                        <select style="width:50px; display:inline"  name="rowsperpageval" id="rowsperpageval">
+                                <% for(var i=minRange;i<=maxRange;i=i+stepRange){ %>
+                                <%if(i==rowsperpageval) {%>
+                                <option value=<%= i%> selected><%= i%></option>
+                                <%}else { %>
+                                <option value=<%= i%>> <%= i%> </option>
+                                <%}%>
+                                <% } %>
+                        </select>
+                </div>  
+                    <div class="uk-width-2-10 " style="text-align:right; margin-bottom:6px;">
+                         Customer
+                        <select id="customer_id" name="customer_id" style="width:100px; display:inline;">
+                        </select>
+                    </div>
+                </div>  
+            <% } else{%> 
+                <div class="uk-width-1-1" style="text-align:right; margin-bottom:6px;">
+                    Rows Per Page
+                        <select style="width:50px; display:inline"  name="rowsperpageval" id="rowsperpageval">
+                                <% for(var i=minRange;i<=maxRange;i=i+stepRange){ %>
+                                <%if(i==rowsperpageval) {%>
+                                <option value=<%= i%> selected><%= i%></option>
+                                <%}else { %>
+                                <option value=<%= i%>> <%= i%> </option>
+                                <%}%>
+                                <% } %>
+                        </select>
+                </div>
+                <div class="uk-grid uk-grid-small" style="display:none">
+                    <div class="uk-width-1-1 " style="text-align:right; margin-bottom:6px;">
+                         Customer
+                        <input id="customer_id" name="customer_id" value="<%= cid %>" type="hidden">
+                    </div>
+                </div>  
+            <% } %>                          
+    </form>
+            <div class="uk-overflow-container ">
+                    <table class="uk-table uk-table-striped uk-table-hover" id="tabledata">
+                        <thead>
+                            <tr>
+                                <th>Site ID</th>
+                                <th>Site Name</th>
+                                <th>Customer</th>
+                                <th>Open Time</th>
+                                <th>Close Time</th>
+                             </tr>
+                        </thead>
+                        <tbody>
+                       <%  var i=1;
+                            if(totalDatas == '0'){ %>
+                                <tr><td colspan='11'  align="center">No Data Found</td></tr>
+                        <%        
+                            }else{
+                                outageDatas.forEach(function(d) { %>
+                            <tr>
+                                <td><%= d.siteid %></td>
+                                <td><%= d.site_name %></td> 
+                                <td><%= d.customer_name %></td>
+                                <td>
+                                <script >
+                                  count++;
+                                  timestamparr=outageDatas[count].timestamp.split(",");
+                                  diarr=outageDatas[count].Di20.split(",");
+                                    for(var j=0;j<diarr.length;j++){
+                                            //console.log("index"+j+"timestamp"+timestamparr[j]+"di20"+diarr[j]+"siteid"+outageDatas[count].siteid);
+                                            if(opentimestatus==0 && diarr[j]==2){
+                                                document.write(moment(timestamparr[j]).format('DD-MM-YYYY H:mm:ss'));
+                                              opentimestatus=1;
+                                            }
+                                            if(diarr[j]==3){
+                                                closetimeval=j;
+                                                closetimestatus=1;
+                                            }
+                                    }
+                                        if(opentimestatus==0){
+                                           document.write("No Data");
+                                        }
+                                        if(closetimestatus==1){
+                                             closetimedata=timestamparr[closetimeval];
+                                        }else if(closetimestatus==0){
+                                                closetimedata="No Data";
+                                            }
+                                        opentimestatus=0;
+                                        closetimestatus=0;
+                                </script>
+
+                                 </td>
+                                 <td><script >document.write(moment(closetimedata).format('DD-MM-YYYY H:mm:ss'));</script></td>
+                            </tr>
+                           <%  }); } %> 
+                    
+                        </tbody> 
+                    </table>
+                </div>
+            <ul id="navigation" class="uk-pagination"></ul>
+            </div> 
+        </div>
+    <div class="uk-overflow-container" id="k1" style="visibility:hidden"></div>
+    </div>
+    </div>
+    <!--End Content--> 
+<!--Start Script-->
+<script src="/moment/min/moment.min.js"></script>
+<script src="/js/uikit_custom.min.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/js/altair_admin_common.min.js"></script>
+<script src="/js/pagination.js"></script>
+<script type="text/javascript">
+    var siteid="<%= siteid%>";
+    //console.log("Site=="+siteid);
+    var custid="<%= custid%>";
+    var fromdate="<%= fromdate%>"; 
+    var todate="<%= todate%>"; 
+    var currentposition = "<%= currentposition %>";
+    var customerresult= <%-JSON.stringify(customerresult) %>; 
+    var endposition="<%= endposition %>";
+    var lastposition = "<%= lastposition %>";
+    var  nextbuttonstatus= "<%=nextbuttonstatus%>";
+    console.log("currentposition"+currentposition+"endposition"+endposition+"lastposition"+lastposition);
+    pagination(currentposition,endposition,lastposition,nextbuttonstatus); 
+    
+</script>
+<script src="/js/shutterFiles.js"></script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>     
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+    <% include ../../partials/mainheader %>
+    <% include ../../partials/sidemenu %>
+
+     <!--Start Content-->
+
+<div id="page_content">
+    <div id="page_content_inner">
+        <h3 class="heading_b uk-margin-bottom">Customer List</h3>
+        <!--Content Page-->
+        <div class="md-card">
+            <form>
+            <div class="md-card-content">
+                <div class="uk-grid" data-uk-grid-margin>
+                    <div class="uk-width-medium-1-1">
+                        <table class="display" id="example" width="100%">
+                           <thead>
+                                    <tr>
+                                        <th><strong>Customer Name</strong></th>
+                                        <th><strong>Display Name </strong></th>
+                                        <th><strong>Logo</strong></th>
+                                        <th><strong>No of Students</strong></th>
+                                        <th><strong>Customer Status</strong></th>
+                                        <th><strong>Edit</strong></th>
+                                        <th><strong>Delete</strong></th>
+                                            
+                                    </tr>
+                           </thead>
+                            <tbody>
+                            <%  if(JSON.stringify(datas) === '{}'){
+                                    console.log("step-2");
+                                }else{
+                                    datas.forEach(function(d) { %>
+                                        <tr>
+                                            
+                                            <td><%= d.customer_name%></td>
+                                            <td><%= d.display_name%></td>
+                                            <td>
+                                            <% if(d.logo_name == "" || typeof d.logo_name == undefined){ %>
+                                            <img src="/uploads/noimage.png" width="50px" height="50px" />
+                                            <%}else{ %>    
+                                            <img src="/uploads/<%= d.logo_name%>" width="50px" height="50px" />
+                                            <% } %>
+                                            </td>
+                                            <td><%= d.no_of_students%></td>
+                                            <td><% if(d.customer_status=="0"){%>
+                                                    Enable
+                                                <% }else{%>
+                                                    Disable
+                                                <%}%>    
+                                            </td>
+                                            <td><a href='/customer/edit/<%=d.user_id%>' class='uk-icon-edit editicon' title='Edit'></td>
+                                            <td><a  href='/customer/delete/<%=d.user_id%>' onclick='return confirm("Are you sure to delete?")' class='uk-icon-trash editicon'  title='Delete' ></td>
+                                        </tr>
+                                    <%  });  
+                                }        
+                            %> 
+                    
+                        </tbody> 
+                        </table>
+                    </div>
+                </div>
+            </div>
+            </form>
+        </div>   
+        <!--End of Content Page-->
+    </div>
+</div>
+
+<!--End Content--> 
+
+
+<!--Start Script-->
+<% include ../../partials/footer %>
+<script>
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#blah').attr('src', e.target.result);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+        
+    $("#imgInp").change(function(){
+        readURL(this);
+    });
+</script>
+<script type="text/javascript" charset="utf-8">
+   $(document).ready(function() {
+    $('#example').DataTable();
+     //$('<button id="refresh">Refresh</button>').appendTo('div.uk-width-1-4');
+     $('<div class="md-btn md-btn-success "><a href="/customer/addcustomer" ><i class="uk-icon-user white paddingleft"></i>Create New</a></div>').appendTo('div.btn1');
+     $('#example')
+    .removeClass( 'display' )
+    .addClass('uk-table uk-table-striped');
+  } );
+</script>
+</body>
+</html>

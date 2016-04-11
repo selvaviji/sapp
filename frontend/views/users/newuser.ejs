@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+ 	
+     <!--Top Header-->
+    <% include ../../partials/mainheader %>
+ 
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+
+     <!--Content-->
+
+     <!--Start Content-->
+
+<div id="page_content">
+    <div id="page_content_inner">
+		<h3 class="heading_b uk-margin-bottom">Users</h3>
+      <form id="form" class="new" action="/users/saveuser" method="post" onsubmit="return uservalidate()">
+			  <div class="md-card">
+         <div class="md-card-content">
+          <div class="uk-grid">
+            <div class="uk-width-medium-1-2" >
+              
+	              <div class="uk-form-row valid" >
+                        <input type="text" class="md-input md-input-success" id="username" name="username" placeholder="username" /><span class="req">*</span>
+                </div>
+                <div class="uk-form-row valid" >
+                        <input type="text" class="md-input md-input-success" id="password" name="password" placeholder="Password" /><span class="req">*</span>
+                </div>
+                <div class="uk-form-row valid">
+                       <select id="user_type" name="user_type" class="md-input ">
+                       </select><span class="req">*</span>
+                </div>
+                <div class="uk-form-row valid" >
+                      <select id="timezone"  name="timezone" class="md-input">
+                      </select><span class="req">*</span>
+                </div>
+                <div class="uk-form-row valid" >
+                      <select id="dateformat"  name="dateformat" class="md-input">
+                        <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                         <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                         <option value="YYYY/DD/MM">YYYY/DD/MM</option>
+                         <option value="YYYY/MM/DD">YYYY/MM/DD</option>
+                      </select><span class="req">*</span>
+                </div>
+                <div class="uk-form-row valid" >
+                        <input type="text" class="md-input md-input-success" id="pagerefresh" name="pagerefresh" placeholder="Rows Per Page"/><span class="req">*</span>
+                               
+                </div>
+                <div class="uk-form-row valid" >
+                      <select id="landingpage" name="landingpage" class="md-input ">
+                      </select><span class="req">*</span>
+                
+                </div>  
+                <div class="uk-form-row" >
+                       <button type="submit"  class="md-btn md-btn-success"><i class="uk-icon-save white paddingleft"></i>Save</button>
+                       <button type="submit" onClick="cancelUser();" class="md-btn md-btn-success"><i class="uk-icon-remove white paddingleft"></i>Cancel</button>
+                </div>
+            </div>
+          </div>   
+          </div>
+			  </div>
+      </form>  
+
+    </div>
+</div>
+
+<!--End Content--> 
+
+
+  <!--Start Script-->
+  <% include ../../partials/footer %>
+   <script>
+        var roleid = 0;
+	     var eroleid = 0;
+	     roleid = "<%= sess_id %>";
+    </script>
+  <script type="text/javascript" src="/js/user.js"></script>
+  <script src="/js/timezones.full.js"></script>
+  <script>
+    $("#timezone").change(function(){
+      drop('timezone');
+    });
+    $("#dateformat").change(function(){
+      drop('dateformat');
+    });
+    $("#pagerefresh").on("blur keyup",function(){
+      num('pagerefresh');
+    });
+    $("#landingpage").on("blur keyup",function(){
+      alpha('landingpage');
+    });
+    
+    $("#timezone").timezones();
+    
+    $(function(){
+          $.ajax({
+                url: '/users/landingpage',
+                type: 'get',
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function(data){
+                    //console.log("Data :"+data.custdata[0].customer_name);
+                    var options = '<option value="">--Select Landing Page--</option>';
+                    for (var i = 0; i < data.landingdata.length; i++) {
+                        options += '<option value="' + data.landingdata[i].id + '">' + data.landingdata[i].landing_name + '</option>';
+                    }
+                    console.log("options :"+options);
+                    $("#landingpage").html(options);
+                }
+            });
+      });    
+  </script>
+</body>
+</html>

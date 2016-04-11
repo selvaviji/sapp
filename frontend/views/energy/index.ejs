@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <% include ../../partials/head %>
+    <script src="/js/common.min.js"></script>
+    <script src="/js/jquery.sumoselect.js"></script>
+    <link href="/css/sumoselect.css" rel="stylesheet" />
+    <script src="/js/jspdf.debug.js"></script> 
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $("#search").hide();
+                $(".searchbtn").click(function(){
+                    $("#search").toggle();
+                });
+                $("#fromdate").datepicker();
+                $("#todate").datepicker();
+        });
+    </script>
+</head>
+<body class="sidebar_main_open sidebar_main_swipe">
+    <!--Top Header-->
+    <% include ../../partials/mainheader %>
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+
+    <!--Start Content-->
+    <div id="page_content">
+    <div id="page_content_inner">
+        <div class="searchbtn"><i class="uk-icon-search"></i></div>
+        <form method="post">
+        <div class="dwnbtn" id="exl"><a><i class="uk-icon-download padright"></i></a></div>
+        <div class="dwnbtn" id="pdf"><a><i class="uk-icon-file-pdf-o padright"></i></a></div>
+        
+        <input type="hidden" name="sqlquery" id="sqlquery" value="<%= sqlquery %>">
+        </form>
+        <!--Dashboard-->
+        <h3 class="heading_b uk-margin-bottom">Energy Data</h3>
+        <!--End Dashboard-->
+        <form action = "/energy" method="get"  name="frmpageid" id="frmpageid">
+        <div class="md-card" id="search">
+            <div class="md-card-content">
+                <div class="uk-grid uk-dropdown-grid">
+                    <div class="uk-width-1-4">
+
+                    <div class="searchlabel">SITE ID</div>
+                        <select multiple="multiple" name="siteid" onchange="console.log($(this).children(':selected').length)" id="siteid" class="md-input testSelAll">
+                        </select>
+                    </div>
+                   <div class="uk-width-1-4">
+                        <div class="searchlabel">FROM DATE</div>
+                        <input type="text" class="md-input md-input-success" placeholder="From Date" name="fromdate" id="fromdate" value="<%= moment(fromdate).format('MM/DD/YYYY') %>">
+                    </div>
+                    <div class="uk-width-1-4">
+                        <div class="searchlabel">TO DATE</div>
+                        <input type="text" class="md-input md-input-success" placeholder="To Date" name="todate" id="todate" value="<%= moment(todate).format('MM/DD/YYYY') %>">
+                    </div>  
+                    <div class="uk-width-1-4" style="display:none">
+                            <div class="searchlabel"></div>
+                            <input type="text" class="md-input md-input-success" placeholder="To Date" name="nextval" id="nextval" value="<%= nextpagevalue %>">
+                        </div>
+                        <div class="uk-width-1-4" style="display:none">
+                            <div class="searchlabel"></div>
+                            <input type="text" class="md-input md-input-success"  name="statusvalue" id="statusvalue" value="0">
+                        </div>  
+                    <div class="uk-width-1-4" style="margin-top: 20px;">
+                        <button type="submit" class="md-btn md-btn-success">
+                         <i class="uk-icon-search white padright"></i>Search</button>
+                        <button type="button" class="md-btn md-btn-success" onClick="refreshPage()">
+                        <i class="uk-icon-refresh white padright"></i>Reset</button>
+                    </div>  
+                </div>  
+            </div>
+        </div>
+        <div class="md-card ">
+            <div class="md-card-content">
+                <% if(sess_id==1 || sess_id==2){ %>
+                <div class="uk-grid uk-grid-collapse" style="display:block">
+                <div class="uk-width-8-10" style="text-align:right; margin-bottom:6px;">
+                    Rows Per Page
+                        <select style="width:50px; display:inline"  name="rowsperpageval" id="rowsperpageval">
+                                <% for(var i=minRange;i<=maxRange;i=i+stepRange){ %>
+                                <%if(i==rowsperpageval) {%>
+                                <option value=<%= i%> selected><%= i%></option>
+                                <%}else { %>
+                                <option value=<%= i%>> <%= i%> </option>
+                                <%}%>
+                                <% } %>
+                        </select>
+                </div>  
+                    <div class="uk-width-2-10 " style="text-align:right; margin-bottom:6px;">
+                         Customer
+                        <select id="customer_id" name="customer_id" style="width:100px; display:inline;">
+                        </select>
+                    </div>
+                </div>  
+            <% } else{%> 
+                <div class="uk-width-1-1" style="text-align:right; margin-bottom:6px;">
+                    Rows Per Page
+                        <select style="width:50px; display:inline"  name="rowsperpageval" id="rowsperpageval">
+                                <% for(var i=minRange;i<=maxRange;i=i+stepRange){ %>
+                                <%if(i==rowsperpageval) {%>
+                                <option value=<%= i%> selected><%= i%></option>
+                                <%}else { %>
+                                <option value=<%= i%>> <%= i%> </option>
+                                <%}%>
+                                <% } %>
+                        </select>
+                </div>
+                <div class="uk-grid uk-grid-small" style="display:none">
+                    <div class="uk-width-1-1 " style="text-align:right; margin-bottom:6px;">
+                         Customer
+                        <input id="customer_id" name="customer_id" value="<%= cid %>" type="hidden">
+                    </div>
+                </div>  
+            <% } %> 
+    </form>
+        
+        <div class="md-card ">
+            <div class="md-card-content">
+                <div class="uk-overflow-container ">
+                    <table class="uk-table uk-table-striped uk-table-hover" id="tabledata">
+                        <thead>
+                            <tr><th>Time</th>
+                            <th>Site ID</th>
+                            <th>Site Name</th>
+                            <th>Address</th>
+                            <th>Frequency</th>
+                            <th>Kwh</th>
+                            <th>V (R)</th>
+                            <th>I (R)</th>
+                            <th>V (Y)</th>
+                            <th>I (Y)</th>
+                            <th>V (B)</th>
+                            <th>I (B)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                          <%  
+                            if(totalDatas == '0'){ %>
+                                <tr><td colspan='12'  align="center">No Data Found</td></tr>
+                          <%        
+                            }else{
+                                outageDatas.forEach(function(d) { %>
+                                   <tr>
+                                        <td>
+                                        <%= moment(d.emlastknown_timestamp).format('DD-MM-YYYY H:mm:ss') %>
+                                        </td>
+                                        <td><%= d.siteid %></td>
+                                        <td><%= d.site_name %></td>
+                                        <td><script>
+                                               var site_address = "<%= d.site_address %>";
+                                               var split_data = site_address.split(",");
+                                               if(split_data.length>1){
+                                                 document.write(split_data[0]+",<br/>"+split_data[split_data.length-1]);
+                                                }else{
+                                                     document.write(site_address);
+                                                } 
+                                            </script>
+                                        </td>
+                                        <td><%= d.emlastknown_frequency %></td>
+                                        <td><%= d.emlastknown_kwh %></td>
+                                        <td><%= d.emlastknown_vrn %></td>
+                                        <td><%= d.emlastknown_ir %></td>
+                                        <td><%= d.emlastknown_vyn %></td>
+                                        <td><%= d.emlastknown_iy %></td>
+                                        <td><%= d.emlastknown_vbn %></td>
+                                        <td><%= d.emlastknown_ib %></td>
+                                    </tr>
+                            <%  });
+                            } %>         
+                        </tbody>  
+                    </table>
+                </div>
+            </div>   
+       
+              <ul id="navigation" class="uk-pagination"></ul>  
+            </div> 
+        </div>
+        <div class="uk-overflow-container " id="k1" style="visibility: hidden"  ></div>
+    </div>
+    </div>
+    <!--End Content--> 
+<!--Start Script-->
+<script src="/moment/min/moment.min.js"></script>
+<script src="/js/uikit_custom.min.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/js/altair_admin_common.min.js"></script> 
+<script src="/js/pagination.js"></script>
+<script type="text/javascript">
+    var siteid="<%= siteid%>";
+    var custid="<%=custid%>";
+    var todate ="<%= todate%>";
+    var fromdate="<%= fromdate%>";  
+    var customerresult= <%-JSON.stringify(customerresult) %>; 
+    var currentposition = "<%= currentposition %>";
+    var endposition="<%= endposition %>";
+    var lastposition = "<%= lastposition %>";
+    var  nextbuttonstatus= "<%=nextbuttonstatus%>";
+    console.log("currentposition"+currentposition+"endposition"+endposition+"lastposition"+lastposition);
+    pagination(currentposition,endposition,lastposition,nextbuttonstatus); 
+</script>
+<script src="/js/energyFiles.js"></script>
+
+</body>
+</html>

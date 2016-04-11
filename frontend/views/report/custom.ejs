@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+     <script>
+      var order_arr=<%- JSON.stringify(order_arr)%>;
+      var order_arr=<%- JSON.stringify(sort_arr)%>;
+       $(document).ready(function(){
+            $("#search").hide();
+                $(".searchbtn").click(function(){
+                $("#search").toggle();
+            });
+        });
+    
+      //console.log("session id:"+sid+"::session name:"+sname);
+    </script>
+    <!--Filter-->
+    
+    <!--Filter-->
+</head>
+
+<body class="sidebar_main_swipe">
+    <!--Top Header-->
+    <% include ../../partials/mainheader %>
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+    <!--Dashboard-->
+        <div id="page_content">
+        <div id="ajaxBusy"><p id="ajaxBusyMsg">Please Wait..</p></div>
+        <div id="page_content_inner">
+        <div class="searchbtn"><i class="uk-icon-search"></i></div>
+        <a id="dlink"  style="display:none;"></a>
+        <div class="dwnbtn" id="exl" value="Export to Excel" >
+                <a><i class="uk-icon-download padright"></i></a>
+        </div>
+        <div class="dwnbtn" id="pdf" >
+                <a><i class="uk-icon-file-pdf-o padright"></i></a>
+        </div>
+        <h3 class="heading_b uk-margin-bottom">Custom</h3>
+        <!--End Dashboard-->
+     <!--Start Content-->
+        <div class="md-card" id="search">
+            <div class="md-card-content">
+                <div class="uk-grid uk-grid-small">
+                    <div class="uk-width-1-4">
+                        <div class="searchlabel">Site ID</div>
+                        <input type="text" class="md-input md-input-success"  name="siteid" id="siteid"  >
+                    </div>
+                                    
+                    <div class="uk-width-1-4">
+                        <div class="searchlabel">FROM DATE</div>
+                        <input type="text" class="md-input md-input-success" placeholder="From Date" name="fromdate" id="fromdate" value="<%= moment().format('MM/DD/YYYY HH:mm:ss') %>">
+                    </div>
+
+                    <div class="uk-width-1-4">
+                        <div class="searchlabel">TO DATE</div>
+                        <input type="text" class="md-input md-input-success" placeholder="To Date" name="todate" id="todate" value="<%= moment().format('MM/DD/YYYY HH:mm:ss') %>">
+                    </div>
+                    <div class="uk-width-1-4">
+                        <div class="searchlabel">Alarm</div>
+                            <input type="text" class="md-input md-input-success"  name="pin_id" id="pin_id" >
+                            <input style="display:none;" name="pin_id1" id="pin_id1">
+                    </div>
+                    <div class="uk-width-1-4" >
+                        <div class="searchlabel">ORDER BY</div>
+                            <select  name="order_id" id="order_id" class="md-input">
+                                 <% for(var i=0;i<order_arr.length;i++){ %>
+                                      <option value=<%= order_arr[i]%> selected> <%=(order_arr[i]).toUpperCase()%> </option>
+                                 <% } %>
+                            </select>
+                    </div>
+                    <div class="uk-width-1-4" >
+                        <div class="searchlabel">SORT BY</div>
+                            <select  name="sort_id" id="sort_id" class="md-input">
+                                <% for(var i=0;i<sort_arr.length;i++){ %>
+                                     <option value=<%= sort_arr[i]%> selected> <%=(sort_arr[i]).toUpperCase()%> </option>
+                                <% } %>
+                            </select>
+                    </div> 
+                </div>
+                <div class="uk-grid">
+                    <div class="uk-width-1-4" style="">
+                        <button type="button"  class="md-btn md-btn-success" id="searchbtn1">
+                            <i class="uk-icon-search white padright"></i>Search</button>
+                        <button type="button" class="md-btn md-btn-success" onClick="refreshPage()">
+                            <i class="uk-icon-refresh white padright"></i>Reset</button>
+                    </div>
+                </div>    
+            </div>    
+        </div>    
+
+            <div class="uk-width-1-4" style="display:none;">
+             <div class="searchlabel"></div>
+             <input type="text" class="md-input md-input-success"  style="display:none" name="nextval" id="nextval"  >
+           </div>
+
+           <div class="uk-width-1-4" style="display:none;">
+              <div class="searchlabel"></div>
+             <input type="text" class="md-input md-input-success" style="display:none;" name="statusvalue" id="statusvalue" >
+           </div>
+  
+                    <div class="md-card ">
+                        <div class="md-card-content">
+                            <div class="uk-width-1-1" style="text-align:right;">
+                                Rows Per Page
+                                <select style="width:50px; display:inline"  name="rowsperpageval" id="rowsperpageval">
+                                <% for(var i=minRange;i<=maxRange;i=i+stepRange){ %>
+                                <option value=<%= i%>> <%= i%> </option>
+                                <% } %>
+                                </select>
+                            </div> 
+                            <% if(sess_id==1  || sess_id==2) {%>
+                                <div class="uk-width-2-10 " style="visibiity:visible;">
+                                    <div class="customer">  CUSTOMER :
+                                     <select id="customer_id" name="customer_id" onClick="changePin();changeSite();">
+                                     </select></div>
+                                </div>
+                            <%}else{ %> 
+                                <div class="uk-width-2-10 " style=" visibility:hidden;">
+                                     <div class="customer"> CUSTOMER :
+                                    <select id="customer_id" name="customer_id">
+                                    </select></div>
+                                </div>
+                            <%}%> 
+                        <!-- Data Table Area -->
+                        <div class="uk-overflow-container" > 
+                            <table class="uk-table uk-table-striped uk-table-hover" id="table">
+                                <thead id="header">
+                                    <tr><th>Type</th>
+                                        <th>Status</th>
+                                        <th>Site ID</th>
+                                        <th>Site Name</th>
+                                        <th>Address</th>
+                                        <th>Open Time</th>
+                                        <th>Close Time</th>
+                                        <th>Alarm</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="alarm-tbl">
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- End of Data Table Area -->
+
+                        <!-- Pagination Area -->
+                         <ul id="navigation" class="uk-pagination">
+                         </ul>
+                        <!-- End of Pagination -->
+                    </div> 
+                </div>
+                <div class="uk-overflow-container " id="k1" style="visibility: hidden"  ></div>       
+            </div>   
+
+    
+<!--End page inner-->
+
+<!--Start Script-->
+<% include ../../partials/footer %>
+<script type="text/javascript">
+    $("#fromdate").datetimepicker({showSecond: true,showMillisec: false,timeFormat: 'HH:mm:ss'});
+    $("#todate").datetimepicker({showSecond: true,showMillisec: false,timeFormat: 'HH:mm:ss'});     
+</script>
+<script>
+    var session_id = "<%= sess_id %>";   
+    refreshing();
+    //getdata function
+    function tabledata(){    
+        var customerid=document.getElementById("customer_id").value;
+        var siteid=document.getElementById("siteid").value;
+        var nextval=document.getElementById("nextval").value;
+        var fromdate=document.getElementById("fromdate").value;
+        var todate=document.getElementById("todate").value;
+        var pin_id=document.getElementById("pin_id1").value;
+        var order_id=document.getElementById("order_id").value;
+        var sort_id=document.getElementById("sort_id").value;
+        console.log("order_id::"+sort_id);
+        
+         $.ajax({
+            beforeSend:function(){
+                $('#ajaxBusy').show();
+            },
+            url: '/report/getCustom',
+            type: 'post',
+            cache: false, 
+            data:{siteid:siteid,fromdate:fromdate,todate:todate,pin_id:pin_id,custid:customerid,order_id:order_id,sort_id:sort_id,rowsperpageval:document.getElementById("rowsperpageval").value,statusvalue:document.getElementById("statusvalue").value,nextval:document.getElementById("nextval").value},
+            success: function(data){
+                render(data);   
+            },error: function(jqXHR, textStatus, err){
+                alert('text status '+textStatus+', err '+err);
+                $('#ajaxBusy').hide();   
+            },complete: function(jqHHR,textStatus,err){
+                $('#ajaxBusy').hide(); 
+            }
+        });
+    }
+     
+    //render function start
+    function render(data){
+        currentposition=data.currentposition;
+        endposition=data.endposition;
+        lastposition=data.lastposition;
+        nextbuttonstatus=data.nextbuttonstatus;
+        document.getElementById("nextval").value=data.nextpagevalue;
+        var outageDatas=data.datas;
+        var newcontent = '';
+        if(outageDatas.length>0){
+            //console.log("length="+outageDatas.length);
+            for (var i = 0; i < outageDatas.length; i++){
+                var site_address = outageDatas[i].site_address;
+                if(site_address!=null){
+                    var split_data = site_address.split(",");
+                    var location="";
+                    if(split_data.length>1){
+                        location = split_data[0]+",<br/>"+split_data[split_data.length-1];
+                    }else{
+                        location = site_address;
+                    }
+                }else{
+                    location="";
+                }    
+                newcontent += "<tr>";
+                if(outageDatas[i].Alarmtype=='0'){
+                        newcontent+="<td >"+"Alarm"+"</td>";
+                    }else if(outageDatas[i].Alarmtype=='1'){
+                       newcontent+="<td >"+"Normal"+"</td>";
+                    }            
+                    if(outageDatas[i].Alarmstatus=='0'){
+                        newcontent+="<td >"+"Alarm Open"+"</td>"
+                    }else if(outageDatas[i].Alarmstatus=='1'){
+                        newcontent+="<td >"+"Alarm Closed"+"</td>"
+                    }
+                newcontent+="<td >"+outageDatas[i].Siteid+"</td>";
+                        if(outageDatas[i].site_name!=null){
+                            newcontent+="<td >"+outageDatas[i].site_name+"</td>";
+                        }else{
+                            newcontent+="<td>"+""+"</td>";
+                        }    
+                newcontent+="<td >"+location+"</td>"+
+                            "<td >"+moment(outageDatas[i].Opentime).format('DD-MM-YYYY HH:mm:ss')+"</td>";
+                            if(moment(outageDatas[i].Closetime).isValid()){
+                              newcontent+="<td >"+moment(outageDatas[i].Closetime).format('DD-MM-YYYY HH:mm:ss')+"</td>";                              
+                            }else{
+                                "<td >"+""+"</td>";                            
+                            }
+                newcontent+="<td >"+outageDatas[i].alarmpin_name+"</td>";
+
+              newcontent+="</tr>";
+            }
+        }
+        else{
+            newcontent+="<tr><td colspan='10'  align='center'>No Data Found</td></tr>";
+        }
+       
+        document.getElementById("alarm-tbl").innerHTML = newcontent;
+        pagination();
+    }
+    //render function end    
+    function refreshPage(){
+        window.location.href="/alarmlist";
+    }
+//for downloading file
+$(exl).click(function(){
+    var fdate=document.getElementById("fromdate").value;
+    var todate=document.getElementById("todate").value;
+    tableToExcel('tablename', 'name', 'custom_<%= moment().format('DD-MM-YYYY H:mm:ss') %>.xls',todate,fdate);   
+}); 
+$("#pdf").click(function(){
+     JSONToPDF();
+});
+
+ var header="Custom Report";   
+ var fname="custom_";    
+</script>
+</body>
+</html>
+
+

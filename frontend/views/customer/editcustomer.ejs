@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+    
+     <!--Top Header-->
+    <% include ../../partials/mainheader %>
+ 
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+
+
+   
+     <!--Content-->
+
+     <!--Start Content-->
+
+<div id="page_content">
+    <div id="page_content_inner">
+        <h3 class="heading_b uk-margin-bottom">Customer</h3>
+        <form id="uploadForm" class="edit" enctype="multipart/form-data" action="/customer/update" method="post" onsubmit="return customervalidate()">   
+            <div class="md-card">
+            <div class="md-card-content">
+                <div class="uk-grid">
+                  <div class="uk-width-medium-1-2" >
+                    <div class="uk-form-row" >
+                      <input type="hidden" class="md-input md-input-success" id="userid" name="userid" value="<%=data[0].user_id%>" />
+                    </div>
+                    <div class="uk-form-row valid" >
+                        <div class="txtlabel">UserName</div>
+                        <input type="text" class="md-input md-input-success mustdata alpha" id="customername" name="username" value="<%=data[0].user_name%>"/><span class="req">*</span>
+                                
+                    </div>
+                    <div class="uk-form-row valid" >
+                        <div class="txtlabel">Password</div>
+                        <input type="password" class="md-input md-input-success" id="password" name="password" value="<%=data[0].pass_word%>"/><span class="req">*</span>
+                                
+                    </div>
+                    <div class="uk-form-row" >
+                        <div class="txtlabel">Display Name</div>
+                        <input type="text" class="md-input md-input-success" id="displayname" name="displayname" value="<%=data[0].display_name%>">
+                    </div>
+                    <div class="uk-form-row" >
+                        <div class="txtlabel">No of Students</div>
+                        <input type="text" class="md-input md-input-success" id="noofstudents" name="noofstudents" value="<%=data[0].no_of_students%>"  />
+                    </div>
+                     <div class="uk-form-row" >
+                        <div class="txtlabel">Status</div>
+                        <select id="customerstatus" name="customerstatus">
+                            <% if(data[0].customer_status == "0"){%>
+                                <option value="0" selected>Enable</option>
+                                <option value="1">Disable</option>
+                            <%}else{%>
+                                <option value="0">Enable</option>
+                                <option value="1" selected>Disable</option>
+                            <%}%>
+                        </select>        
+                    </div>
+                    <div class="uk-form-row" >
+                        <div class="txtlabel">Logo</div>
+                        <input type="file" id="imgInp" name="imgInp" class="md-btn md-btn-warning"/>
+                        <% if(data[0].logo_name == "" || typeof data[0].logo_name == undefined){ %>
+                            <img id="blah" src="/uploads/noimage.png" alt="Your Image" width="100px" height="50px" />
+                        <%}else{ %>    
+                            <img id="blah" src="/uploads/<%=data[0].logo_name%>" alt="Your Image" width="100px" height="50px" />
+                        <% } %>
+                        
+                    </div>
+                    <div class="uk-form-row" >
+                        <input type="hidden" id="imagename" name="imagename"> 
+                    </div>
+                    <div class="uk-form-row" >
+                       <button type="submit" class="md-btn md-btn-success"><i class="uk-icon-save white paddingleft"></i>Save</button>
+                       <a href="/customer" class="md-btn md-btn-success"><i class="uk-icon-remove white paddingleft"></i>Cancel</a>
+                    </div>
+                   </div>
+                </div>
+            </div>        
+            </div>
+        </form> 
+    </div>
+</div>
+
+<!--End Content--> 
+
+
+
+ <!--Start Script-->
+<% include ../../partials/footer %>
+<script>
+    var imgdata = "<%= data[0].logo_name %>";
+    if(imgdata != ""){
+        document.getElementById("imagename").value = imgdata;
+    }
+    
+    
+    function readURL(input) {
+        
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            
+            reader.onload = function (e) {
+                $('#blah').attr('src', e.target.result);
+            }
+            
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    
+    $("#imgInp").change(function(){
+
+        readURL(this);
+        imgstatus = true;
+       
+
+    });
+
+</script>
+
+  <script type="text/javascript">
+   
+    $("#customername").keyup(function(){
+      alpha('customername');
+    });
+
+    $("#customername").blur(function(){
+      alpha('customername');
+    });
+    $("#password").keyup(function(){
+      alpha1('password');
+    });
+
+    $("#password").blur(function(){
+      alpha1('password');
+    });
+
+
+  </script>
+
+</body>
+</html>

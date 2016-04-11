@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+    <script src="/js/common.min.js"></script>
+
+   <script type="text/javascript">
+       $(document).ready(function(){
+            $("#search").hide();
+            $(".searchbtn").click(function(){
+                $("#search").toggle();
+            });
+        });    
+    </script>
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+    <!--Top Header-->
+    <% include ../../partials/mainheader %>
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+
+    <!--Start Content-->
+    <div id="page_content">
+    <div id="ajaxBusy"><p id="ajaxBusyMsg">Please Wait..</p></div>
+    <div id="page_content_inner">
+        <div class="searchbtn"><i class="uk-icon-search"></i></div>
+        <form method="post">
+        <a id="dlink"  style="display:none;"></a>
+            <div class="dwnbtn" id="exl"  value="Export to Excel" >
+                <a><i class="uk-icon-download padright"></i></a>
+            </div>
+            
+         </form>
+        <!--Dashboard-->
+        <h3 class="heading_b uk-margin-bottom">Live Data</h3>
+        <!--End Dashboard-->
+        <div class="md-card" id="search">
+            <div class="md-card-content">
+                <div class="uk-grid uk-dropdown-grid">
+                    <div class="uk-width-1-4">
+                        <div class="searchlabel">Site ID</div>
+                        <input type="text" class="md-input md-input-success"  name="siteid" id="siteid"  >
+                    </div>
+                    <div class="uk-width-1-4">
+                        <div class="uk-form-controls" style="padding-top:28px;">
+                            <label> <input type="radio" name='sitestatus' id='sitestatus' value='0' checked>
+                                Enable</label>
+                             <label><input type="radio"  name='sitestatus' id='sitestatus' value='1'> Disable</label>    
+                            <label><input type="radio"  name='sitestatus' id='sitestatus' value='2'> OFFLINE</label>
+                        </div>
+                    </div>
+                    <div class="uk-width-1-4" style="display:none">
+                        <div class="searchlabel"></div>
+                        <input type="text" class="md-input md-input-success" placeholder="To Date" name="nextval" id="nextval">
+                    </div>
+                    <div class="uk-width-1-4" style="display:none">
+                        <div class="searchlabel"></div>
+                        <input type="text" class="md-input md-input-success"  name="statusvalue" id="statusvalue">
+                    </div>
+                    <div class="uk-width-1-4" style="margin-top: 20px;">
+                        <button  id="searchbtn1" class="md-btn md-btn-success">
+                         <i class="uk-icon-search white padright"></i>Search</button>
+                        <button type="button" class="md-btn md-btn-success" onClick="refreshPage()">
+                        <i class="uk-icon-refresh white padright"></i>Reset</button>
+                    </div>  
+                </div> 
+            </div>
+        </div>
+
+        <div class="md-card ">
+            <div class="md-card-content">
+            <% if(sess_id==1 | sess_id==2){ %>
+                <div class="uk-grid uk-grid-collapse" style="display:block">
+                    <div class="customer " style="text-align:right; margin-bottom:6px;">
+                         Customer
+                        <select onclick="changeSite()" id="customer_id" name="customer_id"  style="width:100px; display:inline;">
+                        </select>
+                    </div>
+                </div>  
+            <% } else{%> 
+                <div class="uk-grid uk-grid-small" style="display:none">
+                    <div class="uk-width-1-1 " style="text-align:right; margin-bottom:6px;">
+                         Customer
+                        <input id="customer_id" name="customer_id" type="hidden">
+                    </div>
+                </div>  
+            <% } %>
+            <div class="uk-width-1-1" style="text-align:right; margin-bottom:6px;">
+                    Rows Per Page
+                        <select style="width:50px; display:inline" name="rowsperpageval" id="rowsperpageval">
+                                <% for(var i=minRange;i<=maxRange;i=i+stepRange){ %>
+                                    <option value=<%= i%>><%= i%></option>
+                                <%}%>
+                        </select>
+                </div>
+
+       
+                <div class="uk-overflow-container " id="alarm-tbl">
+                </div>
+               <ul id="navigation" class="uk-pagination"></ul>
+            </div>
+        </div>
+
+    </div>
+    </div>
+    <!--End Content--> 
+
+<!--Start Script-->
+<script src="/moment/min/moment.min.js"></script>
+<script src="/js/uikit_custom.min.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/js/altair_admin_common.min.js"></script>
+<script src="/js/export.js"></script>
+<script>
+    var fnames;
+    var values;
+    var fields;
+    var rowsperpageval;
+    refreshing();
+    
+   function tabledata(){    
+        console.log("Site Statu :"+$('input[name=sitestatus]:checked').val());
+        var dataCollection = {
+            custid : $("#customer_id").val(),
+            nextval : $("#nextval").val(),
+            siteid : $("#siteid").val(),
+            rowsperpageval: $("#rowsperpageval").val(),
+            statusvalue: $("#statusvalue").val(),
+            sitestatus: $('input[name=sitestatus]:checked').val()
+        }
+        
+        $.ajax({
+            beforeSend: function(){
+                $("#ajaxBusy").show();
+            },
+            url: '/live/getdata',
+            type: 'POST',
+            cache: false, 
+            data: dataCollection,
+            success: function(data){
+                //console.log("Data :"+JSON.stringify(data));
+                render(data);  
+            },error: function(jqXHR, textStatus, err){
+                alert('text status '+textStatus+', err '+err);
+                $("#ajaxBusy").hide();  
+            },complete: function(jqXHR, textStatus, err){
+                //console.log("completed Triggered");
+                $("#ajaxBusy").hide();
+            }
+        });
+    }
+
+
+    function render(data){
+        currentposition=data.currentposition;
+        endposition=data.endposition;
+        lastposition=data.lastposition;
+        nextbuttonstatus=data.nextbuttonstatus;
+        document.getElementById("nextval").value=data.nextpagevalue;
+
+       fnames = "<table class='uk-table uk-table-striped uk-table-hover' id='table'><thead><th>TimeStamp</th><th>Site ID</th><th>Site Name</th><th>Customer</th><th>IP</td>";
+
+        fields = data.fieldnames;
+        for(var i=0;i<fields.length;i++){
+                if(fields[i].alarmpin_no != 'HealtherrorCode'){
+                    if((fields[i].alarmpin_no).match(/Do[0-9]/)){
+                        fnames += "<th title='"+fields[i].alarmpin_name+"'>"+(fields[i].alarmpin_sc).toUpperCase()+"</th>";
+                    }else if((fields[i].alarmpin_no).match(/Di[1-20]/)){
+                        fnames += "<th title='"+fields[i].alarmpin_name+"'>"+(fields[i].alarmpin_sc).toUpperCase()+"</th>";
+                    }else{
+                        fnames += "<th title='"+fields[i].alarmpin_name+"'>"+fields[i].alarmpin_sc+"</th>";    
+                    }
+                }            
+        }
+        fnames += "</thead>";
+
+        var totalDatas = data.dataslength;
+        if(totalDatas == "0"){
+            fnames += "<tbody><tr><td colspan='"+(fields.length+4)+"' align='center'>No Data Found</td></tr>";
+        }else{
+           // values ="0";
+            values = data.datas;
+            //console.log("values=="+JSON.stringify(values));
+            if(values != "0"){
+                
+                for(var x=0;x<values.length;x++){
+                    fnames += "<tr>";
+              //      console.log("record::"+values[x].RecordingTimeStamp);
+                    fnames += "<td>"+moment(values[x].RecordingTimeStamp).format('DD-MM-YYYY HH:mm:ss')+"</td>";
+                    fnames += "<td>"+values[x].Siteid+"</td>";
+                    fnames += "<td>"+values[x].site_name+"</td>";
+                    fnames += "<td>"+values[x].customer_name+"</td>";
+                    fnames+="<td>"+(values[x].IP).replace("::ffff:","")+"</td>";
+                    // fnames += "<td>"+values[x].site_address+"</td>";
+                    for(var i=0;i<fields.length;i++){
+                           var fn = fields[i].alarmpin_sc;
+                           var fn1 = fields[i].alarmpin_no; 
+                           if(fn1 != 'HealtherrorCode'){
+                                if(fn == 'RT' && values[x][fn] == '1'){
+                                    fnames += "<td title='Alarm'>"+ '<i class="uk-icon-exclamation-triangle orange"></i>'+"</td>";
+                                }else if(fn == 'RT' && values[x][fn] == '0'){
+                                    fnames += "<td title='Periodic'>"+'<i class="uk-icon-clock-o orange"></i>'+"</td>";
+                                }else if(fn1.match(/Di[2-9]/)){
+                                    if(values[x][fn] == '0'){
+                                        fnames += "<td title='Alarm'>"+'<i class="uk-icon-bell red"></i>'+"</td>";
+                                    }else if(values[x][fn] == '1'){
+                                        fnames += "<td title='Normal'>"+'<i class="uk-icon-thumbs-up green"></i>'+"</td>";
+                                    }else if(values[x][fn] == '2'){
+                                        fnames += "<td title='Alarm Open'>"+'<i class="uk-icon-bell yellow"></i>'+"</td>";
+                                    }else if(values[x][fn] == '3'){
+                                        fnames += "<td title='Alarm Closed'>"+'<i class="uk-icon-bell green"></i>'+"</td>";
+                                    }else if(values[x][fn] == '4'){    
+                                        fnames += "<td title='Not Used'>"+'<i class="uk-icon-remove iconblack"></i>'+"</td>";
+                                    }    
+                                }else if(fn1.match(/Da[1-50]/)){
+                                    if(values[x][fn] == '0'){
+                                        fnames += "<td title='Alarm'>"+'<i class="uk-icon-bell red"></i>'+"</td>";
+                                    }else if(values[x][fn] == '1'){
+                                        fnames += "<td title='Normal'>"+'<i class="uk-icon-thumbs-up green"></i>'+"</td>";
+                                    }else if(values[x][fn] == '2'){
+                                        fnames += "<td title='Alarm Open'>"+'<i class="uk-icon-bell yellow"></i>'+"</td>";
+                                    }else if(values[x][fn] == '3'){
+                                        fnames += "<td title='Alarm Closed'>"+'<i class="uk-icon-bell green"></i>'+"</td>";
+                                    }else if(values[x][fn] == '4'){    
+                                        fnames += "<td title='Not Used'>"+'<i class="uk-icon-remove iconblack"></i>'+"</td>";
+                                    }    
+                                }else if(fn1.match(/Di[1-20]/)){
+                                    if(values[x][fn] == '0'){
+                                        fnames += "<td title='Alarm'>"+'<i class="uk-icon-bell red"></i>'+"</td>";
+                                    }else if(values[x][fn] == '1'){
+                                        fnames += "<td title='Normal'>"+'<i class="uk-icon-thumbs-up green"></i>'+"</td>";
+                                    }else if(values[x][fn] == '2'){
+                                        fnames += "<td title='Alarm Open'>"+'<i class="uk-icon-bell yellow"></i>'+"</td>";
+                                    }else if(values[x][fn] == '3'){
+                                        fnames += "<td title='Alarm Closed'>"+'<i class="uk-icon-bell green"></i>'+"</td>";
+                                    }else if(values[x][fn] == '4'){    
+                                        fnames += "<td title='Not Used'>"+'<i class="uk-icon-remove iconblack"></i>'+"</td>";
+                                    }    
+                                }else if(fn1.match(/Do[0-9]/)){
+                                    if(values[x][fn] == '1'){
+                                        fnames += "<td title='ON'>"+'<i class="uk-icon-power-off red"></i>'+"</td>";
+                                    }else if(values[x][fn] == '0'){
+                                        fnames += "<td title='OFF'>"+'<i class="uk-icon-power-off green"></i>'+"</td>";
+                                    }
+                                }else if(fn1.match(/Onboard/)){
+                                    fnames += "<td>"+ (parseFloat(values[x][fn])).toFixed(0)+"</td>";        
+                                }else if(fn1.match(/RTD[0-9]/)){
+                                    fnames += "<td>"+ (parseFloat(values[x][fn])).toFixed(1)+"</td>";
+                                }else{ 
+                                    fnames += "<td>"+ values[x][fn]+"</td>";
+                                }
+                            }     
+                    }//for
+                    fnames +="</tr>";     
+                }//for
+            }
+        }
+        fnames+="</tbody></table>";
+        document.getElementById("alarm-tbl").innerHTML=fnames;
+        pagination();
+        $(exl).click(function(){
+            JSONToCSVConvertor(data.datas,data.fieldnames)
+        });
+        $("#exl").unbind().click(function() {
+            JSONToCSVConvertor(data.datas,data.fieldnames);
+        });   
+    }//end of render function
+
+
+ function pagination(){
+            document.getElementById("navigation").innerHTML="";
+            var rownumber=document.getElementById("rowsperpageval").value;
+            var rowsShown = rownumber;
+            rowsShown=parseInt(rowsShown);
+            numberofrecords=100*(rowsShown/10);
+            //console.log("rowsShown"+rowsShown);
+            currentposition=parseInt(currentposition);
+            var rowsTotal = $('#alarm-tbl tbody tr').length;
+            //console.log("datas are:::"+rowsTotal)
+            if(((currentposition*rowsShown)>numberofrecords) ){
+                    $('#navigation').append('<li><a onclick="previousrecords()" style="display:block" id="previousid" ><span>Prev</span></a></li>');
+                }
+                if((currentposition*rowsShown)<=numberofrecords){
+                    $('#navigation').append('<li ><a onclick="previousrecords()" style="display:none" id="previousid" ><span>Prev</span></a></li>');
+                }
+             if(endposition>1){
+                for(currentposition;currentposition<=endposition;currentposition++) {
+                        //console.log("appending");
+                        var pagenum=currentposition-1;
+                        $('#navigation').append('<li><a href="#" rel="'+pagenum+'">'+currentposition+'</a><li> ');
+                    }
+
+             }
+             
+             if((endposition<lastposition)|| nextbuttonstatus==1)
+             {
+             $('#navigation').append(' <li><a onclick="nextrecords()" style="display:block"><span>Next</span></a></li>');
+            }
+            if((endposition==lastposition) || nextbuttonstatus==0)
+             {
+             $('#navigation').append(' <li><a onclick="nextrecords()" style="display:none"><span>Next</span></a></li>');
+            }
+                $('#alarm-tbl tbody tr').hide();
+                $('#alarm-tbl tbody tr').slice(0, rowsShown).show();
+                $('#navigation a:first').addClass('active');
+                $('#navigation a').bind('click', function(){
+                $('#navigation a').removeClass('active');
+                $(this).addClass('active');
+                var currPage = $(this).attr('rel');
+                //console.log("currentpagepos"+currPage);
+                    if(currPage>10){
+                        var divval=Math.floor(currPage/10,0);
+                       // console.log("divval"+divval);
+                        var num=currPage%(10*divval);
+                        //console.log("remainder vvalue"+num);
+                        currPage=num;
+                        if(num==0){
+                            currPage=10;
+                        }
+                        console.log("currPage"+currPage);
+                    }
+                    if(currPage==10){
+                        currPage=0;
+                    }
+
+                    var startItem = currPage * rowsShown;
+                    var endItem = startItem + rowsShown;
+                //console.log("startItem"+startItem+"endItem"+endItem);
+                $('#alarm-tbl tbody tr').css('opacity','0.0').hide().slice(startItem, endItem).
+                                    css('display','table-row').animate({opacity:1}, 300);
+                });
+    }
+
+    $("#rowsperpageval").change(function(){
+        statuschange();
+        tabledata();
+    })
+
+    function previousrecords(){
+        document.getElementById("statusvalue").value=1;
+        tabledata();
+    }
+    function nextrecords(){
+        var nextval=document.getElementById("nextval").value;
+        var nextvalue=parseInt(nextval);
+        document.getElementById("nextval").value=nextvalue+numberofrecords;
+        document.getElementById("statusvalue").value=0;
+        tabledata();
+    }
+
+    function statuschange(){
+        document.getElementById("statusvalue").value=2;
+    }
+    $("#customer_id").change(function(){
+        statuschange();
+        tabledata();
+    })
+    $("#searchbtn1").click(function(){
+        statuschange();
+        tabledata();
+    })
+    
+    function refreshPage(){
+        window.location.href="/live";
+    }
+    //downloadinf file
+     
+        var fname="live_";
+        var header="Live Report ";
+        var rows=" TimeStamp"+","+"Site ID"+","+"Site Name"+","+"Customer"+","+"IP"+",";
+</script>
+<!--Start Script-->
+</body>
+</html>

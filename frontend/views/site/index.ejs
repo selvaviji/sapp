@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>  
+    <script src="/js/xls.js"></script>
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+    <!--Top Header-->
+    <% include ../../partials/mainheader %>
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+
+<!--Start Content-->
+<div id="page_content">
+    <div id="page_content_inner">
+        <h3 class="heading_b uk-margin-bottom">Site List</h3>
+        <!--Content Page-->
+	
+        <div class="md-card">
+            <form action = "/site" method="get" id="frmpageid">
+            <% if(sess_id==1 || sess_id==2){%>
+                <div class="uk-width-2-10 " style="visibiity:visible;">
+                    <div class="customer">  CUSTOMER :
+                        <select id="customer_id" name="customer_id">
+                        </select>
+                    </div>
+                </div>
+            <%}else{ %> 
+                <div class="uk-width-2-10 " style=" visibility:hidden;">
+                    <div class="customer"> CUSTOMER :
+                        <select id="customer_id" name="customer_id">
+                        </select>
+                    </div>
+                </div>
+            <%}%>
+            </form>
+            <div class="md-card-content">
+                <div class="uk-grid" data-uk-grid-margin>
+                    <div class="uk-width-medium-1-1">
+                        <table id="bodydata" width="100%">
+                            <thead>
+                                <tr>
+                                    <th><strong>Customer Name</strong></th>
+                                    <th><strong>Site Code</strong></th>    
+                                    <th><strong>Site Name</strong></th>
+                                    <th><strong>Area Name</strong></th>
+                                    <th><strong>Status</strong></th>
+                                    <th><strong>Video Link</strong></th>
+                                    <th><strong>Edit</strong></th>
+                                    <th><strong>Delete</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <%  if(JSON.stringify(datas) === '{}'){
+                                    console.log("step-2");
+                                }else{
+                                    datas.forEach(function(d) { %>
+                                        <tr>
+                                            <td><%= d.customer_name%></td>
+                                            <td><%= d.site_code%></td>
+                                            <td><%= d.site_name%></td>
+                                            <td><%= d.area_name%></td>
+                                            <td>
+                                                <% if(d.site_status=='0'){%>
+                                                    Enable
+                                                <% }else{%>
+                                                    Disable
+                                                <% } %>
+                                            </td>
+                                            <td><%= d.video_link%></td>
+                                            <td><a href='/site/edit/<%=d.site_id%>' class='uk-icon-edit editicon' title='Edit'></a></td>
+                                            <td><a  href='/site/delete/<%=d.site_id%>' onclick='return confirm("Are you sure to delete?")' class='uk-icon-trash editicon'  title='Delete' ></a></td>
+                                        </tr>
+                           <%       });  
+                                } %> 
+                            </tbody> 
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </form>
+        </div>   
+        <!--End of Content Page-->
+    </div>
+</div>
+<!--End Content--> 
+
+
+<!--Start Script-->
+<script src="/moment/min/moment.min.js"></script>
+
+<script src="/js/uikit_custom.min.js"></script>
+<script src="/js/altair_admin_common.min.js"></script>
+<script src="/js/valid.js"></script>
+<script type="text/javascript" src="/js/datatables.js"></script>
+
+<script>
+    $(document).ready(function() {
+        var sess_id = "<%= sess_id %>";
+        $('#bodydata').DataTable();
+        $('<div class="md-btn md-btn-success "><a href="/site/addsite" ><i class="uk-icon-user white paddingleft"></i>Create Site</a></div>').appendTo('div.btn1');
+        if(sess_id == '1' || sess_id == '2'){
+            $('<div class="md-btn md-btn-success "><a href="#" onclick="uploads()"><i class="uk-icon-user white paddingleft"></i>Upload Site</a></div>').appendTo('div.btn2');
+            $('<div style="visibility:hidden;" id="ups"><input type="file" name="xlfile" id="xlf" class="md-input"/></div>').appendTo('div.upl');
+        } 
+    
+        $('#bodydata')
+        .removeClass( 'display' )
+        .addClass('uk-table uk-table-striped'); 
+    });
+
+    var X = XLS;
+    var appenddata=[];
+    var result="";
+    var errordata=[];
+    
+    //customername combobox starts
+    var custid = "<%= custid %>";
+    $.ajax({
+        url: '/common/getcustInfo',
+        type: 'post',
+        dataType: 'json',
+        contentType: 'application/json',   
+        success: function(data){
+            var options =  '<option value="">--All--</option>';
+            for (var i = 0; i < data.custdata.length; i++) {
+                if(custid == data.custdata[i].customer_id){
+                    options += '<option value="' + data.custdata[i].customer_id + '" selected>' + data.custdata[i].customer_name + '</option>';    
+                }else{    
+                    options += '<option value="' + data.custdata[i].customer_id + '">' + data.custdata[i].customer_name + '</option>';
+                }   
+            }
+            $("#customer_id").html(options);      
+        }//success ends
+    });
+    //customername combobox ends 
+
+    $('#customer_id').change(function(){
+         $('#frmpageid').submit();
+    });
+
+    function to_json(workbook) {
+        var status=0;
+        var customer_id=document.getElementById("customer_id").value;
+        console.log("customer is=="+customer_id);
+                
+        workbook.SheetNames.forEach(function(sheetName) {
+            var arr1= X.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+            console.log("START:");
+            for(i=0;i<arr1.length;i++){ 
+                if(arr1.length>0){
+                    var areaid = getAreaID(arr1[i].Area);
+                    console.log("STP-1:"+areaid);
+                    if(typeof areaid === 'undefined' || areaid=="0"){
+                        errordata.push(arr1[i]);
+                        console.log(status);
+                        status=1;
+                    }else{
+                        console.log("STP-2 :"+areaid);
+                        arr1[i].Area = areaid;
+                        console.log("STP-3 :"+arr1[i].Area);
+                        //appenddata.push(arr1[i]);
+                        console.log("STP-4=="+appenddata);
+                        //status=1;
+                        var repdata = SaveDatatoDB(customer_id,arr1[i]);
+                        console.log("status::::"+status); 
+                    }    
+                }
+            }//for         
+            console.log("END:");        
+            //status=1 for failure
+            if(status == 1){
+                alert("Log file downloading");
+                var data = errordata;
+                JSONToCSVConvertor(data, "log file", true);
+            }    
+        });
+    }
+
+    //downloading log file
+    function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
+        //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
+        var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
+        var CSV = '';    
+        //Set Report title in first row or line
+        CSV += ReportTitle + '\r\n\n';
+        //This condition will generate the Label/Header
+        if (ShowLabel){
+            var row = "";
+             //This loop will extract the label from 1st index of on array
+            for (var index in arrData[0]) {
+                //Now convert each value to string and comma-seprated
+                row += index.toUpperCase() + ',';
+            }
+             row = row.slice(0, -1);
+             //append Label row with line break
+             CSV += row + '\r\n';
+        }
+        //1st loop is to extract each row
+        for (var i = 0; i <= arrData.length; i++) {
+            var row = "";
+            //2nd loop will extract each column and convert it in string comma-seprated
+            for (var index in arrData[i]) {
+                row += '"' + arrData[i][index] + '",';
+            }
+            row.slice(0, row.length - 1);
+            //add a line break after each row
+            CSV += row + '\r\n';
+        }
+
+        if (CSV == '') {        
+            alert("Invalid data");
+            return;
+        }   
+        //Generate a file name
+        var fileName = "siteLog_"+moment(Date().slice(0,24)).format('DD-MM-YYYY H:mm:ss');
+        //this will remove the blank-spaces from the title and replace it with an underscore
+        fileName += ReportTitle.replace(/ /g,"_");   
+        //Initialize file format you want csv or xls
+        var uri = 'data:text/xls;charset=utf-8,' + escape(CSV);
+        // Now the little tricky part.
+        // you can use either>> window.open(uri);
+        // but this will not work in some browsers
+        // or you will not get the correct file extension    
+        //this trick will generate a temp <a /> tag
+        var link = document.createElement("a");    
+        link.href = uri;
+        //set the visibility hidden so it will not effect on your web-layout
+        link.style = "visibility:hidden";
+        link.download = fileName +moment(Date().slice(0,24)).format('DD-MM-YYYY H:mm:ss') +".csv";
+        //this part will append the anchor tag and remove it after automatic click
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }//end of function
+
+    //appending xls-file datas to DB
+    function SaveDatatoDB(custid,arraydata){
+        var resultdata;
+        $.ajax({
+            url: '/site/appenddata',
+            type: 'POST',
+            cache: false, 
+            async: false,
+            data: {values:arraydata,customer_id:custid}, 
+            success:function(data){
+              window.location="/site?customer_id="+custid;
+            }
+        })    
+        .done(function (data){
+            console.log("Done :"+data);
+            resultdata = data;
+        })    
+        return resultdata;
+    }
+
+    //get area_id 
+    function getAreaID(aname){
+        var retdata;
+        $.ajax({
+            url: '/site/areaname',
+            type: 'get',
+            contentType: 'application/json', 
+            cache:false,
+            async: false,
+            data:{areaname:aname}
+        })
+        .done(function (data){
+            console.log("Done :"+JSON.stringify(data));
+            retdata = data.custdata;
+        })  //ajax   
+        return retdata;
+    }
+    //end area_id 
+
+    function b64it() {
+        if(typeof console !== 'undefined') console.log("onload", new Date());
+        var wb = X.read( {type: 'base64',WTF:wtf_mode});
+        console.log("triggers");
+             location.reload();
+        process_wb(wb);
+    }
+
+    function process_wb(wb) {
+        JSON.parse(to_json(wb), 2, 2);
+        if(typeof console !== 'undefined') console.log("output", new Date());
+    }
+
+    function handleFile(e) {
+        var files = e.target.files;
+        console.log("files"+files);
+        var f = files[0];
+        {
+            var reader = new FileReader();
+            console.log(reader+"reader");
+            var name = f.name;
+            reader.onload = function(e) {
+                var data = e.target.result;
+                var arr = fixdata(data);
+                wb = X.read(btoa(arr), {type: 'base64'});
+                process_wb(wb);
+            };
+            reader.readAsArrayBuffer(f);
+        }
+    }
+
+
+    function fixdata(data) {
+        var o = "", l = 0, w = 10240;
+        for(; l<data.byteLength/w; ++l) o+=String.fromCharCode.apply(null,new Uint8Array(data.slice(l*w,l*w+w)));
+        o+=String.fromCharCode.apply(null, new Uint8Array(data.slice(l*w)));
+        return o;
+    }
+
+    
+
+
+    function uploads(){
+        document.getElementById("ups").style.visibility="visible";
+        if(xlf.addEventListener) xlf.addEventListener('change', handleFile, false);
+    }
+</script>
+</body>
+</html>

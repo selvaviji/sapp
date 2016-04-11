@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <% include ../../partials/head %>
+    <script src="/js/common.min.js"></script>
+   
+    <script>
+        //reset page
+        function refreshPage(){
+            window.location.href= "/assignsite";
+        }
+        //end reset
+    </script>
+</head>
+<body class="sidebar_main_open sidebar_main_swipe">
+    <!--Top Header-->
+    <% include ../../partials/mainheader %>
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+
+    <!--Start Content-->
+    <div id="page_content">
+    <div id="page_content_inner">
+        <div class="searchbtn"><i class="uk-icon-search"></i></div>
+        <!--Dashboard-->
+        <h3 class="heading_b uk-margin-bottom">Assign Site</h3>
+        <!--End Dashboard-->
+       <form  action="/assignsite" method="get" id="frmpageid">
+            <div class="md-card" id="search">
+                <div class="md-card-content">
+                    <div class="uk-grid uk-dropdown-grid">
+                    <div class="uk-width-1-4">
+                        <div class="searchlabel">Country Name</div>
+                             <select id="country_id" name="country_id" class="md-input">
+                             </select>
+                    </div>
+                    <div class="uk-width-1-4">
+                        <div class="searchlabel">Zone Name</div>
+                             <select id="zone_id" name="zone_id" class="md-input">
+                             </select>
+                    </div>
+                    <div class="uk-width-1-4">
+                        <div class="searchlabel">State Name</div>
+                             <select id="state_id" name="state_id" class="md-input">
+                             </select>
+                    </div>
+                    <div class="uk-width-1-4">
+                        <div class="searchlabel">District Name</div>
+                             <select id="district_id" name="district_id" class="md-input">
+                             </select>
+                    </div>
+                    <div class="uk-width-1-4">
+                        <div class="searchlabel">Area Name</div>
+                             <select id="area_id" name="area_id" class="md-input">
+                             </select>
+                    </div>
+                        
+                    <div class="uk-width-1-4" style="margin-top: 16px;">
+
+                            <button type="button" class="md-btn md-btn-success" onClick="refreshPage()">
+                            <i class="uk-icon-refresh white padright"></i>Reset</button>
+                    </div>  
+                    </div>  
+                </div>
+            </div>
+        </form>
+           
+        <div class="uk-grid" style="display:block">
+            <div class="uk-width-1-4">
+                <div class="searchlabel">User</div>
+                <select id="user_id" name="user_id" class="md-input">
+                </select>
+            </div>
+        </div> 
+
+        <div class="md-card ">
+            <div class="md-card-content">                
+                <div class="uk-width-1-1 " style="position:relative;">
+                    <div class="txtlabel" style="position:absolute; top:6px; z-index:1000; right:5px;">
+                        <h4>Total Sites :<%=totalDatas%></h4>
+                    </div>
+                    <table class="uk-table uk-table-striped uk-table-hover" id="tabledata">
+                        <thead>
+                            <tr>
+                                <th width="2%"><input type="checkbox" id="chkall" onclick="setCheckboxValues(this);"  ></th>
+                                <th width="">Site ID</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                          <%  
+                            if(totalDatas == '0'){ %>
+                                <tr><td >No Data Found</td></tr>
+                          <%        
+                            }else{
+                                count = 0;
+                                outageDatas.forEach(function(d) { 
+                                    if(count == 0){ %>
+                                        <tr>
+                                    <% }
+                                    if(count <= 11){ 
+                                        count++;
+                                    %>    
+                                        <td>
+                                            <input type="checkbox" name="chkuser[]" id="<%= d.site_code%>" value="<%= d.site_code%>">
+                                        </td>
+                                        <td><%=d.site_code%></td>
+                                    <% }  
+                                    if(count == 11){%>   
+                                        </tr>
+                                    <% 
+                                        count = 0;   
+                                    } %>
+                            <%  });
+                            } %>         
+                        </tbody> 
+                    </table>
+                </div>
+            </div>   
+            <div class="md-btn md-btn-success ">
+                    <a onclick="saveSite(this);"><i class="uk-icon-save white paddingleft"></i>Assign Site</a>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!--End Content--> 
+
+<!--Start Script-->
+<script src="/moment/min/moment.min.js"></script>
+<script src="/js/uikit_custom.min.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/js/altair_admin_common.min.js"></script>
+<script src="/js/assignsiteFiles.js"></script>
+
+<script>
+    $("#user_id").change(function(){
+        user();
+    });
+
+
+    function user(){
+        var user_id=document.getElementById("user_id").value;
+        clearData();
+        $.ajax({
+            url: '/assignsite/userSites',
+            type: 'POST',
+            cache: false, 
+            data: { user_id:user_id }, 
+                success: function(data){
+                    var arr=data;
+                    for(var i=0;i<arr.custdata.length;i++){
+                       console.log("user id=="+user_id);
+                       var colname = arr.custdata[i].siteid;
+                       console.log("colname=="+colname);                       
+                       $('#'+colname).attr('checked', 'checked');
+                       // $('#'+colname).prop('checked', 'false');
+                    }
+                }
+                ,error: function(jqXHR, textStatus, err){
+                    alert('text status '+textStatus+', err '+err);
+                }
+        });
+    }
+
+    //clear previously checked checkbox
+    function clearData(){
+        var chk_arr =  document.getElementsByName("chkuser[]");
+        console.log("xxx==="+chk_arr);
+        var chklength = chk_arr.length;             
+        for(k=0;k< chklength;k++){
+            chk_arr[k].checked = false;
+        }
+    }
+
+    var values = [];
+    function setCheckboxValues(form){
+        var chk_arr =  document.getElementsByName("chkuser[]");
+        console.log("xxx==="+chk_arr);
+        var chklength = chk_arr.length;             
+        for(k=0;k< chklength;k++){
+            if(document.getElementById("chkall").checked == true){
+                chk_arr[k].checked = true;
+            }else{
+                chk_arr[k].checked = false;
+            }    
+        } 
+    }
+
+    function getCheckboxValues(form){
+        var chk_arr =  document.getElementsByName("chkuser[]");
+        var chklength = chk_arr.length;  
+        
+        for(k=0;k< chklength;k++){
+            if (chk_arr[k].checked) {
+              values.push("'"+chk_arr[k].value+"'");
+            }
+        }
+        return values;
+    }
+
+    //save assigned site
+    function saveSite(form){
+        var savevalues = getCheckboxValues(form);
+        var user_id=document.getElementById("user_id").value;
+        //console.log("saveval;;"+savevalues+"user::::"+user_id);
+        if((savevalues != "") && (user_id !="")){
+            //console.log("Values :"+deletevalues.join(','));  
+            savevalues = savevalues.join(',');
+            //console.log("Values :"+deletevalues);  
+            $.ajax({
+                url: '/assignsite/save',
+                type: 'POST',
+                cache: false, 
+                data: { recordids: savevalues,user_id:user_id }, 
+                    success: function(data){
+                        //alert('Success!');
+                    }
+                    ,error: function(jqXHR, textStatus, err){
+                        alert('text status '+textStatus+', err '+err);
+                    }
+            });
+
+            window.location.href='/assignsite';
+            alert("data successfully inserted");
+        }else{
+            alert("Select atleast one site and user");
+        }   
+    }
+</script>
+
+<script>
+    console.log("Init Triggered");
+    var sess_id="<%=sess_id%>";
+    console.log("sid="+sess_id);
+    var country_id="<%=country_id%>";
+    //console.log("country id="+country_id);
+    var zone_id="<%=zone_id%>";
+    var state_id="<%=state_id%>";
+    var district_id="<%=district_id%>";
+    var area_id="<%=area_id%>";
+    var user_id="<%=user_id%>";
+    var zoneresults= <%-JSON.stringify(zoneresults) %>; 
+    //console.log("zoneset is=="+zoneresults);
+    var stateresults= <%-JSON.stringify(stateresults) %>; 
+    //console.log("stateset length is=="+stateresults);
+    var distresults= <%-JSON.stringify(distresults) %>; 
+    //console.log("distset length is=="+distresults);
+    var arearesults= <%-JSON.stringify(arearesults) %>; 
+    
+</script>
+
+</body>
+</html>

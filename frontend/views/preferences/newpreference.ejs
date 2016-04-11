@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+    <link rel="stylesheet" href="/css/style.css" media="all">
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+    <!--Top Header-->
+    <% include ../../partials/mainheader %>
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+    
+     <!--Start Content-->
+
+    <div id="page_content">
+      <div id="page_content_inner">
+          <h3 class="heading_b uk-margin-bottom">Preference</h3>
+          <form id="form" class="new" action="/preferences/savepreference" method="post" onsubmit="return preferencevalidate()">
+            <div class="md-card" style="height:auto; padding:20px;">
+                <div class="uk-grid">
+                  <div class="uk-width-medium-1-2" >
+                     
+                      <div class="uk-form-row valid" >
+                        <select id="timezone"  name="timezone" class="md-input">
+                            </select><span class="req">*</span>
+                        </div>
+                     
+                        <div class="uk-form-row valid" >
+                        <select id="dateformat"  name="dateformat" class="md-input">
+                          <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                          <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                          <option value="YYYY/DD/MM">YYYY/DD/MM</option>
+                          <option value="YYYY/DD/MM">YYYY/MM/DD</option>
+                          </select><span class="req">*</span>
+                        </div>
+                        
+                      <div class="uk-form-row valid" >
+                        <input type="text" class="md-input md-input-success" id="pagerefresh" name="pagerefresh" placeholder="Rows Per Page"/><span class="req">*</span>
+                               
+                      </div>
+                      <div class="uk-form-row valid" >
+                        <input type="text" class="md-input md-input-success" id="landingpage" name="landingpage" placeholder="Landing Page" />
+                        <select id="landingpage"  name="landingpage" class="md-input md-input-success"> 
+                            <option value="dashboard">Dashboard</option>
+                            <option value="activealarm">Active Alarm</option>
+                            <option value="live">Live</option>
+                            <option value="report">Report</option> 
+                        </select>    
+                        <span class="req">*</span>     
+                      </div>
+                      <div class="uk-form-row valid" >
+                        <input type="text" class="md-input md-input-success" id="sitereport" name="sitereport" placeholder="Site Report (Hrs.)"/><span class="req">*</span>
+                              
+                      </div>
+                      
+                      <div class="uk-form-row valid" >
+                        <div class="uk-grid uk-grid-collapse">
+                            <div class="uk-width-medium-1-10">
+                              <input type="checkbox" id="smsstatus" name="smsstatus"/>SMS
+                            </div>    
+                            <div class="uk-width-medium-2-10">
+                              <input type="checkbox" id="videostatus" name="videostatus"/>Video
+                            </div>    
+                        </div>
+                      </div>
+                      <div class="uk-form-row" >
+                         <button type="submit" class="md-btn md-btn-success"><i class="uk-icon-save white paddingleft"></i>Save</button>
+                         <button type="button" onClick="cancelPreference();" class="md-btn md-btn-success"><i class="uk-icon-remove white paddingleft"></i>Cancel</button>
+                      </div>
+                  </div>
+                </div>   
+            </div>
+          </form>  
+      </div>
+    </div>
+  <!--End Content--> 
+  <!--Start Script-->
+  <% include ../../partials/footer %>
+  <script src="/js/timezones.full.js"></script>
+  <script>
+  $("#timezone").change(function(){
+      drop('timezone');
+    });
+  $("#dateformat").change(function(){
+      drop('dateformat');
+    });
+    $("#pagerefresh").blur(function(){
+      num('pagerefresh');
+    });
+    $("#pagerefresh").keyup(function(){
+      num('pagerefresh');
+    });
+    $("#landingpage").blur(function(){
+      alpha('landingpage');
+    });
+    $("#landingpage").keyup(function(){
+      alpha('landingpage');
+    });
+    $("#sitereport").blur(function(){
+      num('sitereport');
+    });
+    $("#sitereport").keyup(function(){
+      num('sitereport');
+    });
+    $("#customername").keyup(function(){
+      alpha('customername');
+    });
+    $("#customername").blur(function(){
+      alpha('customername');
+    });
+    $("#sitenumber").keyup(function(){
+      num('sitenumber');
+    });
+    $("#sitenumber").blur(function(){
+      num('sitenumber');
+    });
+    $("#timezone").timezones();
+  </script>
+</body>
+</html>

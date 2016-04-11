@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+    <!--Top Header-->
+    <% include ../../partials/mainheader %>
+     <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+    <!--Start Content-->
+
+<div id="page_content">
+    <form>
+    <div id="page_content_inner">
+        <h3 class="heading_b uk-margin-bottom">User List</h3>
+        <!--Content Page-->
+        <div class="md-card">
+            <div class="md-card-content">
+                <div class="uk-grid" data-uk-grid-margin>
+                    <div class="uk-width-medium-1-1">
+                        <table class="display" id="example" width="100%">
+                           <thead>
+                                    <tr>
+                                        <th><strong>User Name</strong></th>
+                                        <th><strong>Role Name</strong></th>    
+                                        <th><strong>Status </strong></th>
+                                        <th><strong>Date Format</strong></th>
+                                        <th><strong>Landing Page</strong></th>
+                                        <th><strong>Edit</strong></th>
+                                        <th><strong>Delete</strong></th>
+                                            
+                                    </tr>
+                           </thead>
+                            <tbody>
+                            <%  if(JSON.stringify(datas) === '{}'){
+                                    console.log("step-2");
+                                }else{
+                                    datas.forEach(function(d) { %>
+                                        <tr>
+                                            
+                                            <td><%= d.user_name%></td>
+                                            <td><%= d.role_name%></td>
+                                            <td>
+                                                <% if(d.user_status=='0'){%>
+                                                    Enable
+                                                <% }else{%>
+                                                    Disable
+                                                <% } %>
+                                            </td>
+                                            <td><%=moment(d.created_date).format('DD-MM-YYYY H:mm:ss')%></td>
+                                            <td><%=moment(d.updated_date).format('DD-MM-YYYY H:mm:ss')%></td>
+                                            <td><a href='/users/edit/<%=d.user_id%>' class='uk-icon-edit editicon' title='Edit'></td>
+                                            <td><a  href='/users/delete/<%=d.user_id%>' onclick='return confirm("Are you sure to delete?")' class='uk-icon-trash editicon'  title='Delete' ></td>
+                                        </tr>
+                           <%       });  
+                                } %> 
+                            </tbody> 
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div><!--End of Content Page-->
+    </form> 
+</div>
+<!--End Content--> 
+
+
+<!--Start Script-->
+<% include ../../partials/footer %> 
+
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function() {
+        $('#example').DataTable();
+         //$('<button id="refresh">Refresh</button>').appendTo('div.uk-width-1-4');
+         $('<div class="md-btn md-btn-success "><a href="/users/adduser" ><i class="uk-icon-user white paddingleft"></i>Create User</a></div>').appendTo('div.btn1');
+
+         $('#example')
+        .removeClass( 'display' )
+        .addClass('uk-table uk-table-striped');
+    });
+</script>
+
+</body>
+</html>

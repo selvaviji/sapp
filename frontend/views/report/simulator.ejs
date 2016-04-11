@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+    <!--Top Header-->
+    <% include ../../partials/mainheader %>
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+
+    <!--Start Content-->
+    <div id="page_content">
+    <div id="page_content_inner">
+        <div class="searchbtn"><i class="uk-icon-search"></i></div>
+        <div class="dwnbtn"><i class="uk-icon-download padright"></i></div>
+        <!--Dashboard-->
+        <h3 class="heading_b uk-margin-bottom">Simulator</h3>
+        <!--End Dashboard-->
+        <div class="md-card" id="search">
+        <div class="md-card-content">
+            <div class="uk-grid uk-dropdown-grid">
+                <div class="uk-width-1-4">
+                    <input type="text" class="md-input md-input-success" placeholder="userid" id="userid">
+                </div>
+                <div class="uk-width-1-4">
+                    <input type="text" class="md-input md-input-success" placeholder="SiteID" id="siteid">
+                </div>
+                <div class="uk-width-1-4">
+                    <input type="text" class="md-input md-input-success" placeholder="TicketID" id="ticketid">
+                </div>
+                 <div class="uk-form-row valid" >
+                        <select id="state" class="md-input" >
+                         <option>closed</option>
+                         <option>opened</option>
+                        </select>
+                   </div>         
+                             <div class="uk-width-1-4">
+                    <input type="text" class="md-input md-input-success" placeholder="Remark" id="remark">
+                </div>
+                <div class="uk-width-1-4" style="margin-top: 20px;">
+                        <button type="submit" id="s1" class="md-btn md-btn-success" onclick="change()">
+                         <i class="uk-icon-search white padright"></i>Aplly</button>
+                </div>
+               
+            </div>  
+        </div>
+        </div>
+
+        <div class="md-card ">
+            <div class="md-card-content">
+                <div class="uk-overflow-container ">
+                   
+                </div>
+            </div>
+        </div>
+
+    </div>
+    </div>
+    <!--End Content--> 
+
+<!--Start Script-->
+<script src="/moment/min/moment.min.js"></script>
+<script src="/js/common.min.js"></script>
+<script src="/js/uikit_custom.min.js"></script>
+<script src="/js/altair_admin_common.min.js"></script>
+<script>
+function change()
+{
+    var userid=document.getElementById("userid").value;
+    var siteid=document.getElementById("siteid").value;
+    var ticketid=document.getElementById("ticketid").value;
+    var state=document.getElementById("state").value;
+    var remark=document.getElementById("remark").value;
+    console.log("userid:"+userid+"siteid:"+siteid+"ticketid"+ticketid+"state"+state+"report"+remark);
+    $.ajax({
+                url: '/report/update',
+                type: 'POST',
+                cache: false, 
+                data: { userval:userid,siteval:siteid,ticketval:ticketid,stateval:state,remarkval:remark}, 
+                    success: function(data){
+                        alert('Success!');
+                    }
+                    ,error: function(jqXHR, textStatus, err){
+                        alert('text status '+textStatus+', err '+err);
+                    }
+            });
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!--Start Sidebar-->
+<aside id="sidebar_main">
+<a href="#" class="uk-close sidebar_main_close_button"></a>
+<div class="sidebar_main_header">
+       <div class="sidebar_logo">
+         
+       </div>
+
+       <div class="sidebar_actions">
+              <select id="lang_switcher" name="lang_switcher">
+                     <option value="gb" selected>English</option>
+              </select>     
+       </div>
+</div>
+
+<div id="cssmenu">
+       <ul>
+              <% if(sess_id == '1' | sess_id == '2'){ %> 
+                  <li class='has-sub'>
+                      <a href="#">
+                            <span class="menu_icon uk-icon-cog"></span>
+                            System
+                      </a>
+                      <ul class="act_section">
+                          <% if(sess_id == '1'){ %>
+                              <li><a href="/customer">Customers</a></li>
+                              <li><a href="/userrole">User Roles</a></li>
+                              <li><a href="/preferences">Default Preference</a></li>
+                              <li><a href="/users">Users</a></li>
+                          <% } %>    
+                          <% if(sess_id == '2'){ %>
+                            <li><a href="/institute">Institute</a></li>
+                            <li><a href="/section">Section</a></li>
+                            <li><a href="/sclass">Class</a></li>
+                            <li><a href="/subject">Subject</a></li>
+                            <li><a href="/design">Designation</a></li>
+                            <li><a href="/staff">Staff</a></li>
+                            <li><a href="/student">Student</a></li>
+                          <% } %> 
+                      </ul>
+                  </li>
+              <% } %>
+             
+
+              <%  if(sess_id == '1' | sess_id == '2'){ %>
+                    <li class='has-sub'>
+                        <a href="#">
+                          <span class="menu_icon uk-icon-tachometer"></span>
+                              Dashboard
+                        </a>
+                        <ul>
+                          <li ><a href="/dashboard">Graphical Dashboard</a></li>
+                        
+                        </ul>
+                    </li>
+              <%  } %>      
+                  <li>
+                        <a href="/attendance">
+                          <span class="menu_icon uk-icon-wrench"></span>
+                            Attendance
+                        </a>
+                    </li>
+                     <li>
+                        <a href="/events">
+                          <span class="menu_icon uk-icon-server"></span>
+                            Events
+                        </a>
+                    </li>
+                     <li>
+                        <a href="/photos">
+                          <span class="menu_icon uk-icon-server"></span>
+                            Gallery
+                        </a>
+                    </li>
+                     <li>
+                        <a href="/fees">
+                          <span class="menu_icon uk-icon-server"></span>
+                            Fees
+                        </a>
+                    </li>
+                <% if(sess_id == '1' | sess_id == '2'){ %> 
+                    <li class='has-sub'>
+                        <a href="#">
+                          <span class="menu_icon uk-icon-bell"></span>
+                            Messages
+                        </a>
+                        <ul>
+                          <li ><a href="/messages/inbox">Inbox</a></li>
+                          <li ><a href="/messages/compose">Compose</a></li>
+                          <li ><a href="/messages/sent">Sent</a></li>
+                        </ul>
+                    </li>
+                <% } %>    
+                 
+                    <li class='has-sub'>
+                        <a href="#">
+                          <span class="menu_icon uk-icon-newspaper-o"></span>
+                          Reports
+                        </a>
+                        <ul>
+                          <li><a href="/report/attendance">Attendance</a></li>
+                          <li><a href="/report/fees">Fees</a></li>
+                          <li><a href="/report/login">Login</a></li>
+                          
+                        </ul>
+                    </li>
+                    
+              
+       </ul>
+</div>
+</aside> 
+<!--End Sidebar-->

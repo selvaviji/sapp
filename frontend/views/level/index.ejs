@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+    <link href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" rel="Stylesheet"></link>
+  
+
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+ 
+     <!--Top Header-->
+    <% include ../../partials/mainheader %>
+
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+  
+    <!--Content-->
+    <!--Start Content-->
+
+    <div id="page_content">
+        <div id="page_content_inner">
+        <h3 class="heading_b uk-margin-bottom">Role List</h3>
+        <!--Button-->
+        <div class="md-card">
+            <div class="md-card-content">
+                <div class="uk-grid">
+                    <div class="uk-width-medium-3-4">
+                        <div class="md-btn md-btn-success ">
+                            <a href="/level/addlevel" >
+                                <i class="uk-icon-user white paddingleft"></i>Create Level
+                            </a>
+                        </div>
+                    </div>
+                    <div class="uk-width-medium-1-4 text-right">
+                         <div class="uk-form-icon">
+                            <i class="uk-icon-search"></i>
+                            <input type="text" id="search-query" name="search-query">
+                        </div>
+                        <div class="ui-widget">
+                            <label for="tags">Tags: </label>
+                            <input id="tags">
+                        </div>
+                    </div>
+                </div> 
+            </div>
+        </div>
+        <!--End Button-->
+
+        <!--Content Page-->
+        <div class="md-card">
+            <div class="md-card-content">
+                <div class="uk-grid" data-uk-grid-margin>
+                    <div class="uk-width-medium-1-1" id="customers">
+                        <table class="uk-table uk-table-striped">
+                            <thead>
+                                <tr>
+                                    <th><strong>Level Name</strong></th>
+                                    <th><strong>Status</strong></th>
+                                    <th><strong>Created Date</strong></th>
+                                    <th><strong>Updated Date</strong></th>
+                                    <th><strong>Operation</strong></th>
+                                </tr>
+                            </thead>
+                            <% 
+                                if(JSON.stringify(datas) === '{}'){
+                                    console.log("step-2");
+                                }else{
+                                    datas.forEach(function(cust) { %>
+                                        <tr>
+                                            <td><%= cust.level_name %></td>
+                                            <% if(cust.level_status == 0){ %>
+                                                <td>Enable</td>
+                                            <% }else{ %>
+                                                <td>Disable</td>
+                                            <% } %> 
+                                            <td>
+                                            <%= moment(cust.created_date).format('DD-MM-YYYY H:mm:ss') %>
+                                            </td>
+                                            <td>
+                                            <%= moment(cust.updated_date).format('DD-MM-YYYY H:mm:ss') %>
+                                            </td>  
+                                            <td>
+                                                <a href="/level/edit/<%=cust.level_id%>">Edit</a>
+                                            </td>
+                                        </tr>
+                           <%       }) 
+                                }
+                           %>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>   
+        <!--End of Content Page-->
+    </div>
+</div>
+<!--End Content--> 
+<!--Start Script-->
+
+<% include ../../partials/footer %>
+  <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js" ></script>
+<script>userrolegrid();</script>
+<script>
+    $(".jsgrid-filter-row").css("display","none");
+</script>
+<script type="text/javascript">
+    $(function () {
+
+        $("#search-query").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/level/search_level",
+                    type: "GET",
+                    data: request,  // request is the value of search input
+                    success: function (data) {
+                      // Map response values to fiedl label and value
+                        response($.map(data.custdata, function (el) {
+                          console.log("Level Name :"+el.level_name+" "+el.level_id);
+                          return {
+                             label: el.level_name,
+                             value: el.level_id
+                          };
+                        }));
+                    }
+                });
+             },
+             
+             // The minimum number of characters a user must type before a search is performed.
+             minLength: 3, 
+             
+             // set an onFocus event to show the result on input field when result is focused
+             focus: function (event, ui) { 
+                this.value = ui.item.label; 
+                // Prevent other event from not being execute
+                event.preventDefault();
+             },
+             select: function (event, ui) {
+                // Prevent value from being put in the input:
+                this.value = ui.item.label;
+                // Set the id to the next input hidden field
+                $(this).next("input").val(ui.item.value); 
+                // Prevent other event from not being execute            
+                event.preventDefault();
+                console.log("value :"+this.value);
+                // optionnal: submit the form after field has been filled up
+                $('#quicksearch').submit();
+             }
+        });
+
+    });
+</script>
+
+</body>
+</html>

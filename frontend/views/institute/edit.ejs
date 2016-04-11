@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+    
+     <!--Top Header-->
+    <% include ../../partials/mainheader %>
+ 
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+
+
+   
+     <!--Content-->
+
+     <!--Start Content-->
+
+<div id="page_content">
+    <div id="page_content_inner">
+        <h3 class="heading_b uk-margin-bottom">Institute</h3>
+        <form id="uploadForm" class="edit" action="/institute/update" method="post">   
+            <div class="md-card">
+            <div class="md-card-content">
+                <div class="uk-grid">
+                  <div class="uk-width-medium-1-2" >
+                    <div class="uk-form-row" >
+                      <input type="hidden" class="md-input md-input-success" id="recid" name="recid" value="<%=data[0].id%>" />
+                    </div>
+                    <div class="uk-form-row valid" >
+                        <div class="txtlabel">Institute Name</div>
+                        <input type="text" class="md-input md-input-success mustdata alpha" id="institutename" name="institutename" value="<%=data[0].institute_name%>"/><span class="req">*</span>
+                                
+                    </div>
+                    <div class="uk-form-row valid" >
+                        <div class="txtlabel">Address</div>
+                        <input type="text" class="md-input md-input-success" id="address" name="address" value="<%=data[0].address%>"/><span class="req">*</span>
+                                
+                    </div>
+                    <div class="uk-form-row" >
+                        <div class="txtlabel">Pincode</div>
+                        <input type="text" class="md-input md-input-success" id="pincode" name="pincode" value="<%=data[0].pincode%>">
+                    </div>
+                    <div class="uk-form-row" >
+                        <div class="txtlabel">Mode of Communication</div>
+                        <input type="text" class="md-input md-input-success" id="communication" name="communication" value="<%=data[0].mode_of_communication%>"  />
+                    </div>
+                     <div class="uk-form-row" >
+                        <div class="txtlabel">Contact Name</div>
+                        <input type="text" class="md-input md-input-success" id="fullname" name="fullname" value="<%=data[0].full_name%>"  />
+                    </div>
+                    <div class="uk-form-row" >
+                        <div class="txtlabel">Contact Number</div>
+                        <input type="text" class="md-input md-input-success" id="contact_number" name="contact_number" value="<%=data[0].contact_number%>"  />
+                    </div>
+                    <div class="uk-form-row" >
+                        <div class="txtlabel">Email ID</div>
+                        <input type="text" class="md-input md-input-success" id="contact_mailid" name="contact_mailid" value="<%=data[0].contact_mailid%>"  />
+                    </div>
+                    <div class="uk-form-row" >
+                        <div class="txtlabel">Board Details</div>
+                        <input type="text" class="md-input md-input-success" id="board_details" name="board_details" value="<%=data[0].board_details%>"  />
+                    </div>
+                    
+                    <div class="uk-form-row" >
+                       <button type="submit" class="md-btn md-btn-success"><i class="uk-icon-save white paddingleft"></i>Save</button>
+                       <a href="/institute" class="md-btn md-btn-success"><i class="uk-icon-remove white paddingleft"></i>Cancel</a>
+                    </div>
+                   </div>
+                </div>
+            </div>        
+            </div>
+        </form> 
+    </div>
+</div>
+
+<!--End Content--> 
+
+
+
+ <!--Start Script-->
+<% include ../../partials/footer %>
+
+</body>
+</html>

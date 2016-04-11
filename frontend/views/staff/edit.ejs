@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+   
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+ 	
+     <!--Top Header-->
+    <% include ../../partials/mainheader %>
+ 
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+    
+    <!--Start Content-->
+
+<div id="page_content">
+    <div id="page_content_inner">
+		<h3 class="heading_b uk-margin-bottom">Staff</h3>
+        <!--Geographical Select-->
+        <form id="form" class="new" enctype="multipart/form-data" action="/staff/update" method="post"> 
+        <div class="md-card">
+            <div class="md-card-content">
+              <div class="uk-grid">
+                    <div class="uk-width-medium-1-2">
+                      <div class="uk-form-row valid">
+                        <label for="area"></label>
+                        <input type="text" class="md-input md-input-success" id="staffname"  name="staffname" value="<%=data[0].staff_name%>"/><span class="req">*</span>
+                      </div>   
+                      
+                      <div class="uk-form-row valid">
+                        <select class="md-input" id="gender" name="gender">
+                           <% if(data[0].gender == "0"){%>
+                          <option value="0" selected>Male</option>
+                          <option value="1">Female</option>
+                          <%}else{%>
+                          <option value="0">Male</option>
+                          <option value="1" selected>Female</option>
+                          <%}%>
+                        </select>  
+                        <span class="req">*</span>
+                      </div>
+                      <div class="uk-form-row valid">
+                        <select  class="md-input" id="designid" name="designid" placeholder="Designation"/>
+
+                        <span class="req">*</span>
+                      </div> 
+                       <div class="uk-form-row">
+                          <div class="searchlabel">Date of Birth</div>
+                          <input type="text" class="md-input md-input-success" placeholder="From Date" name="dob" id="dob" value="<%= moment(data[0].dob).format('MM-DD-YYYY') %>">
+                        </div>
+                      <div class="uk-form-row">
+                        <textarea  class="md-input" id="address" name="address"><%=data[0].address%></textarea>
+                      </div>
+
+                      <div class="uk-form-row valid">
+                        <input type="text" class="md-input md-input-success" id="pincode" name="pincode" placeholder="Pincode"/><span class="req">*</span>
+                      </div>
+                      <div class="uk-form-row valid">
+                        <input type="text" class="md-input md-input-success" id="qualification" name="qualification" value="<%=data[0].qualification%>"/><span class="req">*</span>
+                      </div>
+                      <div class="uk-form-row">
+                            <input type="text" class="md-input md-input-success" id="mobileno" name="mobileno" value="<%=data[0].mobileno%>"/>
+                        </div>
+                        <div class="uk-form-row">
+                            <input type="text" class="md-input md-input-success" id="email" name="email" value="<%=data[0].email%>"/>
+                        </div>
+                        <div class="uk-form-row">
+                          <div class="searchlabel">Date of Joining</div>
+                          <input type="text" class="md-input md-input-success" placeholder="From Date" name="doj" id="doj" value="<%= moment(data[0].doj).format('MM-DD-YYYY') %>">
+                        </div>
+                    </div>  
+                    <div class="uk-width-medium-1-2">
+                        <div class="uk-form-row" >
+                             <div class="txtlabel">Logo</div>
+                            <input type="file" id="imgInp" name="imgInp" class="md-btn md-btn-warning"/>
+                            <% if(data[0].staff_image == "" || typeof data[0].staff_image == undefined){ %>
+                                <img id="blah" src="/uploads/noimage.png" alt="Your Image" width="100px" height="50px" />
+                            <%}else{ %>    
+                                <img id="blah" src="/uploads/<%=data[0].staff_image%>" alt="Your Image" width="100px" height="50px" />
+                            <% } %>
+
+                             <input type="hidden" class="md-input md-input-success" id="sid" name="sid" value="<%=data[0].id%>"/>
+                        </div>     
+                        <div class="uk-form-row text-right">
+                          <button type="submit" class="md-btn md-btn-success"><i class="uk-icon-save white paddingleft"></i>Save</button>
+                           <a href="/staff" class="md-btn md-btn-success"><i class="uk-icon-remove white paddingleft"></i>Cancel</a>
+                        </div>
+                      </div>  
+                    </div>
+                </div>                    
+          </div>
+      </div>
+    </form>
+    <!-- End Geographical Select-->  
+    </div>
+</div>
+
+<!--End Content--> 
+
+
+<!--Start Script-->
+<script>
+    var imgdata = "<%= data[0].staff_image %>";
+   
+     $("#doj").datepicker("<%= data[0].doj %>");
+     $("#dob").datepicker("<%= data[0].dob %>");   
+    
+    function readURL(input) {
+        
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            
+            reader.onload = function (e) {
+                $('#blah').attr('src', e.target.result);
+            }
+            
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    
+    $("#imgInp").change(function(){
+
+        readURL(this);
+        imgstatus = true;
+       
+
+    });
+
+    var designid = "<%= data[0].design_id %>";
+    
+        $.ajax({ 
+            url: "/staff/design",
+            cache: false, 
+            success: function(data){
+                var options="";
+                for( var i=0;i<data.custdata.length;i++) {
+                  
+                  if(designid == data.custdata[i].id){
+                    options += '<option value="' + data.custdata[i].id + '" selected>' + data.custdata[i].design_name + '</option>';
+                  }else{
+                    options += '<option value="' + data.custdata[i].id + '">' + data.custdata[i].design_name + '</option>';
+                  }
+                }
+               
+                $('#designid').html(options);
+            }
+            ,error: function(jqXHR, textStatus, err){
+              alert('text status '+textStatus+', err '+err);
+            }
+        });
+         
+    </script>
+   
+    <script src="/moment/min/moment.min.js"></script>
+    <script src="/js/uikit_custom.min.js"></script>
+    <script src="/js/altair_admin_common.min.js"></script>
+    <script src="/js/valid.js"></script>
+    <script type="text/javascript" src="/js/datatables.js"></script>
+    <script src="/js/export.js"></script>
+   
+    
+</body>
+</html>

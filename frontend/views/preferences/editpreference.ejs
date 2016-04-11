@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+    <link rel="stylesheet" href="/css/style.css" media="all">
+    <script>
+        var sid = "<%= sess_id %>";
+        var sname = "<%= sess_name %>";
+        console.log("session id:"+sid+"::session name:"+sname);
+    </script>    
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+ 	<!--Top Header-->
+    <% include ../../partials/mainheader %>
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+    
+    <!--Start Content-->
+
+    <div id="page_content">
+        <div id="page_content_inner">
+		<h3 class="heading_b uk-margin-bottom">Preferences</h3>
+    <div id="dialog_box" class="mnk-modal-bg" style="display:none">
+        <div id="dbg" class="mnk-modal-box">
+            <i class="uk-icon-exclamation-triangle"  style="color:#757575; padding-right:5px;">
+            </i>Are you sure to restart for effecting changes?
+            <div class="uk-text-center" style="margin-top:10px;">
+                <button class="md-btn md-btn-small md-btn-primary" id="close_btn" >
+                  <i class="uk-icon-remove" style="padding-right:3px;"></i>Close
+                </button>
+                <button class="md-btn md-btn-small md-btn-danger" id="ok_btn">
+                  <i class="uk-icon-save" style="padding-right:3px;"></i>Ok
+                </button>
+            </div>
+        </div>
+    </div>
+		<div  id="preference_id" class="edit">
+			<div class="md-card" style="height:auto;  padding:20px;">
+                <div class="uk-grid">
+                  <div class="uk-width-medium-1-2" >
+                    
+    	            <div class="uk-form-row valid" >
+                        <div class="txtlabel">Time Zone</div>
+                        <select id="timezone"  name="timezone" value="<%=data[0].time_zone%>" class="md-input">
+                            </select><span class="req">*</span>
+                               
+                    </div>
+
+                    <div class="uk-form-row valid"  >
+                        <select id="dateformat"  name="dateformat" value="<%=data[0].date_format %>" class="md-input">
+                        <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                         <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                         <option value="YYYY/DD/MM">YYYY/DD/MM</option>
+                         <option value="YYYY/DD/MM">YYYY/MM/DD</option>
+                            </select><span class="req">*</span>
+                        </div>
+                    
+                    <div class="uk-form-row valid" >
+                        <div class="txtlabel">Page Refresh(Seconds)</div>
+                        <input type="text" class="md-input md-input-success" id="pagerefresh" name="pagerefresh" value="<%=data[0].page_refresh%>"/><span class="req">*</span>
+                                
+                    </div>
+                     <div class="uk-form-row valid" >
+                        <div class="txtlabel">Landing Page</div>
+                        <select id="landingpage"  name="landingpage" class="md-input md-input-success"> 
+                            <% if(data[0].landing_page == 'dashboard'){%>
+                              <option value="dashboard" selected>Dashboard</option>
+                            <% }else{ %>  
+                              <option value="dashboard">Dashboard</option>
+                            <% } %>  
+                            <% if(data[0].landing_page == 'activealarm'){%>
+                              <option value="activealarm" selected>Active Alarm</option>
+                            <% }else{%>
+                               <option value="activealarm">Active Alarm</option> 
+                            <%}%>  
+                            <% if(data[0].landing_page == 'live'){%>
+                              <option value="live" selected>Live</option>
+                            <% }else{%>
+                               <option value="live">Live</option> 
+                            <%}%>    
+                            <% if(data[0].landing_page == 'report'){%>
+                              <option value="report" selected>Report</option> 
+                            <%}else{%>
+                              <option value="report">Report</option> 
+                            <%}%>  
+                        </select>  
+                        <span class="req">*</span>
+                               
+                    </div>
+                    <div class="uk-form-row valid" >
+                        <div class="txtlabel">Site Offline Duration(Hrs.)</div>
+                        <input type="text" class="md-input md-input-success" id="sitereport" name="sitereport" value="<%=data[0].site_report%>"/><span class="req">*</span>
+                               
+                    </div>
+                    <div class="uk-form-row" >   
+                        <input type="hidden" class="md-input md-input-success" id="preferenceid" name="preferenceid" value="<%=data[0].preference_id%>"/>
+                    </div>
+                   
+                    <div class="uk-form-row valid" >
+                        <div class="uk-grid uk-grid-collapse">
+                            <div class="uk-width-medium-1-10">
+                            <%if(data[0].sms_status=="true"){%>
+                              <input type="checkbox" id="sms_id" name="sms_id" checked/>SMS
+                            <%}else{%>
+                              <input type="checkbox" id="sms_id" name="sms_id"/>SMS
+                            <%}%>  
+                            </div>    
+                            <div class="uk-width-medium-2-10">
+                            <%if(data[0].video_status=="true"){%>
+                              <input type="checkbox" id="video_id" name="video_id" checked/>Video
+                            <%}else{%>
+                              <input type="checkbox" id="video_id" name="video_id"/>Video  
+                            <%}%>  
+                            </div>    
+                        </div>
+                    </div>
+                    <div class="uk-form-row" >
+                       <button id="save_btn" class="md-btn md-btn-success"><i class="uk-icon-save white paddingleft"></i>Save</button>
+                       <button type="button" onClick="cancelPreference();" class="md-btn md-btn-success"><i class="uk-icon-remove white paddingleft"></i>Cancel</button>
+                    </div>
+                  </div>
+                </div>    
+			       </div>
+		      </div>	
+        </div>
+    </div>
+    <!--End Content--> 
+    
+    <!--Start Script-->
+    <% include ../../partials/footer %>
+    <script src="/js/timezones.full.js"></script>
+    <script type="text/javascript">
+   
+   $("#timezone").change(function(){
+      drop('timezone');
+    });
+  $("#dateformat").change(function(){
+      drop('dateformat');
+    });
+    $("#pagerefresh").blur(function(){
+      num('pagerefresh');
+    });
+    $("#pagerefresh").keyup(function(){
+      num('pagerefresh');
+    });
+    $("#landingpage").blur(function(){
+      alpha('landingpage');
+    });
+    $("#landingpage").keyup(function(){
+      alpha('landingpage');
+    });
+    $("#sitereport").blur(function(){
+      num('sitereport');
+    });
+    $("#sitereport").keyup(function(){
+      num('sitereport');
+    });
+    $("#customername").keyup(function(){
+      alpha('customername');
+    });
+    $("#customername").blur(function(){
+      alpha('customername');
+    });
+  
+    $("#timezone").timezones();
+    $("#sms_id").change(function(){
+       smschange();
+    });
+    $("#video_id").change(function(){
+     videochange();
+    });
+    var status;
+    $("#ok_btn").click(function(){
+      $("#dialog_box").hide();
+        status=1;
+        var val=preferencevalidate();
+        console.log(val);
+        preference_submit();
+    });
+
+    $("#save_btn").click(function(){
+       if(preferencevalidate()==true){
+          $("#dialog_box").show();
+      }
+    });
+     
+    $("#close_btn").click(function(){
+      $("#dialog_box").hide();
+        status=0;
+        console.log(preferencevalidate());
+        preference_submit();
+    });
+     
+    function preference_submit(){
+      console.log("sms_id :"+document.getElementById("sms_id").value);
+      console.log("video_id: "+document.getElementById("video_id").value);
+      $.ajax({
+        url:'/preferences/update',
+        type:'post',
+        data:{timezone:document.getElementById("timezone").value,dateformat:document.getElementById("dateformat").value,pagerefresh:document.getElementById("pagerefresh").value,landingpage:document.getElementById("landingpage").value,sitereport:document.getElementById("sitereport").value,preferenceid:document.getElementById("preferenceid").value,sms_id:document.getElementById("sms_id").value,video_id:document.getElementById("video_id").value},
+        success:function(data){
+          if(status==0){
+             window.location="/preferences";
+          }
+          else{
+            window.location='/';
+          }
+        }
+      })
+    }
+  
+    smschange();
+    videochange();
+    
+    function smschange(){
+      var smsval=document.getElementById("sms_id").checked;
+      document.getElementById("sms_id").value=smsval;
+      console.log(document.getElementById("sms_id").value);
+    }
+    function videochange(){
+      var videoval=document.getElementById("video_id").checked;
+      document.getElementById("video_id").value=videoval;
+    }
+    </script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!-- Start Header-->
+<header id="header_main">
+	<div class="header_main_content">
+		<nav class="uk-navbar">
+ 			<a href="#" id="sidebar_main_toggle" class="sSwitch sSwitch_left">
+				<span class="sSwitchIcon"></span>
+			</a>
+ 			<a href="#" id="sidebar_secondary_toggle" class="sSwitch sSwitch_right sidebar_secondary_check">
+				<span class="uk-icon-filter filetricon"></span>
+			</a>
+
+			<div class="uk-navbar-flip">
+				<ul class="uk-navbar-nav user_actions">
+					<li data-uk-dropdown="{mode:'click'}">
+						<a href="#" class="user_action_image">
+							<i class="uk-icon-user iconsize md-24 md-light rightmargin"></i><%= sess_name %>
+						</a>
+						<div class="uk-dropdown uk-dropdown-small uk-dropdown-flip">
+							<ul class="uk-nav js-uk-prevent">
+								<li><a href="/setting">Settings</a></li>
+								<li><a href="/">Logout</a></li>
+							</ul>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</nav>
+	</div>
+
+	<div class="header_main_search_form">
+		<i class="md-icon header_main_search_close material-icons">&#xE5CD;</i>
+		<form class="uk-form">
+			<input type="text" class="header_main_search_input"/>
+			<button class="header_main_search_btn uk-button-link"><i class="md-icon uk-icon-search iconsize"></i></button>
+		</form>
+	</div>
+</header> 
+<!-- End Header-->
+

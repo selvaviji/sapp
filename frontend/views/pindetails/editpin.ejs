@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+    <link rel="stylesheet" href="/css/style.css" media="all">
+    <link rel="stylesheet" href="/css/spectrum.css" media="all">
+    <script src="/js/spectrum.js"></script>
+    <script>
+        var sid = "<%= sess_id %>";
+        var sname = "<%= sess_name %>";
+        console.log("session id:"+sid+"::session name:"+sname);
+    </script>    
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+ 	<!--Top Header-->
+    <% include ../../partials/mainheader %>
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+    
+    <!--Start Content-->
+
+    <div id="page_content">
+        <div id="page_content_inner">
+		<h3 class="heading_b uk-margin-bottom">Edit Priority</h3>
+		<form method="POST" class="edit" action="/pindetails/update" onsubmit="return pinvalidate()">
+			<div class="md-card" style="height:auto;  padding:20px;">
+                <div class="uk-grid">
+                  <div class="uk-width-medium-1-2" >
+    	            <div class="uk-form-row valid" >
+                        <div class="txtlabel">Priority Name</div>
+                        <input type="text" class="md-input md-input-success" id="pinname" name="pinname" value="<%=data[0].pin_name%>"/><span class="req">*</span>
+                                
+                    </div>
+                    <div class="uk-form-row" >
+                       <div class="txtlabel">Description</div> 
+                       <input type="text" class="md-input md-input-success" id="pindesc" name="pindesc" placeholder="Description" value="<%=data[0].pin_desc %>"/>
+                    </div>
+                    <div class="uk-form-row valid" >
+                        <div class="txtlabel">Priority Color</div>
+                        <div class="theme" id="sp-light">
+                          <div class='example'>
+                              <input type='text' id="pincolor" name="pincolor" value="<%=data[0].pin_color%>" class="mustdata Hexa"/><span class="req">*</span>
+                          </div>
+                        </div>
+                    </div>
+                    <div class="uk-form-row" >   
+                        <input type="hidden" class="md-input md-input-success" id="pinid" name="pinid" value="<%=data[0].pin_id%>"/>
+                    </div>
+                    <div class="uk-form-row" >
+                       <button type="submit" class="md-btn md-btn-success"><i class="uk-icon-save white paddingleft"></i>Save</button>
+                       <button type="button" onClick="cancelPin();" class="md-btn md-btn-success"><i class="uk-icon-remove white paddingleft"></i>Cancel</button>
+                    </div>
+                  </div>
+                </div>    
+			</div>
+		</form>	
+        </div>
+    </div>
+    <!--End Content--> 
+    
+    <!--Start Script-->
+    <script>
+      $("#sp-light input").spectrum({
+        theme: "sp-light"
+      });
+    </script>
+   <% include ../../partials/footer %>
+    <script>
+    $("#pinname").keyup(function(){
+      alpha('pinname');
+    });
+
+    $("#pinname").blur(function(){
+      alpha('pinname');
+    });
+  </script>
+</body>
+</html>

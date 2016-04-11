@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+    <link rel="stylesheet" href="/css/spectrum.css" media="all">
+    <script src="/js/spectrum.js"></script>
+    <script type='text/javascript' src='tinycolor.js'></script>
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+ 
+     <!--Top Header-->
+    <% include ../../partials/mainheader %>
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+
+    <!--Content-->
+    <!--Start Content-->
+
+    <div id="page_content">
+        <div id="page_content_inner">
+        <h3 class="heading_b uk-margin-bottom">Priority List</h3>
+        <!--Content Page-->
+        <div class="md-card">
+            <div class="md-card-content">
+                <div class="uk-grid" data-uk-grid-margin>
+                    <div class="uk-width-medium-1-1">
+                        <table class="display" id="example" width="100%">
+                           <thead>
+                                <tr>
+                                    <th><strong>Color</strong></th>
+                                     <th><strong>Color1</strong></th>
+                                    <th><strong>Priority Name </strong></th>
+                                    <th><strong>Description</strong></th>
+                                    <th><strong>Created Date</strong></th>
+                                    <th><strong>Updated Date</strong></th>
+                                    <th><strong>Edit</strong></th>
+                                    <th><strong>Delete</strong></th>
+                                </tr>
+                           </thead>
+                            <tbody>
+                            <%  if(JSON.stringify(datas) === '{}'){
+                                    console.log("step-2");
+                                }else{
+                                    datas.forEach(function(d) { %>
+                                        <tr>
+                                            
+                                            <td align="center" width="7%"> 
+                                                    <div class="theme" id="sp-light">
+                                                    <div class='example'>
+                                                          <input type='text' value='<%= d.pin_color %>' disabled />
+                                                     </div>
+                                                    </div>
+                                            </td>
+                                            <td><div class="theme" id="code-output"></div></td>
+                                            <td><%= d.pin_name %></td>
+                                            <td><%= d.pin_desc %></td>
+                                            <td><%=moment(d.created_date).format('DD-MM-YYYY H:mm:ss')%></td>
+                                            <td><%=moment(d.updated_date).format('DD-MM-YYYY H:mm:ss')%></td>
+                                            <td><a href="/pindetails/edit/<%=d.pin_id%>" class='uk-icon-edit editicon' title='Edit'></td>
+                                            <td><a  href="/pindetails/delete/<%=d.pin_id%>" onclick='return confirm("Are you sure to delete?")' class='uk-icon-trash editicon'  title='Delete' ></td>
+                                        </tr>
+                           <%       });  
+                                } %> 
+                    
+                            </tbody> 
+                        </table>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>   
+        <!--End of Content Page-->
+    </div>
+</div>
+
+<!--End Content--> 
+
+
+<!--Start Script-->
+ <script>
+        $("#sp-light input").spectrum({
+            theme: "sp-light"
+        });
+
+
+        function colorChange(color) {
+            var tiny = tinycolor(color);
+
+            var output = [
+                "hex:\t" + tiny.toHexString(),
+                "hex8:\t" + tiny.toHex8String(),
+                "rgb:\t" + tiny.toRgbString(),
+                "hsl:\t" + tiny.toHslString(),
+                "hsv:\t" + tiny.toHsvString(),
+                "name:\t" + (tiny.toName() || "none"),
+                "format:\t" + (tiny.getFormat()),
+                "format string:\t" + tiny.toString(),
+            ].join("\n");
+
+            $("#code-output").text(output).css("background-color", tiny.toHexString());
+
+            /*var filters = $("#filter-output").toggleClass("invisible", !tiny.isValid());
+
+            filters.find(".lighten").css("background-color",
+                 tinycolor(color).lighten(20).toHexString()
+            );
+            filters.find(".darken").css("background-color",
+                 tinycolor(color).darken(20).toHexString()
+            );
+            filters.find(".saturate").css("background-color",
+                 tinycolor(color).saturate(20).toHexString()
+             );
+            filters.find(".desaturate").css("background-color",
+                 tinycolor(color).desaturate(20).toHexString()
+             );
+            filters.find(".greyscale").css("background-color",
+                 tinycolor(color).greyscale().toHexString()
+             );
+            filters.find(".brighten").css("background-color",
+                 tinycolor(color).brighten(20).toHexString()
+            );
+            */
+            var allColors = [];
+            for (var i in tinycolor.names) {
+                allColors.push(i);
+            }
+            var mostReadable = tinycolor.mostReadable(color, allColors);
+
+            $("#mostReadable").css("background-color",
+                 mostReadable.toHexString()
+             );
+
+             var combines = $("#combine-output").toggleClass("invisible", !tiny.isValid());
+
+             function colorArrayToHTML(arr) {
+                return $.map(arr, function(e) {
+                 return '<span style="background:'+e.toHexString()+'"></span>'
+                 }).join('');
+             }
+
+             var triad = tiny.triad();
+             combines.find(".triad").html(colorArrayToHTML(triad));
+             console.log(triad.map(function(f) {return f.toHexString();}));
+
+             var tetrad = tiny.tetrad();
+             combines.find(".tetrad").html(colorArrayToHTML(tetrad));
+
+             var mono = tiny.monochromatic();
+             combines.find(".mono").html(colorArrayToHTML(mono));
+
+             var analogous = tiny.analogous();
+             combines.find(".analogous").html(colorArrayToHTML(analogous));
+
+             var splitcomplement = tiny.splitcomplement();
+             combines.find(".sc").html(colorArrayToHTML(splitcomplement));
+        }
+    </script>  
+    <% include ../../partials/footer %>
+    
+    <script>
+       
+        $(document).ready(function() {
+            $('#example').DataTable();
+            //$('<button id="refresh">Refresh</button>').appendTo('div.uk-width-1-4');
+            <% if(sess_id == '1' || sess_id=='2'){ %>
+             $('<div class="md-btn md-btn-success "><a href="/pindetails/addpin" ><i class="uk-icon-user white paddingleft"></i>Create New</a></div>').appendTo('div.btn1');
+            <%}%>
+            $('#example')
+            .removeClass( 'display' )
+            .addClass('uk-table uk-table-striped');
+        });
+    </script>  
+</body>
+</html>

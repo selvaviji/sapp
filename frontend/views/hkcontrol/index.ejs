@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+    <script src = "/moment/min/moment.min.js"></script>
+ 
+    <script type="text/javascript">
+       $(document).ready(function(){
+            $("#search").hide();
+            $(".searchbtn").click(function(){
+                $("#search").toggle();
+            });
+            $("#fromdate").datepicker();
+            $("#todate").datepicker();
+        });    
+    </script>
+    <style type="text/css">
+    .uk-table-hover tbody tr.act{
+    background: #b8e5fd;/*96969A*/
+    color: #000;
+    }
+    </style>
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+    <!--Top Header-->
+    <% include ../../partials/mainheader %>
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+
+    <!--Start Content-->
+    <div id="page_content">
+     <div id="ajaxBusy"><p id="ajaxBusyMsg">Please Wait..</p></div>
+    <div id="page_content_inner">
+        <div class="searchbtn"><i class="uk-icon-search"></i></div>
+        <!--Dashboard-->
+        <h3 class="heading_b uk-margin-bottom">Live Image</h3>
+        <!--End Dashboard-->
+        <div class="md-card" id="search">
+            <div class="md-card-content">
+                <div class="uk-grid uk-dropdown-grid">
+                     <div class="uk-width-1-4">
+                        <div class="searchlabel">SITE ID</div>
+                        <input type="text" class="md-input md-input-success"  name="siteid" id="siteid"  >
+                    </div>
+                   
+                    <div class="uk-width-1-4" style="display:none">
+                        <div class="searchlabel"></div>
+                        <input type="text" class="md-input md-input-success" placeholder="To Date" name="nextval" id="nextval">
+                    </div>
+                    <div class="uk-width-1-4" style="display:none">
+                        <div class="searchlabel"></div>
+                        <input type="text" class="md-input md-input-success"  name="statusvalue" id="statusvalue">
+                    </div>
+                    <div class="uk-width-1-4" style="margin-top: 20px;">
+                        <button  id="searchbtn1" class="md-btn md-btn-success" style="margin-top:0px;">
+                         <i class="uk-icon-search white padright"></i>Search</button>
+                        <button type="button" class="md-btn md-btn-success" onClick="refreshPage()" style="margin-top:0px;">
+                        <i class="uk-icon-refresh white padright"></i>Reset</button>
+                    </div>  
+                </div> 
+            </div>
+        </div>
+
+ <!--Hooter-->
+    <!-- <div class="uk-grid uk-grid-small" id="hkimg" style="display:none">
+        <div class="uk-width-1-1 uk-alert" id="hooter-info" style="text-align:center;">
+            ss
+        </div>
+    </div>        
+    <div class="uk-grid uk-grid-small">
+        <div class="uk-width-1-4" style="text-align:center;">
+          <img id="img0" src="/uploads/noimage.png">
+        </div>
+        <div class="uk-width-1-4" style="text-align:center;">
+          <img id="img1" src="/uploads/noimage.png">
+        </div>
+        <div class="uk-width-1-4" style="text-align:center;">
+          <img id="img2" src="/uploads/noimage.png">
+        </div>
+        <div class="uk-width-1-4" style="text-align:center;">
+          <img id="img3" src="/uploads/noimage.png">
+        </div>
+    </div> -->  
+<div class="uk-grid uk-grid-small" id="hkimg" style="display:none; margin-left: 0px;">
+     <div id="firstDiv" class="uk-width-8-10">
+        <div class="uk-grid uk-grid-small">
+            <div class="uk-width-1-4" style="text-align:center; height:220px;">
+              <img id="img0" style="height:204px;">
+              <span id="imglabel0">Channel1</span>
+            </div>
+            <div class="uk-width-1-4" style="text-align:center; height:220px;">
+              <img id="img1" style="height:204px;">
+              <span id="imglabel1">Channel2</span>
+            </div>
+            <div class="uk-width-1-4" style="text-align:center; height:220px;">
+              <img id="img2" style="height:204px;">
+              <span id="imglabel2">Channel3</span>
+            </div>
+            <div class="uk-width-1-4" style="text-align:center; height:220px;">
+              <img id="img3" style="height:204px;">
+              <span id="imglabel3">Channel4</span>
+            </div>
+        </div>
+    </div>
+    <div id="secondDiv" class="uk-width-8-10">
+        <div class="uk-grid uk-grid-small">
+            <div class="uk-width-1-4" style="text-align:center; height:220px;">
+              <img id="simg0" style="height:204px;">
+              <span id="simglabel0">Channel1</span>
+            </div>
+            <div class="uk-width-1-4" style="text-align:center; height:220px;">
+              <img id="simg1" style="height:204px;">
+              <span id="simglabel1">Channel2</span>
+            </div>
+            <div class="uk-width-1-4" style="text-align:center; height:220px;">
+              <img id="simg2" style="height:204px;">
+              <span id="simglabel2">Channel3</span>
+            </div>
+            <div class="uk-width-1-4" style="text-align:center; height:220px;">
+              <img id="simg3" style="height:204px;">
+              <span id="simglabel3">Channel4</span>
+            </div>
+        </div>
+    </div>    
+        <div class="uk-width-2-10" style="height:204px;">
+           <table style="width:100%; height: 204px; border: 1px solid #E4E4E4;"> 
+                <tr>
+                    <td style="font-size: 13px; font-weight:bold; background:#F2F2F2; padding:4px;"><span id="hooter-info"></span></td>
+                </tr>
+                <tr>
+                    <td><input name="chkimage[]" id="chkimage0" type="checkbox" value="0"><span style="font-size: 12px;">Channel 1</span></td>
+                </tr>
+                <tr>
+                    <td><input name="chkimage[]" id="chkimage1" type="checkbox" value="1"><span style="font-size: 12px;">Channel 2</span></td>
+                </tr>
+                <tr>
+                    <td><input name="chkimage[]" id="chkimage2" type="checkbox" value="2"><span style="font-size: 12px;">Channel 3</span></td>
+                </tr>
+                <tr>
+                    <td><input name="chkimage[]" id="chkimage3" type="checkbox" value="3"><span style="font-size: 12px;">Channel 4</span></td>
+                </tr>
+                 <tr>
+                    <td>
+                    <input type="button" id="btnGetImage" value="Get Images" class="md-btn md-btn-small md-btn-success">
+                    <input type="button" id="btnReload" value="Show Images" class="md-btn md-btn-small md-btn-success">
+                    </td>
+                </tr>
+            </table>
+        </div>
+        
+    </div> 
+
+        <div class="md-card ">
+            <div class="md-card-content">
+            <% if(sess_id==1 | sess_id==2){ %>
+                <div class="uk-grid uk-grid-collapse" style="display:block">
+                    <div class="customer " style="text-align:right; margin-bottom:6px;">
+                         Customer
+                        <select id="customer_id" name="customer_id"  style="width:140px; display:inline;">
+                        </select>
+                    </div>
+                </div>  
+            <% } else{%> 
+                <div class="uk-grid uk-grid-small" style="display:none">
+                    <div class="uk-width-1-1 " style="text-align:right; margin-bottom:6px;">
+                         Customer
+                        <input id="customer_id" name="customer_id" type="hidden">
+                    </div>
+                </div>  
+            <% } %>
+            <div class="uk-width-1-1" style="text-align:right; margin-bottom:6px;">
+                    Rows Per Page
+                        <select style="width:50px; display:inline" name="rowsperpageval" id="rowsperpageval">
+                                <% for(var i=minRange;i<=maxRange;i=i+stepRange){ %>
+                                    <option value=<%= i%>><%= i%></option>
+                                <%}%>
+                        </select>
+                </div>
+
+       
+                <div class="uk-overflow-container " id="alarm-tbl">
+                </div>
+               <ul id="navigation" class="uk-pagination"></ul>
+            </div>
+        </div>
+
+    </div>
+    </div>
+    <!--End Content--> 
+
+<!--Start Script-->
+<script src="/js/common.min.js"></script>
+<script src="/moment/min/moment.min.js"></script>
+<script src="/js/uikit_custom.min.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/js/altair_admin_common.min.js"></script>
+<script src="/js/export.js"></script>
+
+<script>
+$(document).ready(function(){
+    init();
+    tabledata();
+    resetImage();
+
+});
+
+var resetImage = function(){
+    $("#firstDiv").show();
+    $("#secondDiv").hide();
+    for(i=0;i<4;i++){
+        $("#img"+i).attr('src',"/uploads/noimage.png");
+    }
+}
+$("#btnGetImage").click(function(){
+    $("#firstDiv").show();
+    $("#secondDiv").hide();
+    chkVal = [];
+    resetImage();
+    $(':checkbox:checked').each(function(i){
+        chkVal[i] = $(this).val();
+    });
+    siteid = $("#span_site").text();
+    IP = (siteinfo[siteid].IP).replace("::ffff:","");
+    console.log("VAlue :"+chkVal);
+    console.log("IP :"+IP);
+    console.log("siteinfo :"+siteid);
+    callImageData(siteid,IP,chkVal);
+});
+
+$("#btnReload").click(function(){
+    $("#firstDiv").hide();
+    $("#secondDiv").show();
+    /*imageinfo = ['/todaysnap/ghorawahi_0_09_30_16.jpg','/todaysnap/ghorawahi_2_09_30_16.jpg','/todaysnap/ghorawahi_3_09_30_16.jpg'];*/
+     showImages();
+      
+})
+
+var showImages = function(){
+    
+    for(i=0;i<imageinfo.length;i++){
+        var imgData = new Image();
+        imgData.src = imageinfo[i];
+        
+        console.log("Source :"+imageinfo[i] +  "=S :"+ imgData.Width);
+        $("#simg"+chkVal[i]).attr('src',imageinfo[i]);
+        //$("#img"+i).attr('src',imageinfo[i]);     
+        imgData = null;
+    }
+}
+
+var tblclick = function (Siteid, IP, x, site_name, site_address){
+    document.getElementById("search").style.display="none";
+    document.getElementById("hkimg").style.display="block";
+    var alerts = "<div><span id='span_site'>"+Siteid+ "</span>," + site_name +"</div>";  
+    $('#hooter-info').html(alerts);
+    $(".uk-table tbody tr.act").removeClass("act");
+    $("#actives"+x+"").addClass("act");
+    $("#table-row").html(siteinfo[Siteid]);
+    
+    //console.log(siteinfo[Siteid]);
+}
+
+var callImageData = function (siteid,ip,val){
+    //document.getElementById("img0").src = "/img/map1.jpg";
+    //$("#img0").src = "/img/map1.jpg";
+    //console.log("Ssssiteid :"+siteid+" IP:"+ip);
+    imageinfo=[];
+    var dataCollection = {
+        ip : ip,
+        siteid : siteid,
+        channels: val
+    }
+    $.ajax({
+        beforeSend: function(){
+            $("#ajaxBusy").show();
+        },
+        url: '/hkcontrol/getimagedata',
+        type: 'POST',
+        cache: false, 
+        data: dataCollection,
+        success: function(data){
+            resultdata = JSON.stringify(data.datas);
+            console.log("Data :"+resultdata);
+            console.log("Data L:"+data.datas.length);
+            totalRecords = data.datas.length;
+            for(i=0;i<data.datas.length;i++){
+                imageinfo[i] = '/todaysnap/'+data.datas[i].image;
+                console.log("Image :"+data.datas[i].image);
+                if(data.datas[i].image=='Error'){
+                    $("#img"+i).attr('src','/snapshots/'+data.datas[i].image);      
+                }else{
+                    console.log("Source :"+'/todaysnap/'+data.datas[i].image);
+                    console.log("Array :"+val);
+                    console.log("ID :"+ "#img"+val[i]);
+                    //document.getElementById("img"+val[i]).src = '/todaysnap/'+data.datas[i].image; 
+                    //$("#img"+val[i]).attr('src',"" +'/todaysnap/'+data.datas[i].image+ ""); 
+                    //loadImage('/todaysnap/'+data.datas[i].image,50,50,"#img"+val[i]);
+                    $("#imglabel"+val[i]).text("Channel"+(parseInt(val[i])+1));   
+                }
+                //console.log("img:"+data.datas[i].image);
+                //document.getElementById("img"+i).src = "/snapshots/"+data.datas[i].image;
+            }    
+        },error: function(jqXHR, textStatus, err){
+            alert('text status '+textStatus+', err '+err);
+            $("#ajaxBusy").hide();  
+        },complete: function(jqXHR, textStatus, err){
+            //console.log("completed Triggered");
+            $("#ajaxBusy").hide();
+            /*for(i=0;i<imageinfo.length;i++){
+                var imgData = new Image();
+                imgData.src = imageinfo[i];
+                
+                console.log("Source :"+imageinfo[i] +  "=S :"+ imgData.Width);
+                $("#img"+chkVal[i]).attr('src',imageinfo[i]);
+                //$("#img"+i).attr('src',imageinfo[i]);     
+                imgData = null;
+            }*/
+        }
+    });
+}
+
+
+var loadImage = function (path, width, height, target) {
+    $('<img src="'+ path +'">').load(function() {
+      $(this).width(width).height(height).appendTo(target);
+    });
+}
+
+    var fnames;
+    var values;
+    var fields;
+    var rowsperpageval;
+    var siteinfo = [];
+    var imageinfo=[];
+    var chkVal = [];
+    function tabledata(){    
+        //console.log("TableData Function  Triggered");
+        var dataCollection = {
+            custid : $("#customer_id").val(),
+            nextval : $("#nextval").val(),
+            siteid : $("#siteid").val(),
+            rowsperpageval: $("#rowsperpageval").val(),
+            statusvalue: $("#statusvalue").val(),
+            fromdate: $("#fromdate").val(),
+            todate: $("#todate").val()
+        }
+        
+        //console.log("nextttttt"+nextval);
+        $.ajax({
+            beforeSend: function(){
+                $("#ajaxBusy").show();
+            },
+            url: '/hkcontrol/getdata',
+            type: 'POST',
+            cache: false, 
+            data: dataCollection,
+            success: function(data){
+                //console.log("Data :"+JSON.stringify(data));
+                render(data);     
+            },error: function(jqXHR, textStatus, err){
+                alert('text status '+textStatus+', err '+err);
+                $("#ajaxBusy").hide();  
+            },complete: function(jqXHR, textStatus, err){
+                //console.log("completed Triggered");
+                $("#ajaxBusy").hide();
+            }
+        });
+    }
+
+
+    function render(data){
+        currentposition=data.currentposition;
+        endposition=data.endposition;
+        lastposition=data.lastposition;
+        nextbuttonstatus=data.nextbuttonstatus;
+        document.getElementById("nextval").value=data.nextpagevalue;
+         
+        fnames = "<table class='uk-table uk-table-striped uk-table-hover'><thead><th>Customer</th><th>TimeStamp</th><th>IP</th><th>Site ID</th><th>Site Name</th><th>Site Address</th>";
+        fnames += "</thead>";
+       
+        var totalDatas = data.dataslength;
+        if(totalDatas == "0"){
+            fnames += "<tbody><tr><td colspan='6' align='center'>No Data Found</td></tr>";
+        }else{
+           // values ="0";
+            values = data.datas;
+            //console.log("values=="+JSON.stringify(values));
+            if(values != "0"){
+                for(var x=0;x<values.length;x++){
+                    var sitecode = values[x].Siteid;
+                    var ipaddress = (values[x].IP).replace("::ffff:","");
+                    fnames += "<tr id='actives"+x+"' onClick='tblclick("+'"'+values[x].Siteid+'",'+'"'+ipaddress+'",'+'"'+x+'",'+'"'+values[x].site_name+'"'+");'>";
+                    
+                    
+                    //console.log("record::"+values[x].RecordingTimeStamp);
+                    fnames += "<td>"+values[x].customer_name+"</td>";
+                    fnames += "<td>"+moment(values[x].RecordingTimeStamp).format('DD-MM-YYYY HH:mm:ss')+"</td>";
+                    fnames += "<td>"+ipaddress+"</td>";
+                    fnames += "<td>"+values[x].Siteid+"</td>";
+                    fnames += "<td>"+values[x].site_name+"</td>";
+                    fnames += "<td>"+values[x].site_address+"</td>";
+                    
+                    siteinfo[sitecode] = values[x];
+                    fnames +="</tr>";     
+                }//for
+            }
+        }
+        fnames+="</tbody></table>";
+        document.getElementById("alarm-tbl").innerHTML=fnames;
+        pagination();
+       // $('ul li a.current').addClass('uk-active');   
+    }//end of render function
+
+ function pagination(){
+            document.getElementById("navigation").innerHTML="";
+            var rownumber=document.getElementById("rowsperpageval").value;
+            var rowsShown = rownumber;
+            rowsShown=parseInt(rowsShown);
+            numberofrecords=100*(rowsShown/10);
+            //console.log("rowsShown"+rowsShown);
+            currentposition=parseInt(currentposition);
+            var rowsTotal = $('#alarm-tbl tbody tr').length;
+            //console.log("datas are:::"+rowsTotal)
+            if(((currentposition*rowsShown)>numberofrecords) ){
+                    $('#navigation').append('<li><a onclick="previousrecords()" style="display:block" id="previousid" ><span>Prev</span></a></li>');
+                }
+                if((currentposition*rowsShown)<=numberofrecords){
+                    $('#navigation').append('<li ><a onclick="previousrecords()" style="display:none" id="previousid" ><span>Prev</span></a></li>');
+                }
+             if(endposition>1){
+                for(currentposition;currentposition<=endposition;currentposition++) {
+                        //console.log("appending");
+                        var pagenum=currentposition-1;
+                        $('#navigation').append('<li><a href="#" rel="'+pagenum+'">'+currentposition+'</a><li> ');
+                    }
+
+             }
+             
+             if((endposition<lastposition)|| nextbuttonstatus==1)
+             {
+             $('#navigation').append(' <li><a onclick="nextrecords()" style="display:block"><span>Next</span></a></li>');
+            }
+            if((endposition==lastposition) || nextbuttonstatus==0)
+             {
+             $('#navigation').append(' <li><a onclick="nextrecords()" style="display:none"><span>Next</span></a></li>');
+            }
+                $('#alarm-tbl tbody tr').hide();
+                $('#alarm-tbl tbody tr').slice(0, rowsShown).show();
+                $('#navigation a:first').addClass('active');
+                $('#navigation a').bind('click', function(){
+                $('#navigation a').removeClass('active');
+                $(this).addClass('active');
+                var currPage = $(this).attr('rel');
+                //console.log("currentpagepos"+currPage);
+                    if(currPage>10){
+                        var divval=Math.floor(currPage/10,0);
+                        console.log("divval"+divval);
+                        var num=currPage%(10*divval);
+                        console.log("remainder vvalue"+num);
+                        currPage=num;
+                        if(num==0){
+                            currPage=10;
+                        }
+                        console.log("currPage"+currPage);
+                    }
+                    if(currPage==10){
+                        currPage=0;
+                    }
+
+                    var startItem = currPage * rowsShown;
+                    var endItem = startItem + rowsShown;
+                //console.log("startItem"+startItem+"endItem"+endItem);
+                $('#alarm-tbl tbody tr').css('opacity','0.0').hide().slice(startItem, endItem).
+                                    css('display','table-row').animate({opacity:1}, 300);
+                });
+    }
+
+    $("#rowsperpageval").change(function(){
+        statuschange();
+        tabledata();
+    })
+
+    function previousrecords(){
+        document.getElementById("statusvalue").value=1;
+        tabledata();
+    }
+    function nextrecords(){
+        var nextval=document.getElementById("nextval").value;
+        var nextvalue=parseInt(nextval);
+        document.getElementById("nextval").value=nextvalue+numberofrecords;
+        document.getElementById("statusvalue").value=0;
+        tabledata();
+    }
+
+    function statuschange(){
+        document.getElementById("statusvalue").value=2;
+    }
+    $("#customer_id").change(function(){
+        changeSite();
+        statuschange();
+        tabledata();
+    })
+    $("#searchbtn1").click(function(){
+        statuschange();
+        tabledata();
+    })
+    
+    function refreshPage(){
+
+        window.location.href="/controller";
+    }
+    function init(){
+        $.ajax({
+            beforeSend: function(){
+               
+            },
+            url: '/common/getcustInfo',
+            type: 'post',
+            cache: false,
+            success: function(data){
+                
+                var options = '<option value="">--Select Customer--</option>';
+                for (var i = 0; i < data.custdata.length; i++) {
+                    options += '<option value="' + data.custdata[i].customer_id + '" >' + data.custdata[i].customer_name + '</option>';
+                }
+              //console.log("options :"+options);
+              $("#customer_id").html(options);   
+             /* tabledata(); */
+            },error: function(jqXHR, textStatus, err){
+                alert('text status '+textStatus+', err '+err);
+                
+            },complete: function(jqXHR, textStatus, err){
+               
+            }
+        });
+    }
+</script>
+<!--Start Script-->
+
+
+</body>
+</html>

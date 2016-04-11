@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+       
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+ 
+     <!--Top Header-->
+    <% include ../../partials/mainheader %>
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+
+    <!--Content-->
+    <!--Start Content-->
+
+    <div id="page_content">
+        <div id="page_content_inner">
+        <h3 class="heading_b uk-margin-bottom">Vendor List</h3>
+        <!--Button-->
+        <% if(sess_id != '1'){%>
+        <div class="md-card">
+            <div class="md-card-content">
+                
+                <div class="md-btn md-btn-success">
+                    <a href="/vendor/addmsp" style="color:#fff;"><i class="uk-icon-user white paddingleft"></i>Create Vendor</a>
+                </div>
+               
+              
+            </div>
+        </div>
+         <% } %>
+        <!--End Button-->
+
+        <!--Content Page-->
+        <div class="md-card">
+            <div class="md-card-content">
+                <div class="uk-grid" data-uk-grid-margin>
+                    <div class="uk-width-medium-1-1">
+                        <table class="uk-table uk-table-striped" id="tabledata">
+                           
+                        </table>
+                        <div id="externalpager"></div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+        <!--End of Content Page-->
+    </div>
+</div>
+
+<!--End Content--> 
+
+
+<!--Start Script-->
+<% include ../../partials/footer %>
+<script type="text/javascript">vendorgrid();</script>
+    
+</body>
+</html>

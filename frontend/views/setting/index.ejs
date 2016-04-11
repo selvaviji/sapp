@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+ 	
+     <!--Top Header-->
+    <% include ../../partials/mainheader %>
+ 
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+
+     <!--Content-->
+
+     <!--Start Content-->
+
+<div id="page_content">
+    <div id="page_content_inner">
+		<h3 class="heading_b uk-margin-bottom">Settings</h3>
+      <form id="form" class="new" method="post" onsubmit="return passwordvalidate()">
+			  <div class="md-card">
+         <div class="md-card-content">
+          <div class="uk-grid">
+            <div class="uk-width-medium-1-2" >
+                <div class="uk-form-row valid" >
+                      <input type="hidden" class="md-input md-input-success" id="userid" name="userid" value="<%=datas[0].user_id%>" />
+                      <input type="hidden" class="md-input md-input-success" id="orgpassword" name="orgpassword" value="<%=datas[0].pass_word%>" />
+                </div>
+                
+                <div class="uk-form-row valid" >
+                        <input type="password" class="md-input md-input-success" id="oldpassword" name="oldpassword" placeholder="Current Password" /><span class="req">*</span>
+                </div>
+                <div class="uk-form-row valid" >
+                        <input type="password" class="md-input md-input-success" id="newpassword" name="newpassword" placeholder="New Password" /><span class="req">*</span>
+                </div>
+                <div class="uk-form-row" >
+                       <button type="button" onClick="updatePassword();" class="md-btn md-btn-success"><i class="uk-icon-save white paddingleft"></i>Save</button>
+                </div>
+                <div class="uk-form-row" >
+                    <span id="message"></span>
+                </div>
+            </div>
+          </div>   
+          </div>
+			  </div>
+      </form>  
+
+    </div>
+</div>
+
+<!--End Content--> 
+
+
+  <!--Start Script-->
+  <% include ../../partials/footer %>
+  <script>
+    var orgpwd = "<%=datas[0].pass_word%>";
+    function passwordvalidate(){
+        //console.log("OP :"+$("#oldpassword").val());
+        if($("#oldpassword").val() == "" || $("#newpassword").val() == ""){
+          return false;
+        }
+
+        if($("#oldpassword").val() != orgpwd){
+          return false;
+        }
+
+        return true;
+    }
+    function updatePassword(){
+      var newpwd = $("#newpassword").val();
+      var uid = $("#userid").val();
+      $.ajax({
+        url: '/setting/update',
+        type: 'post',
+        data:{userid:uid,newpassword:newpwd},
+        success: function(data){
+            //console.log(data.message);
+            $("#message").text(data.message);      
+        }//success ends
+      });
+    }
+  </script>
+</body>
+</html>

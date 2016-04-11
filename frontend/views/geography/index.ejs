@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+    <link rel="stylesheet" href="/css/style.css" media="all">
+
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+ 	
+     <!--Top Header-->
+    <% include ../../partials/mainheader %>
+ 
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+
+    <!--Start Content-->
+	<div id="page_content">
+    	<div id="page_content_inner">
+			<h3 class="heading_b uk-margin-bottom">Geographical</h3>
+			<div class="md-card"  ng-app="Demo">
+			<div class="md-card-content">
+				<form id="form" class="new" method="POST" onsubmit="return validate()">
+					<div class="uk-grid" ng-controller="DemoController" ng-init="getJsonData(user)">
+						<div class="uk-width-medium-1-2">
+							<div class="">
+								<div class="tree-border">
+									<div tree-view="structure" tree-view-options="options"></div>
+								</div>
+							</div>
+						</div>
+						<div class="uk-width-medium-1-2" id="addgeofix">
+						    <ul class="uk-breadcrumb" id="bcrumb">
+								<li ng-repeat="b in breadcrums" ng-class="{ active: $last }">{{ b }}<span class="divider" ng-show="!$last">/</span>
+								<span class="divider" ng-show="$last" ng-if="b!=''"><div class="uk-icon-edit black edit-icon" title="Edit" ng-click="edit();"></div></span>
+								<span class="divider" ng-show="$last" ng-if="b!=''"><div class="uk-icon-trash black delete-icon" title="Delete" ng-click="delete();"></div></span>
+								</li>
+
+							</ul>
+							<!-- Start Error Message -->
+							<span id="breaderror"></span>
+							
+							<!-- End Error Message -->
+							<div class="uk-form-row valid" >
+			        			<input type="text" id="name" class="md-input md-input-success mustdata alpha" placeholder="Area Name"/>
+			        			<span class="req">*</span>
+		                	</div>
+
+			                <div class="uk-form-row" >
+			                	<button type="submit" ng-click="saveGeography()" class="md-btn md-btn-success"><i class="uk-icon-save white"></i> Save</button>
+			                </div>
+						</div>
+					</div>                    
+	    		</form>
+	    	</div>	
+			</div>
+		</div>
+	</div>
+	<!--End Content--> 
+	<!--Start Script-->
+	<% include ../../partials/footer %>
+	<script src="/js/treeView.js"></script>
+	<script>var user = <%- data %></script>
+	<script src="/js/geography.js"></script>
+</body>
+</html>

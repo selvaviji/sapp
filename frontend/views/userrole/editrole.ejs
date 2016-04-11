@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+    <link rel="stylesheet" href="/css/style.css" media="all">
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+ 	<!--Top Header-->
+    <% include ../../partials/mainheader %>
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+    
+    <!--Start Content-->
+
+    <div id="page_content">
+        <div id="page_content_inner">
+		<h3 class="heading_b uk-margin-bottom">Role</h3>
+		<form method="post" class="edit" action="/userrole/update" onsubmit="return rolevalidate()">
+			<div class="md-card" style="height:auto;  padding:20px;">
+                <div class="uk-grid">
+                  <div class="uk-width-medium-1-2" >
+    	            <div class="uk-form-row valid" >
+                        <div class="txtlabel">Role Name</div>
+                        <input type="text" class="md-input md-input-success mustdata alpha" id="rolename" name="rolename" value="<%=data[0].role_name%>"/><span class="req">*</span>
+                              
+                    </div>
+                    <div class="uk-form-row" >
+                       <div class="txtlabel">Description</div> 
+                       <input type="text" class="md-input md-input-success" id="roledesc" name="roledesc" placeholder="Description" value="<%=data[0].role_desc %>"/>
+                    </div>
+                    
+                    <div class="uk-form-row" >   
+                        <input type="hidden" class="md-input md-input-success" id="roleid" name="roleid" value="<%=data[0].role_id%>"/>
+                    </div>
+                    <div class="uk-form-row" >
+                       <button type="submit" class="md-btn md-btn-success"><i class="uk-icon-save white paddingleft"></i>Save</button>
+                       <button type="button" onClick="cancelRole();" class="md-btn md-btn-success"><i class="uk-icon-remove white paddingleft"></i>Cancel</button>
+                    </div>
+                  </div>
+                </div>    
+			</div>
+		</form>	
+        </div>
+    </div>
+    <!--End Content--> 
+    
+    <!--Start Script-->
+    <% include ../../partials/footer %>
+</body>
+</html>

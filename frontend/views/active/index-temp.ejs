@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        #wrap { width: 300px; height: 200px; padding: 0; overflow: hidden; }
+        #testframe { width: 400px; height: 300px; border: 1px solid black; }
+        #testframe { zoom: 0.75; -moz-transform: scale(0.75); -moz-transform-origin: 0 0; }
+    </style>
+   
+    <% include ../../partials/head %>
+
+    <script src="/moment/min/moment.min.js"></script>
+    <!--Filter-->
+    
+    <!--Filter-->
+</head>
+
+<body class="sidebar_main_swipe">
+    <!--Top Header-->
+    <% include ../../partials/mainheader %>
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+    
+     <!--Start Content-->
+    <div id="page_content">
+    <div id="page_content_inner">
+        <div class="uk-grid uk-grid-small uk-sortable sortable-handler" data-uk-sortable>
+            <div class="uk-width-6-10">
+                <div class="md-card uk-margin-medium-bottom">     
+               
+                <div class="md-card-content">
+                    <div class="uk-overflow-container" id="alarm-tbl"> 
+                                
+                    </div>
+                </div>
+                </div>       
+            </div>    
+            <div class="uk-width-4-10">
+                    <div class="md-card uk-margin-medium-bottom">
+                         <div class="tb4"> <div class="uk-button-group">
+                                            <button class="uk-button" ><i class="uk-icon-camera white" data-uk-tooltip="{pos:'bottom'}" title="Single Image"></i></button>
+                                            <button class="uk-button"><i class="uk-icon-video-camera white" data-uk-tooltip="{pos:'bottom'}" title="Single Video"></i></button>
+                                            <button class="uk-button"> <i class="uk-icon-files-o white" data-uk-tooltip="{pos:'bottom'}" title="Multi Image"></i></button>
+                                            <button class="uk-button"> <i class="uk-icon-youtube-play white" data-uk-tooltip="{pos:'bottom'}" title="Multi Video"></i></button>
+                                            <button class="uk-button"> <i class="uk-icon-headphones white" data-uk-tooltip="{pos:'bottom'}" title="Voice Call"></i></button>
+                                        </div>
+                                        <div class="uk-button-group floatright">
+                                            <button class="uk-button"><i class="uk-icon-refresh white"></i></button>
+                                            <!--<button class="uk-button"><i class="uk-icon-play white"></i></button>-->
+                                            <button class="uk-button"><i class="uk-icon-pause white"></i></button>
+                                        </div></div>
+                        <div class="" style="height:280px; overflow-y:hidden;">
+                            
+                            <table width="100%">
+                                <tr>
+                                    <td colspan="2">
+                                    <div class="txt-center">
+                 <iframe id="testframe" name="testframe" frameBorder="0" width="400" height="300"></iframe>
+                </div>
+                                        
+                                    
+                                    <div id="modal_overflow1" class="uk-modal">
+                                        <div class="uk-modal-dialog">
+                                                <table>
+                                                    <tr>
+                                                        <td colspan="2" width="600" class="tool-bar">
+                                                            <div class="uk-button-group">
+                                                                <button class="uk-button"><i class="uk-icon-camera white" data-uk-tooltip="{pos:'bottom'}" title="Single Image"></i></button>
+                                                                <button class="uk-button"><i class="uk-icon-video-camera white" data-uk-tooltip="{pos:'bottom'}" title="Single Video"></i></button>
+                                                            </div>
+                                                            <div class="uk-button-group floatright">
+                                                                <button class="uk-button"><i class="uk-icon-refresh white"></i></button>
+                                                                 <!--<button class="uk-button"><i class="uk-icon-play white"></i></button>-->
+                                                                <button class="uk-button"><i class="uk-icon-pause white"></i></button>
+                                                                <button class="uk-button uk-modal-close"><i class="uk-icon-remove white"></i></button>
+                                                            </div>
+                                                        </td>
+                                                        
+                                                    </tr>
+                                                </table>
+                                                    <div class="uk-grid">
+                                                        <div class="uk-width-medium-1-1">
+                                                            <img src="/img/img1.jpg" width="600">
+                                                        </div>
+                                                    </div>
+                                                     <table>
+                                                    <tr>
+                                                        <td colspan="2" width="600">
+                                                           <ul class="uk-pagination">
+                                                            <li><a href=""><<</a></li>
+                                                            <li class="uk-active"><span>1</span></li>
+                                                            <li ><a href=""><span>2</span></a></li>
+                                                            <li ><a href=""><span>3</span></a></li>
+                                                            <li ><a href=""><span>4</span></a></li>
+                                                            <li><span>>></span></li>
+                                                        </ul>
+                                                        </td> 
+                                                    </tr>
+                                                    </table>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="txt-center" colspan="2" >
+                                        <ul class="uk-pagination">
+                                            <li><a href=""><<</a></li>
+                                            <li class="uk-active" onclick="setChoiceForQuestion('cam1')"><span>1</span></li>
+                                            <li ><a href="" onclick="setChoiceForQuestion('cam2')"><span>2</span></a></li>
+                                            <li ><a href="" onclick="setChoiceForQuestion('cam3')"><span>3</span></a></li>
+                                            <li ><a href="" onclick="setChoiceForQuestion('cam4')"><span>4</span></a></li>
+                                            <li><span>>></span></li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+                       
+            <!--Number Escalation -->   
+            <div class="uk-grid uk-grid-small uk-sortable sortable-handler" data-uk-sortable>
+                <div class="uk-width-5-10" id="ttEsc"  style="display:none;">
+                    <div class="md-card">
+                        <div class="md-card-content" style="height:240px;">
+                             <ul class="uk-tab" data-uk-tab="{connect:'#tabs_1'}">
+                                <li class="uk-active"><a href="#">QRT</a></li>
+                                <li><a href="#">Customers</a></li>
+                                <li><a href="#">Police</a></li>
+                                <li><a href="#">Fire</a></li>
+                            </ul>
+                                    
+                            <ul id="tabs_1" class="uk-switcher">
+                                <li>
+                                    <div class="uk-grid" data-uk-grid-margin>
+                                        <div class="uk-width-medium-1-1">
+                                            <div class="uk-form-row site-esc alarmborder" id="escQRT">
+                                                
+                                            </div>
+                                         </div>                                         
+                                    </div>
+                                </li>
+                                        
+                                <li>      
+                                    <div class="uk-grid" data-uk-grid-margin>
+                                        <div class="uk-width-medium-1-1">
+                                            <div class="uk-form-row site-esc alarmborder" id="escCUST">
+                                                
+                                            </div>
+                                        </div> 
+                                    </div> 
+                                </li>
+                                <li>      
+                                    <div class="uk-grid" data-uk-grid-margin>
+                                        <div class="uk-width-medium-1-1">
+                                            <div class="uk-form-row site-esc alarmborder" id="escPOLICE">
+                                                
+                                            </div>
+                                        </div> 
+                                    </div>
+                                </li>
+                                <li>      
+                                    <div class="uk-grid" data-uk-grid-margin>
+                                        <div class="uk-width-medium-1-1">
+                                            <div class="uk-form-row site-esc alarmborder" id="escFIRE">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>    
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="uk-width-3-10" id="ttPanel"  style="display:none;">
+                    <div class="md-card">
+                        <div class="md-card-content" style="height:240px;">
+                            <ul class="uk-tab" data-uk-tab="{connect:'#tabs_2'}">
+                                <li class="uk-active"><a href="#">TT Status</a></li>
+                                <li id="create-tt"><a href="#" onclick="createTT()">Create TT</a></li>
+                            </ul>
+                                    
+                            <ul id="tabs_2" class="uk-switcher">
+                                <li>
+                                    <div class="uk-grid" data-uk-grid-margin>
+                                        <div class="uk-width-medium-1-1">
+                                            <div class="uk-form-row site-esc alarmborder">
+                                                <div class="uk-form-row" id="ticketlist">*
+                                                </div>
+                                            </div>
+                                        </div>                                         
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="uk-grid" data-uk-grid-margin>
+                                        <div class="uk-width-medium-1-1">
+                                            <div class="uk-form-row site-esc alarmborder">
+                                                <div class="uk-form-row ">
+                                                    <input type="text" class="md-input md-input-small" id="ticketid" name="ticketid" placeholder="TT Number"/>
+                                                </div>
+                                                <div class="uk-form-row ">
+                                                    <select class="md-input md-input-small" name="tpriority" id="tpriority">
+                                                    <option value="Normal" selected>Normal</option>
+                                                    <option value="Low">Low</option>
+                                                    <option value="High">High</option>
+                                                    <option value="Critical">Critical</option>
+                                                </div>
+                                                <div class="uk-form-row">
+                            <textarea placeholder="Description" class="md-input md-input-small" name="ticketdesc" id="ticketdesc"></textarea>
+                                                </div>
+                                                <div class="uk-form-row">
+                                                <button class="md-btn md-btn-success" onclick="submitTroubleTicket()"/>
+                                                        <i class="uk-icon-save white paddingleft"></i>Save
+                                                </div>
+                                            </div>
+                                            </div>
+                                        </div>                                         
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>         
+<!--End Escalation Numbers-->  
+                    
+    </div>
+    </div>
+<!--End page inner-->
+
+<!--Start Script-->
+
+<script src="/js/common.min.js"></script>
+<script src="/js/uikit_custom.min.js"></script>
+<script src="/js/altair_admin_common.min.js"></script>
+
+<script>
+   
+
+        $(document).ready(function(){
+            $("#search").hide();
+
+            $(".searchbtn").click(function(){
+                $("#search").toggle();
+            });
+        });
+        refreshing();
+function refreshing()
+{    tabledata();
+    setInterval(function(){ tabledata(); },5000);
+}
+
+ function tabledata()
+ {
+        $.ajax({
+                url: '/alarm/getdata',
+                type: 'POST',
+                cache: false, 
+                success: function(data){
+                    console.log("data"+data);
+                    console.log(data.datas.length);
+                    render(data);     
+                }
+                ,error: function(jqXHR, textStatus, err){
+                alert('text status '+textStatus+', err '+err);
+                }
+            });
+    }
+     
+      function render(data)
+      {
+        console.log("data"+data);
+     var html  = '<table class="uk-table uk-table-striped uk-table-hover">'+
+                            '<thead><tr>'+
+                            '<th><strong>Alarm</strong></th>'+
+                            '<th><strong>Ack</strong></th>'+    
+                            '<th><strong>Open Time</strong></th>'+
+                            '<th><strong>Site ID</strong></th>'+
+                            '<th><strong>Site Name</strong></th>'+
+                            '<th><strong>Location</strong></th>'+
+                            '<th><strong>AlarmPin</strong></th>'+
+                            '</tr></thead><tbody>';
+            var newcontent = '';
+            for (var i = 0; i < data.datas.length; i++){
+                var siteID = data.datas[i].siteid;
+                var siteclass = "siteid_"+data.datas[i].siteid;
+                var ackid = "ackby_"+data.datas[i].id;
+                //console.log("Site ID:"+siteID);
+                // We store html as a var then add to DOM after for efficiency
+                newcontent += "<tr onclick='test("+'"'+data.datas[i].siteid+'",'+'"'+data.datas[i].id+'",'+'"'+data.datas[i].alarmpin_tt+'",'+'"'+data.datas[i].ackflag+'",'+'"'+data.datas[i].site_videolink+'"'+");'>"+ 
+                           "<td class='username'>";
+                          if(data.datas[i].alarmstatus=='1'){
+                            newcontent += "<i class='uk-icon-circle red'>";
+                          }
+                          newcontent += "</td>"+
+                          "<td id='"+ackid+"'>";
+                          if(data.datas[i].ackflag=='1'){
+                            newcontent +=  "<i class='uk-icon-thumbs-up green' data-uk-tooltip='{pos:'bottom'}' title="+data.datas[i].user_name+">";
+                          }else{
+                            //newcontent += data[i].ackflag;
+                          }
+                          newcontent +="</td>"+
+                          "<td class='password'>"+moment(data.datas[i].opentime).format('DD-MM-YYYY H:mm:ss')+"</td>"+
+                          "<td class='siteid'>"+data.datas[i].siteid+"</td>"+
+                          "<td class='sitename'>"+data.datas[i].site_name+"</td>"+
+                          "<td class='location'>"+data.datas[i].site_address+"</td>"+
+                          "<td class='username'>"+data.datas[i].alarmpin_name+"</td>"+  
+                          "</tr>";
+                //html += '<li>' + data[i].note + '</li>'
+            }
+            //$('#txt').empty().append(newcontent);
+            html += newcontent+'</tbody></table>';
+
+            document.getElementById("alarm-tbl").innerHTML = html;
+        }
+    
+    </script>
+    <script>
+    var userselection = "cam1";
+    var myVar ="";
+    var url = "";
+    var txt = " ";
+    var iframeUrl="";
+    var siteid_var = ""; 
+    var id_var = "";
+    setChoiceForQuestion = function(reqdata){
+        if(reqdata == "STOP"){
+             myStopFunction();
+         }else{
+            userselection = reqdata;
+            myStopFunction();
+            test(txt,ids,alarmtt,url);
+        }    
+    }
+    test = function(siteid,ids,alarmtt,ackflag, url){
+        console.log("Test Triggered :"+url + "AlarmTT :"+alarmtt+ " ID:"+ids+" Siteid:"+siteid);
+        frameUrl="";
+        url = url;
+        txtTitle = " ";
+        siteid_var =  siteid;
+        id = ids;
+        id_var = ids;
+        alarmtt = alarmtt;
+        txtTitle = "Image for the Site : "+ txt;
+        if(userselection=="cam1"){
+             //document.getElementById('r1').checked =true;
+            frameUrl = 'http://admin:admin@'+url+'/cgi-bin/snapshot.cgi?channel=0';
+        }else if(userselection=="cam2"){
+            console.log("cam2 Triggered :"+url);
+             //document.getElementById('r2').checked =true;
+            frameUrl = 'http://admin:admin@'+url+'/cgi-bin/snapshot.cgi?channel=1';
+        }else{
+            //document.getElementById('r3').checked =true;
+            frameUrl = "";
+            myStopFunction();
+        }
+            iframeUrl = frameUrl;
+            document.getElementById("testframe").src = frameUrl;
+            oldframe = iframeUrl;
+            myVar = setInterval(function(){
+            refreshiframe();
+        }, 20000);
+        /* Enable ttPanel, ttEsc */
+        $("#ttEsc").css('display','block');
+        $("#ttPanel").css('display','block');
+        
+        /* QRT, Customer */
+        $.ajax({
+            url: '/alarm/get-compliant',
+            type:'post',
+            cache: false,
+            data: { siteid: siteid_var,sno: id},
+            success: function (data){
+               QRT(data);
+            }
+        });
+        /* Ack */
+        if(ackflag != '1'){    
+            $.ajax({
+                url: '/alarm/update-ack',
+                type:'post',
+                cache: false,
+                data: { siteid: siteid_var,sno: id},
+                success: function (data){
+
+                }
+            }); 
+            $.ajax({
+                url: '/alarm/get-ack',
+                type:'post',
+                cache: false,
+                data: { siteid: siteid_var,sno: id},
+                success: function (data){
+                    $("#ackby_"+id).html("<i class='uk-icon-thumbs-up green' data-uk-tooltip='{pos:'bottom'}' title='"+data[0].user_name+"'>");
+               
+                    //console.log("UserName: "+data[0].user_name);
+                }
+            });
+        }
+        if(alarmtt == '1'){    
+            $("#create-tt").addClass("uk-disabled");
+            $.ajax({
+                url: '/alarm/create-tt',
+                type:'post',
+                cache: false,
+                data: { siteid: siteid_var,alarmtt:alarmtt,sno: id},
+                success: function (data){
+                    viewTT();
+                }
+            });   
+        }else{    
+            viewTT();
+        }         
+    }
+
+    QRT = function(outdata){
+        console.log("output ::"+outdata);
+        
+        var qrtoutput = '<table class="uk-table">';
+        var custoutput = '<table class="uk-table">';
+        var plcoutput = '<table class="uk-table">';
+        var fireoutput = '<table class="uk-table">';
+        for(var i = 0; i < outdata.custdata.length; i++) {
+            if(outdata.custdata[i].title == 'QRT'){
+                if(outdata.custdata[i].person_name != '' && outdata.custdata[i].person_no !=''){
+                    qrtoutput +="<tr>" ;
+                    qrtoutput += "<td><span>"+outdata.custdata[i].person_name+"</span></td>";
+                    qrtoutput += "<td><span>"+outdata.custdata[i].person_mobno+"</span></td>";
+                    qrtoutput += "<td>";
+                    qrtoutput += "<select class='md-input md-input-small' name='qrtcall_"+i+"' id='qrtcall_"+i+"'>";
+                    if(outdata.custdata[i].no_attempt == '2'){
+                        qrtoutput += "<option value='1'>1</option>";
+                        qrtoutput += "<option value='2' selected>2</option>";
+                        qrtoutput += "<option value='3'>3</option>";
+                        qrtoutput += "<option value='4'>4</option>"; 
+                           
+                    }else if(outdata.custdata[i].no_attempt == '3'){
+                        qrtoutput += "<option value='1'>1</option>";
+                        qrtoutput += "<option value='2'>2</option>";
+                        qrtoutput += "<option value='3' selected>3</option>"; 
+                        qrtoutput += "<option value='4'>4</option>";   
+                    }else if(outdata.custdata[i].no_attempt == '4'){
+                        qrtoutput += "<option value='1'>1</option>";
+                        qrtoutput += "<option value='2'>2</option>";
+                        qrtoutput += "<option value='3'>3</option>"; 
+                        qrtoutput += "<option value='4' selected>4</option>";   
+                    }else{
+                        qrtoutput += "<option value='1' selected>1</option>";
+                        qrtoutput += "<option value='2'>2</option>";
+                        qrtoutput += "<option value='3'>3</option>"; 
+                        qrtoutput += "<option value='4'>4</option>";    
+                    } 
+                    qrtoutput += "</select>";
+                    qrtoutput += "</td>";
+                    qrtoutput += "<td>";
+                    qrtoutput += "<select class='md-input md-input-small' name='qrtopt_"+i+"' id='qrtopt_"+i+"'>";
+                
+                    if(outdata.custdata[i].call_status_id == '2'){
+                        qrtoutput += "<option value='1'>Not Answering</option>";  
+                        qrtoutput += "<option value='2' selected>Intimated</option>";
+                        qrtoutput += "<option value='3'>Switched Off</option>";  
+                    }else if(outdata.custdata[i].call_status_id == '3'){
+                        qrtoutput += "<option value='1'>Not Answering</option>";  
+                        qrtoutput += "<option value='2'>Intimated</option>";
+                        qrtoutput += "<option value='3' selected>Switched Off</option>";  
+                    }else{
+                        qrtoutput += "<option value='1' selected>Not Answering</option>";
+                        qrtoutput += "<option value='2'>Intimated</option>";
+                        qrtoutput += "<option value='3'>Switched Off</option>"; 
+                    }     
+                    qrtoutput += "</select>";
+                    qrtoutput += "</td>";
+                    qrtoutput += "<td>";
+                    qrtoutput += "<input type='button' class='esc-btn' value='Update' name='qrtbtn_"+i+"' onClick='Update_Qrt_CallStatus("+""+outdata.custdata[i].compliant_id+","+i+")'>";
+                    qrtoutput += "</td>"
+                    qrtoutput += "</tr>";
+                } 
+            }//QRT if
+
+            //POLICE
+            if(outdata.custdata[i].title == 'POLICE'){
+                if(outdata.custdata[i].person_name != '' && outdata.custdata[i].person_no !=''){
+                    plcoutput +="<tr>" ;
+                    plcoutput += "<td><span>"+outdata.custdata[i].person_name+"</span></td>";
+                    plcoutput += "<td><span>"+outdata.custdata[i].person_mobno+"</span></td>";
+                    plcoutput += "<td>";
+                    plcoutput += "<select class='md-input md-input-small' name='plccall_"+i+"' id='plccall_"+i+"'>";
+                    if(outdata.custdata[i].no_attempt == '2'){
+                        plcoutput += "<option value='1'>1</option>";
+                        plcoutput += "<option value='2' selected>2</option>";
+                        plcoutput += "<option value='3'>3</option>"; 
+                        plcoutput += "<option value='4'>4</option>";      
+                    }else if(outdata.custdata[i].no_attempt == '3'){
+                        plcoutput += "<option value='1'>1</option>";
+                        plcoutput += "<option value='2'>2</option>";
+                        plcoutput += "<option value='3' selected>3</option>";
+                        plcoutput += "<option value='4'>4</option>"; 
+                           
+                    }else if(outdata.custdata[i].no_attempt == '4'){
+                        plcoutput += "<option value='1'>1</option>";
+                        plcoutput += "<option value='2'>2</option>";
+                        plcoutput += "<option value='3'>3</option>"; 
+                        plcoutput += "<option value='4' selected>4</option>";   
+                    }else{
+                        plcoutput += "<option value='1' selected>1</option>";
+                        plcoutput += "<option value='2'>2</option>";
+                        plcoutput += "<option value='3'>3</option>"; 
+                        plcoutput += "<option value='4'>4</option>";    
+                    } 
+                    plcoutput += "</select>";
+                    plcoutput += "</td>";
+                    plcoutput += "<td>";
+                    plcoutput += "<select class='md-input md-input-small' name='plcopt_"+i+"' id='plcopt_"+i+"'>";
+                
+                    if(outdata.custdata[i].call_status_id == '2'){
+                        plcoutput += "<option value='1'>Not Answering</option>";  
+                        plcoutput += "<option value='2' selected>Intimated</option>";
+                        plcoutput += "<option value='3'>Switched Off</option>";  
+                    }else if(outdata.custdata[i].call_status_id == '3'){
+                        plcoutput += "<option value='1'>Not Answering</option>";  
+                        plcoutput += "<option value='2'>Intimated</option>";
+                        plcoutput += "<option value='3' selected>Switched Off</option>";  
+                    }else{
+                        plcoutput += "<option value='1' selected>Not Answering</option>";
+                        plcoutput += "<option value='2'>Intimated</option>";
+                        plcoutput += "<option value='3'>Switched Off</option>"; 
+                    }     
+                    plcoutput += "</select>";
+                    plcoutput += "</td>";
+                    plcoutput += "<td>";
+                    plcoutput += "<input type='button' class='esc-btn' value='Update' name='qrtbtn_"+i+"' onClick='Update_Plc_CallStatus("+""+outdata.custdata[i].compliant_id+","+i+")'>";
+                    plcoutput += "</td>"
+                    plcoutput += "</tr>";
+                } 
+            }//POLICE if
+
+            //CUSTOMER
+            if(outdata.custdata[i].title == 'CUSTOMER'){
+                if(outdata.custdata[i].person_name != '' && outdata.custdata[i].person_no !=''){
+                    custoutput +="<tr>" ;
+                    custoutput += "<td><span>"+outdata.custdata[i].person_name+"</span></td>";
+                    custoutput += "<td><span>"+outdata.custdata[i].person_mobno+"</span></td>";
+                    custoutput += "<td>";
+                    custoutput += "<select class='md-input md-input-small' name='custcall_"+i+"' id='custcall_"+i+"'>";
+                    if(outdata.custdata[i].no_attempt == '2'){
+                        custoutput += "<option value='1'>1</option>";
+                        custoutput += "<option value='2' selected>2</option>";
+                        custoutput += "<option value='3'>3</option>"; 
+                        custoutput += "<option value='4'>4</option>";      
+                    }else if(outdata.custdata[i].no_attempt == '3'){
+                        custoutput += "<option value='1'>1</option>";
+                        custoutput += "<option value='2'>2</option>";
+                        custoutput += "<option value='3' selected>3</option>";
+                        custoutput += "<option value='4'>4</option>"; 
+                           
+                    }else if(outdata.custdata[i].no_attempt == '4'){
+                        custoutput += "<option value='1'>1</option>";
+                        custoutput += "<option value='2'>2</option>";
+                        custoutput += "<option value='3'>3</option>"; 
+                        custoutput += "<option value='4' selected>4</option>";   
+                    }else{
+                        custoutput += "<option value='1' selected>1</option>";
+                        custoutput += "<option value='2'>2</option>";
+                        custoutput += "<option value='3'>3</option>"; 
+                        custoutput += "<option value='4'>4</option>";    
+                    } 
+                    custoutput += "</select>";
+                    custoutput += "</td>";
+                    custoutput += "<td>";
+                    custoutput += "<select class='md-input md-input-small' name='custopt_"+i+"' id='custopt_"+i+"'>";
+                
+                    if(outdata.custdata[i].call_status_id == '2'){
+                        custoutput += "<option value='1'>Not Answering</option>";  
+                        custoutput += "<option value='2' selected>Intimated</option>";
+                        custoutput += "<option value='3'>Switched Off</option>";  
+                    }else if(outdata.custdata[i].call_status_id == '3'){
+                        custoutput += "<option value='1'>Not Answering</option>";  
+                        custoutput += "<option value='2'>Intimated</option>";
+                        custoutput += "<option value='3' selected>Switched Off</option>";  
+                    }else{
+                        custoutput += "<option value='1' selected>Not Answering</option>";
+                        custoutput += "<option value='2'>Intimated</option>";
+                        custoutput += "<option value='3'>Switched Off</option>"; 
+                    }     
+                    custoutput += "</select>";
+                    custoutput += "</td>";
+                    custoutput += "<td>";
+                    custoutput += "<input type='button' class='esc-btn' value='Update' name='qrtbtn_"+i+"' onClick='Update_Cust_CallStatus("+""+outdata.custdata[i].compliant_id+","+i+")'>";
+                    custoutput += "</td>"
+                    custoutput += "</tr>";
+                } 
+            }//CUSTOMER if
+
+            //FIRE
+            if(outdata.custdata[i].title == 'FIRE'){
+                if(outdata.custdata[i].person_name != '' && outdata.custdata[i].person_no !=''){
+                    fireoutput +="<tr>" ;
+                    fireoutput += "<td><span>"+outdata.custdata[i].person_name+"</span></td>";
+                    fireoutput += "<td><span>"+outdata.custdata[i].person_mobno+"</span></td>";
+                    fireoutput += "<td>";
+                    fireoutput += "<select class='md-input md-input-small' name='firecall_"+i+"' id='firecall_"+i+"'>";
+                    if(outdata.custdata[i].no_attempt == '2'){
+                        fireoutput += "<option value='1'>1</option>";
+                        fireoutput += "<option value='2' selected>2</option>";
+                        fireoutput += "<option value='3'>3</option>"; 
+                        fireoutput += "<option value='4'>4</option>";      
+                    }else if(outdata.custdata[i].no_attempt == '3'){
+                        fireoutput += "<option value='1'>1</option>";
+                        fireoutput += "<option value='2'>2</option>";
+                        fireoutput += "<option value='3' selected>3</option>";
+                        fireoutput += "<option value='4'>4</option>"; 
+                           
+                    }else if(outdata.custdata[i].no_attempt == '4'){
+                        fireoutput += "<option value='1'>1</option>";
+                        fireoutput += "<option value='2'>2</option>";
+                        fireoutput += "<option value='3'>3</option>"; 
+                        fireoutput += "<option value='4' selected>4</option>";   
+                    }else{
+                        fireoutput += "<option value='1' selected>1</option>";
+                        fireoutput += "<option value='2'>2</option>";
+                        fireoutput += "<option value='3'>3</option>"; 
+                        fireoutput += "<option value='4'>4</option>";    
+                    } 
+                    fireoutput += "</select>";
+                    fireoutput += "</td>";
+                    fireoutput += "<td>";
+                    fireoutput += "<select class='md-input md-input-small' name='fireopt_"+i+"' id='fireopt_"+i+"'>";
+                
+                    if(outdata.custdata[i].call_status_id == '2'){
+                        fireoutput += "<option value='1'>Not Answering</option>";  
+                        fireoutput += "<option value='2' selected>Intimated</option>";
+                        fireoutput += "<option value='3'>Switched Off</option>";  
+                    }else if(outdata.custdata[i].call_status_id == '3'){
+                        fireoutput += "<option value='1'>Not Answering</option>";  
+                        fireoutput += "<option value='2'>Intimated</option>";
+                        fireoutput += "<option value='3' selected>Switched Off</option>";  
+                    }else{
+                        fireoutput += "<option value='1' selected>Not Answering</option>";
+                        fireoutput += "<option value='2'>Intimated</option>";
+                        fireoutput += "<option value='3'>Switched Off</option>"; 
+                    }     
+                    fireoutput += "</select>";
+                    fireoutput += "</td>";
+                    fireoutput += "<td>";
+                    fireoutput += "<input type='button' class='esc-btn' value='Update' name='qrtbtn_"+i+"' onClick='Update_Fire_CallStatus("+""+outdata.custdata[i].compliant_id+","+i+")'>";
+                    fireoutput += "</td>"
+                    fireoutput += "</tr>";
+                } 
+            }//FIRE if
+        }//for    
+          
+        qrtoutput += '</table>';
+        $("#escQRT").html(qrtoutput);
+        $("#escPOLICE").html(plcoutput);
+        $("#escCUST").html(custoutput);
+        $("#escFIRE").html(fireoutput);
+    }
+    Update_Qrt_CallStatus = function(vn,colid){
+       
+        var callstatus = $("#qrtopt_"+colid).val();
+        var callno = $("#qrtcall_"+colid).val();
+        console.log("ghj"+callno);
+        var compno = vn;
+        $.ajax({
+            url: '/alarm/update-call-status',
+            type:'post',
+            cache: false,
+            data: { siteid: siteid_var,sno: id_var,comp_no: compno,call_status: callstatus,call_cnt: callno},
+            success: function (data){
+               QRT(data);
+            }
+        });
+        //console.log("Data: "+vn+" ColID:"+document.getElementById(colname).value);
+    }
+     Update_Cust_CallStatus = function(vn,colid){
+       
+        var callstatus = $("#custopt_"+colid).val();
+        var callno = $("#custopt_"+colid).val();
+        //console.log("ghj"+callno);
+        var compno = vn;
+        $.ajax({
+            url: '/alarm/update-call-status',
+            type:'post',
+            cache: false,
+            data: { siteid: siteid_var,sno: id_var,comp_no: compno,call_status: callstatus,call_cnt: callno},
+            success: function (data){
+               QRT(data);
+            }
+        });
+        //console.log("Data: "+vn+" ColID:"+document.getElementById(colname).value);
+    }
+    Update_Fire_CallStatus = function(vn,colid){
+       
+        var callstatus = $("#fireopt_"+colid).val();
+        var callno = $("#fireopt_"+colid).val();
+        //console.log("ghj"+callno);
+        var compno = vn;
+        $.ajax({
+            url: '/alarm/update-call-status',
+            type:'post',
+            cache: false,
+            data: { siteid: siteid_var,sno: id_var,comp_no: compno,call_status: callstatus,call_cnt: callno},
+            success: function (data){
+               QRT(data);
+            }
+        });
+        //console.log("Data: "+vn+" ColID:"+document.getElementById(colname).value);
+    }
+    Update_Plc_CallStatus = function(vn,colid){
+       
+        var callstatus = $("#plcopt_"+colid).val();
+        var callno = $("#plccall_"+colid).val();
+        console.log("ghj"+callno);
+        var compno = vn;
+        $.ajax({
+            url: '/alarm/update-call-status',
+            type:'post',
+            cache: false,
+            data: { siteid: siteid_var,sno: id_var,comp_no: compno,call_status: callstatus,call_cnt: callno},
+            success: function (data){
+               QRT(data);
+            }
+        });
+        //console.log("Data: "+vn+" ColID:"+document.getElementById(colname).value);
+    }
+
+
+    createTT = function (){
+        console.log("Create TT Triggered");
+        $.ajax({
+            url: '/alarm/generate-tt',
+            type:'post',
+            cache: false,
+            success: function (data){
+                console.log("Data :"+data.custdata[0].cnt);
+                $("#ticketid").val(data.custdata[0].cnt + 1);    
+            }
+        });    
+    }
+
+    viewTT = function() {
+        console.log("View TT Triggered");
+        $.ajax({
+            url: '/alarm/get-tt',
+            type:'post',
+            cache: false,
+            data: { siteid: siteid_var,sno: id_var},
+            success: function (data){
+                var findata = "<table class='uk-table'><tr><td>TicektID</td><td>Desc</td><td>State</td></tr>";
+                for (var i = 0; i < data.custdata.length; i++) {
+                    findata += "<tr><td>"+data.custdata[i].id+"</td>"+"<td>"+data.custdata[i].ticket_desc+"</td>"+"<td>"+data.custdata[i].ticket_state+"</td></tr>"
+                }
+                $("#ticketlist").html(findata);
+
+
+                /*    $("#ticketlist").html("<li>"+response.data[0].id+"</li>"+"<li>"+response.data[0].ticket_desc+"</li>"+"<li>"+response.data[0].ticket_state+"</li>");*/
+            }
+           
+        });
+    }
+
+    function submitTroubleTicket(){
+        var t_desc = $("#ticketdesc").val();
+        var t_id = $("#ticketid").val();
+        var tp = $("#tpriority").val();
+        $.ajax({
+            url: '/alarm/create-tt',
+            type:'post',
+            cache: false,
+            data: { siteid: siteid_var,alarmtt:'0',tdesc: t_desc, tid: t_id, tpriority: tp,sno: id_var},
+            success: function (data){
+               viewTT();
+            }
+        });    
+    }
+
+    function refreshiframe() {
+        $('#testframe').attr('src', $('#testframe').attr('src'));
+    }
+    function getUserName(iby){
+        console.log("By :"+iby);
+    }
+    function myStopFunction() {
+        clearInterval(myVar);
+    }
+
+
+
+
+</script>
+
+</script>
+</body>
+</html>

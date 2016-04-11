@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+    <link rel="stylesheet" href="/css/style.css" media="all">
+   
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+ 	<!--Top Header-->
+    <% include ../../partials/mainheader %>
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+    
+    <!--Start Content-->
+
+    <div id="page_content">
+        <div id="page_content_inner">
+		<h3 class="heading_b uk-margin-bottom">Section</h3>
+		<form method="POST" class="edit" action="/section/update">
+			<div class="md-card" style="height:auto;  padding:20px;">
+                <div class="uk-grid">
+                  <div class="uk-width-medium-1-2" >
+                    
+    	            <div class="uk-form-row valid" >
+                        <div class="txtlabel">Section Name</div>
+                        <input type="text" class="md-input md-input-success" id="sectionname" name="sectionname" value="<%=data[0].section_name%>" placeholder="Section Name"/><span class="req">*</span>
+                          
+                    </div>
+                  
+                    
+                    <div class="uk-form-row" >   
+                        <input type="hidden" class="md-input md-input-success" id="sid" name="sid" value="<%=data[0].id%>"/>
+                    </div>
+                    <div class="uk-form-row" >
+                       <button type="submit" class="md-btn md-btn-success"><i class="uk-icon-save white paddingleft"></i>Save</button>
+                       <a href="/section" class="md-btn md-btn-success"><i class="uk-icon-remove white paddingleft"></i>Cancel</a>
+                    </div>
+                  </div>
+                </div>    
+			</div>
+		</form>	
+        </div>
+    </div>
+    <!--End Content--> 
+    
+    <!--Start Script-->
+    <% include ../../partials/footer %>
+   
+   
+</body>
+</html>

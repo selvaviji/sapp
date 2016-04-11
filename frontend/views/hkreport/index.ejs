@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+    <script>
+        $(document).ready(function(){
+            $("#search").hide();
+                $(".searchbtn").click(function(){
+                $("#search").toggle();
+            });
+        });
+    
+        console.log("URL :"+window.location.host);
+    </script>    
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+ 
+     <!--Top Header-->
+    <% include ../../partials/mainheader %>
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+
+    <!--Content-->
+    <!--Start Content-->
+
+    <div id="page_content">
+         <div id="ajaxBusy"><p id="ajaxBusyMsg">Please Wait..</p></div>
+        <div id="page_content_inner">
+        <div class="searchbtn"><i class="uk-icon-search"></i></div>
+        <form method="post">
+        <a id="dlink"  style="display:none;"></a>
+            <div class="dwnbtn" id="pdf1" >
+                <a><i class="uk-icon-download padright"></i></a>
+            </div>
+         </form>
+        <h3 class="heading_b uk-margin-bottom">HK Report</h3>
+         <div class="md-card" id="search">
+            <div class="md-card-content">
+                <div class="uk-grid uk-grid-small">
+                    <div class="uk-width-1-4">
+                        <div class="searchlabel">FROM DATE</div>
+                        <input type="text" class="md-input md-input-success" placeholder="From Date" name="fromdate" id="fromdate" value="<%= moment().format('MM-DD-YYYY')+" 00:00:00" %>">
+                    </div>
+
+                    <div class="uk-width-1-4">
+                        <div class="searchlabel">TO DATE</div>
+                        <input type="text" class="md-input md-input-success" placeholder="To Date" name="todate" id="todate" value="<%= moment().format('MM-DD-YYYY HH:mm:ss') %>">
+                    </div>
+                </div>
+                <div class="uk-grid">
+                    <div class="uk-width-1-4" style="">
+                        <button type="button" class="md-btn md-btn-success" id="searchbtn">
+                            <i class="uk-icon-search white padright"></i>Search</button>
+                        <button type="button" class="md-btn md-btn-success" onClick="refreshPage()">
+                            <i class="uk-icon-refresh white padright"></i>Reset</button>
+                    </div>
+                </div>    
+            </div>    
+        </div>    
+        <!--Content Page-->
+        <div class="md-card">
+            <div class="md-card-content">
+                <div class="uk-grid" data-uk-grid-margin>
+                    <div class="uk-width-medium-1-1">
+                        <div id="divTableDataHolder">
+                        <title>House-Keeping Report</title>
+                        <table id="table" cellspacing="10">
+                        
+                           
+                        </table>
+                        </div>
+                       
+   
+                    </div>
+                </div>
+            </div>
+        </div>   
+        <!--End of Content Page-->
+    </div>
+</div>
+
+<!--End Content--> 
+
+
+<!--Start Script-->
+<% include ../../partials/footer %> 
+<script type="text/javascript">
+    $("#fromdate").datetimepicker({showSecond: true,showMillisec: false, timeFormat: 'HH:mm:ss'});
+    $("#todate").datetimepicker({showSecond: true,showMillisec: false,timeFormat: 'HH:mm:ss'});          
+</script>
+<script type="text/javascript" src="/js/export.js"></script>
+<script type="text/javascript" charset="utf-8">
+    
+    var i=0;
+    var siteinfos = [];
+    var rows = 2;
+    var columns = 4;
+  
+    function init(){    
+        var inputdata = {
+            fromdate: document.getElementById("fromdate").value,
+            todate: document.getElementById("todate").value
+        }    
+        $.ajax({
+            beforeSend: function(){
+               $("#ajaxBusy").show();
+            },
+            url: '/hkreport/getSiteInfo',
+            type: 'POST',
+            cache: false, 
+            data: inputdata,
+            success: function(data){
+                siteinfos = data;
+                console.log("Datas :"+JSON.stringify(siteinfos));
+                i=0;
+                render();
+              
+            },error: function(jqXHR, textStatus, err){
+                alert('text status '+textStatus+', err '+err);
+                $("#ajaxBusy").hide();  
+            },complete: function(jqXHR, textStatus, err){
+                //console.log("completed Triggered : "+JSON.stringify(objJSON));
+                $("#ajaxBusy").hide();
+            }
+        }); 
+    }
+        
+    var render = function(){
+        var tablecontents ="";
+        var datalength = siteinfos.length;
+        
+        if (i < datalength) {
+            for (var j = 0; j<datalength ; j++) {
+                console.log("i :"+i +" "+datalength);
+                tablecontents +="<tr>";
+                for(var k = 0; k<columns; k++){
+                    if(i < datalength){
+                        console.log("i ="+i+" L="+datalength);
+                        tablecontents += "<td id=col_"+i+" onClick='deleteColumn("+i+")'><table style='background:#F5F5F5; border:1px solid #E4E4E4;'>";
+                        tablecontents += "<tr><td>";
+                        if(siteinfos[i].status == 'faulty'){
+                           tablecontents += "<img id="+i+" style='width:250px;height:230px;padding:0px; ' src=http://"+window.location.host+'/snapshots/faulty.png'+ ">";     
+                        }else{
+                           tablecontents += "<img id="+i+" style='width:250px;height:230px;padding:0px; ' src=http://"+window.location.host+siteinfos[i].imgpath+ ">" ;
+                        }
+                        
+                        tablecontents += "</td></tr>";
+                        tablecontents += "<tr><td style='vertical-align: text-top; width:240px; margin-bottom: 0px; padding: 5px; background: #F2F7FB; height:145px; font-size:11px; color: #2d7091; border: 1px solid rgba(45, 112, 145, .3);'>";
+                        tablecontents += "<p>Site ID: "+siteinfos[i].siteid+"</p>";
+                        tablecontents += "<p>Site Name: "+siteinfos[i].site_name+"</p>";
+                        tablecontents += "<p>Address: "+siteinfos[i].site_address+"</p>";
+                        tablecontents += "<p>CreatedAt: "+siteinfos[i].createdAt+"</p>";
+                        tablecontents += "<p>Status: "+siteinfos[i].status+"</p>";
+                        tablecontents += "</td></tr>";  
+                        tablecontents += "</table></td>";         
+                        i++;
+                    }    
+                }
+                
+                tablecontents += "</tr>";
+            }  
+            document.getElementById("table").innerHTML = tablecontents;
+        }else{
+            tablecontents +="<tr><td style='width:1%; text-align:center; padding:10px;font-size:16px;'>No Data Found</td></tr>";
+            document.getElementById("table").innerHTML = tablecontents
+        }//if
+    }//end of function
+    
+    $("#searchbtn").click(function(){
+        //console.log("event Triggered");
+        init();    
+    })
+    $("#pdf1").click(function(e){
+       // console.log("PDF event Triggered");
+        //window.open('data:application/html,' + encodeURIComponent( $('div[id$=divTableDataHolder]').html()));
+        //e.preventDefault();
+        //getting values of current time for generating the file name
+        var dt = new Date();
+        var day = dt.getDate();
+        var month = dt.getMonth() + 1;
+        var year = dt.getFullYear();
+        var hour = dt.getHours();
+        var mins = dt.getMinutes();
+        var postfix = day + "." + month + "." + year + "_" + hour + "." + mins;
+        //creating a temporary HTML link element (they support setting file names)
+        var a = document.createElement('a');
+        //getting data from our div that contains the HTML table
+        var data_type = 'data:application/html';
+        var table_div = document.getElementById('divTableDataHolder');
+        var table_html = table_div.outerHTML.replace(/ /g, '%20');
+        a.href = data_type + ', ' + table_html;
+        //setting the file name
+        a.download = 'hkreport_' + postfix + '.html';
+        //triggering the function
+        a.click();
+        //just in case, prevent default behaviour
+        e.preventDefault();
+    
+    });
+    //reset function
+    function refreshPage(){
+        window.location.href="/hkreport";
+    }
+    function deleteColumn(str){
+        if(confirm('Are you sure to delete?')){
+            console.log("Function Triggered :"+str);
+            $("#col_"+str).css("display","none");
+        }else{
+            //alert('False');
+        }
+        
+    }
+
+    var header="HK Report";
+    init();
+</script>           
+</body>
+</html>

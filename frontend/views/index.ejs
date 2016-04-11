@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ../partials/head1 %>
+    <link rel="stylesheet" href="/css/login_page.min.css"/>
+</head>
+<body >
+        
+    <header id="logins_main">
+          <h1></h1>
+    </header>       
+
+    <!--Login Start -->
+    <div class="login_page">
+        <div class="login_page_wrapper">
+            <div class="md-card">
+                
+                <div class="md-card-content large-padding login-style" id="login_form">
+                        <form method="POST" action="login">
+                                <div class="uk-form-row">
+                                    <input class="md-input" placeholder="Username" type="text" id="username" name="username"/>
+                                </div>
+                                <div class="uk-form-row">
+                                     <input class="md-input" type="password" id="password" name="password" placeholder="Password"/>
+                                </div>
+                                <div class="uk-form-row uk-text-danger"><%= message %></div>
+                                <div class="uk-margin-medium-top">
+                                    <button type="submit" class="md-btn md-btn-success">Sign In</button>
+                                </div>
+                                
+                        </form>             
+                </div>
+                <!--End Login Page-->
+                
+               </div>
+        </div>
+    </div>
+ <!--Login End-->
+
+ <!--Scripts-->
+<script src="/js/common.min.js"></script>
+
+<!--Scripts End-->
+</body>
+</html>

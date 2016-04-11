@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+ 
+     <!--Top Header-->
+    <% include ../../partials/mainheader %>
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+
+    <!--Content-->
+    <!--Start Content-->
+
+    <div id="page_content">
+        <div id="page_content_inner">
+        <h3 class="heading_b uk-margin-bottom">Subject List</h3>
+        <!--Content Page-->
+        <div class="md-card">
+            <div class="md-card-content">
+                <div class="uk-grid" data-uk-grid-margin>
+                    <div class="uk-width-medium-1-1">
+                        <table class="display" id="example" width="100%">
+                            <thead>
+                                <tr>
+                                    <th><strong><input type="checkbox" id="chkall" onclick="setCheckboxValues(this);"></strong></th>
+                                    <th><strong>Subject Name</strong></th>
+                                    <th><strong>Created Date</strong></th>
+                                    <th><strong>Updated Date</strong></th>
+                                    <th><strong>Edit</strong></th>
+                                    <th><strong>Delete</strong></th>
+                                </tr>
+                            </thead>
+                            <%  if(JSON.stringify(datas) === '{}'){
+                                    console.log("step-2");
+                                }else{
+                                    datas.forEach(function(d) { %>
+                                        <tr>
+                                            <td>
+                                              <input type="checkbox" name="chkuser[]" value="<%= d.id%>">
+                                            </td>
+                                            <td><%= d.subject_name %></td>
+                                            <td><%= d.created_date %></td>
+                                            <td><%= d.updated_date %></td>
+                                            <td><a href='/subject/edit/<%=d.id%>' class='uk-icon-edit editicon' title='Edit'></td>
+                                            <td><a  href='/subject/delete/<%=d.id%>' onclick='return confirm("Are you sure to delete?")' class='uk-icon-trash editicon'  title='Delete' ></td>
+                                        </tr>
+                                    <% });  
+                                }%>
+                           
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>   
+        <!--End of Content Page-->
+    </div>
+</div>
+
+<!--End Content--> 
+
+
+<!--Start Script-->
+<% include ../../partials/footer %> 
+
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function() {
+        $('#example').DataTable();
+        $('<div class="md-btn md-btn-success "><a href="/subject/add" ><i class="uk-icon-user white paddingleft"></i>Create New</a></div>').appendTo('div.btn1');
+        $('#example')
+        .removeClass( 'display' )
+        .addClass('uk-table uk-table-striped');
+
+    });
+</script>
+
+    
+</body>
+</html>

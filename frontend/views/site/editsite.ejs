@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %> 
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+ 	
+     <!--Top Header-->
+    <% include ../../partials/mainheader %>
+ 
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+
+
+   
+     <!--Content-->
+
+     <!--Start Content-->
+
+<div id="page_content">
+    <div id="page_content_inner">
+		  <h3 class="heading_b uk-margin-bottom">Edit Site</h3>
+		    <form id="form" class="edit" method="post" onsubmit="return sitevalidate()">   
+			    <div class="md-card">
+              <div class="md-card-content" >
+                  <div class="uk-grid">
+                    <div class="uk-width-medium-1-2">
+                     
+                      <div class="uk-form-row" >
+                        <div class="txtlabel">Area Name</div>
+                        <input type="text" class="md-input md-input-success" id="area_name" name="area_name" value="<%=data[0].area_name%>" />
+                      </div>
+                      <div class="uk-form-row" >
+                          <div class="txtlabel">Site Code</div>
+                          <input type="text" class="md-input md-input-success" id="site_code" name="site_code" value="<%=data[0].site_code%>" />
+                      </div>
+    	                <div class="uk-form-row valid" >
+                          <div class="txtlabel">Site Name</div>
+                          <input type="text" class="md-input md-input-success mustdata alpha" id="site_name" name="site_name" value="<%=data[0].site_name%>" /><span class="req">*</span>
+                               
+                      </div>
+                      <div class="uk-form-row">
+                        <div class="txtlabel">Vendor</div>
+                        <select id="site_msp" class="md-input md-input-success" >
+                        </select>
+                      </div>
+                      <div class="uk-form-row" >
+                          <div class="txtlabel">Address</div>
+                          <textarea class="md-input md-input-success" id="site_address" name="site_address"><%=data[0].site_address%></textarea>
+                      </div>
+                      <div class="uk-form-row valid">
+                        <div class="txtlabel">Pincode</div>
+                        <input type="text" class="md-input md-input-success mustdata numeric" id="site_pincode" name="site_pincode" value="<%=data[0].site_pincode%>"/><span class="req">*</span>
+                                
+                      </div>
+                      <div class="uk-form-row">
+                        <div class="txtlabel">Longitude</div>
+                        <input type="text" class="md-input md-input-success" id="site_lng" name="site_lng" value="<%=data[0].site_longitude%>"/>
+                      </div>
+                      <div class="uk-form-row">
+                        <div class="txtlabel">Latitude</div>
+                        <input type="text" class="md-input md-input-success" id="site_lat" name="site_lat" value="<%=data[0].site_latitude%>"/>
+                      </div>
+                    </div>  
+                    <div class="uk-width-medium-1-2">
+                       <div class="uk-form-row" >
+                        <input type="hidden" class="md-input md-input-success" id="customer_id" name="customer_id" value="<%=data[0].customer_id%>" />
+                      </div>  
+                      <div class="uk-form-row">
+                            <input type="text" class="md-input md-input-success" id="no_atm" name="no_atm" value="<%=data[0].no_atm%>" />
+                      </div>
+                      <div class="uk-form-row">
+                        <div class="txtlabel">Video URL</div>
+                        <input type="text" class="md-input md-input-success" id="site_vid" name="site_vid" value="<%=data[0].site_videolink%>"/>
+                      </div>
+                      <div class="uk-form-row">   
+                        <% if(data[0].use_videolink == '0'){ %>
+                        <input type="checkbox" id="chklink" data-md-icheck checked/><span class="paddingright">Use this link</span>
+                        <% }else{ %>
+                             <input type="checkbox" id="chklink" data-md-icheck/><span class="paddingright">Use this link</span>
+                        <% } %>     
+                      </div>  
+                      <div class="uk-form-row">   
+                        <% if(data[0].site_status == '0'){ %>
+                        <input type="checkbox" id="site_status" name="site_status" data-md-icheck checked/><span class="paddingright">Site Status</span>
+                        <% }else{ %>
+                             <input type="checkbox" id="site_status" name="site_status" data-md-icheck/><span class="paddingright">Site Status</span>
+                        <% } %>     
+                      </div>  
+                      <div class="uk-form-row" >
+                        <input type="hidden" class="md-input md-input-success" id="site_id" name="site_id" value="<%=data[0].site_id%>" />
+                      </div>
+                       <div class="uk-form-row"> </div>
+                        <div class="uk-form-row"> </div>
+                        <div class="uk-width-1-1">
+                        <ul class="uk-tab" data-uk-tab="{connect:'#tabs_1'}">
+                            <li class="uk-active"><a href="#">QRT</a></li>
+                            <li><a href="#">Customer</a></li>
+                            <li><a href="#">Police</a></li>
+                            <li><a href="#">Fire</a></li>
+                        </ul>
+                        <ul id="tabs_1" class="uk-switcher uk-margin">
+                          <li>
+                            <div class="uk-grid" data-uk-grid-margin>
+                              
+                               <% for(i=0;i<data.length;i++){
+                                  if(data[i].title == 'QRT'){ %>
+                                  <div class="uk-width-medium-6-10">
+                                  <input id="qrtname[]" name="qrtname[]" type="text" class="md-input md-input-success" value="<%=data[i].person_name%>"/>
+                                  </div>
+                                  <div class="uk-width-medium-4-10">
+                                    <input id="qrtno[]" name="qrtno[]" type="text" class="md-input md-input-success" value="<%=data[i].person_mobno%>"/>
+                                     <input type="hidden" id="qcompno[]" name="qcompno[]" class="md-input md-input-success" value="<%=data[i].compliant_id%>"/>
+                                </div>
+                              <% } } %>
+                            
+                            </div>
+                          </li>
+                          <li>
+                            <div class="uk-grid" data-uk-grid-margin>
+                              
+                                
+                                 <% for(i=0;i<data.length;i++){
+                                  if(data[i].title == 'CUSTOMER'){ %>
+                                  <div class="uk-width-medium-6-10">
+                                  <input type="text" id="cname[]" name="cname[]" class="md-input md-input-success" value="<%=data[i].person_name%>"/>
+                                  </div>
+                                  <div class="uk-width-medium-4-10">
+                                   <input type="text" id="cno[]" name="cno[]" class="md-input md-input-success" value="<%=data[i].person_mobno%>"/>
+                                    <input type="hidden" id="ccompno[]" name="ccompno[]" class="md-input md-input-success" value="<%=data[i].compliant_id%>"/>
+                                </div>
+                                 <% } } %>
+                              
+                            </div>
+                          </li>
+                          <li>
+                            <div class="uk-grid" data-uk-grid-margin>
+                             
+                              <% for(i=0;i<data.length;i++){
+                                  if(data[i].title == 'POLICE'){ %>
+                                 <div class="uk-width-medium-6-10">
+                                  <input type="text" id="pname[]" name="pname[]" class="md-input md-input-success"  value="<%=data[i].person_name%>"/>
+                                  </div>
+                                   <div class="uk-width-medium-4-10">
+                                    <input type="text" id="pno[]" name="pno[]" class="md-input md-input-success" value="<%=data[i].person_mobno%>"/>
+                                     <input type="hidden" id="pcompno[]" name="pcompno[]" class="md-input md-input-success" value="<%=data[i].compliant_id%>"/>
+                                </div>
+                              <% }} %>  
+                           
+                            </div>
+                          </li>
+                          <li>
+                            <div class="uk-grid" data-uk-grid-margin>
+                             
+                               <% for(i=0;i<data.length;i++){
+                                  if(data[i].title == 'FIRE'){ %>
+                                 <div class="uk-width-medium-6-10">
+                                  <input type="text" id="fname[]" name="fname[]" class="md-input md-input-success" value="<%=data[i].person_name%>"/>
+                                </div>
+                                 <div class="uk-width-medium-4-10">  
+                                  <input type="text" id="fno[]" name="fno[]" class="md-input md-input-success" value="<%=data[i].person_mobno%>"/>
+                                  <input type="hidden" id="fcompno[]" name="fcompno[]" class="md-input md-input-success" value="<%=data[i].compliant_id%>"/>
+                                </div>
+                               <% } } %> 
+                            
+                            </div>
+                          </li>
+                        </ul>
+                        </div> 
+                        <div class="uk-form-row text-right">
+                          <button type="button" class="md-btn md-btn-success" onclick="if(sitevalidate() == true){updateSite();}"><i class="uk-icon-save white paddingleft"></i>Save</button>
+                          <button type="button" class="md-btn md-btn-success" onclick="cancelSite();"><i class="uk-icon-remove white paddingleft"></i>Cancel</button>
+                        </div>
+                      </div>
+                    </div>              
+                </div>
+            </div>    
+		      </form>	
+    </div>
+</div>
+
+<!--End Content--> 
+
+
+    <!--Start Script-->
+    <script src="/moment/min/moment.min.js"></script>
+    <script src="/js/uikit_custom.min.js"></script>
+    <script type="text/javascript" src="/js/jsgrid.min.js"></script> 
+    <script src="/js/altair_admin_common.min.js"></script>
+    <script src="/js/export.js"></script>
+    <script>
+        var mspid = 0;
+        mspid = <%=data[0].site_msp%> 
+        function setSelectValue (id, val) {
+            document.getElementById(id).value = val;
+            //document.getElementById('user_type').value = "2";
+            //document.getElementById('user_type').selectedIndex = 3;
+        }
+        $.ajax({
+            url: '/site/msp',
+            type: 'get',
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function(data){
+                    //console.log("Data :"+data.custdata[0].customer_name);
+                var options = '<option value="">--Select Vendor--</option>';
+                for (var i = 0; i < data.custdata.length; i++) {
+                    if(mspid == data.custdata[i].msp_id){
+                          options += '<option value="' + data.custdata[i].msp_id + '" selected>' + data.custdata[i].msp_name + '</option>';
+                    }else{
+                          options += '<option value="' + data.custdata[i].msp_id + '">' + data.custdata[i].msp_name + '</option>';
+                    }    
+                }
+              console.log("options :"+options);
+              $("#site_msp").html(options);
+            }
+        });
+    </script>
+
+    <script type="text/javascript">
+
+    $("#area_name").keyup(function(){
+      alpha1('area_name');
+    });
+    $("#area_name").blur(function(){
+      alpha1('area_name');
+    });
+    $("#site_code").keyup(function(){
+      alpha1('site_code');
+    });
+    $("#site_code").blur(function(){
+      alpha1('site_code');
+    });
+    $("#site_name").keyup(function(){
+      alpha('site_name');
+    });
+    $("#site_name").blur(function(){
+      alpha('site_name');
+    });
+    $("#site_pincode").keyup(function(){
+      num('site_pincode');
+    });
+    $("#site_pincode").blur(function(){
+      num('site_pincode');
+    });
+    /*$("#customer_id").change(function(){
+      drop('customer_id');
+    });*/
+    
+</script>
+</body>
+</html>

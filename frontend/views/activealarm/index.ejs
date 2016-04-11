@@ -1,0 +1,1598 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+    <script src="/moment/min/moment.min.js"></script>
+    <script>
+      var sid = "<%= sess_id %>";
+      var sname = "<%= sess_name %>";
+      //console.log("session id:"+sid+"::session name:"+sname);
+    </script>
+    <!--Filter-->
+    
+    <!--Filter-->
+    <style>
+        
+    </style>
+</head>
+
+<body class="sidebar_main_swipe">
+     <!--Top Header-->
+    <% include ../../partials/mainheader %>
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+
+    <!--Start Content-->
+    <div id="page_content">
+      <div id="ajaxBusy"><p id="ajaxBusyMsg">Please wait...</p></div>
+      <div id="page_content_inner">
+        <!--First Row Start -->
+        <div class="uk-grid uk-grid-small">
+          <div class="uk-width-medium-7-10" id="active-alarm">  
+            <div class="md-card uk-margin-medium-bottom" id="card" style="margin-right:0px;">
+              <div class="md-card-content" style="height:370px;" >
+                <div class="uk-grid">
+                  <% if(sess_id==1 || sess_id==2){%>
+                            <div class="uk-width-3-4" style="visibiity:visible;" >
+                              <div class="customer">
+                                CUSTOMER :
+                                <select id="customer_id" name="customer_id">
+                                </select>
+                              </div>  
+                            </div>
+                  <%}else{ %> 
+                            <div class="uk-width-3-4 customer" style=" visibility:hidden;">
+                              <div class="customer">
+                                CUSTOMER :
+                                <select id="customer_id" name="customer_id">
+                                </select>
+                              </div>  
+                            </div>
+                  <%}%> 
+                  <div class="uk-width-1-4" style="text-align:right;">
+                      Rows Per Page
+                      <select style="width:50px; display:inline"  name="rowsperpageval" id="rowsperpageval">
+                        <% 
+                          for(var i=minRange;i<=maxRange;i=i+stepRange){ %>
+                              <option value=<%= i%>> <%= i%> </option>
+                        <% } %>
+                      </select>
+                  </div> 
+                </div>    
+             
+                            
+                <div class="uk-overflow-container"> 
+                    <input type="text" style="display:none" name="nextval" id="nextval"  >
+                    <input type="text" style="display:none" name="statusvalue" id="statusvalue" >
+                    
+                    <!-- Data Table Area -->
+                    <div id="alarm-tbl"> 
+                    </div>
+                    <!-- End of Data Table Area -->
+
+                    <!-- Pagination Area -->
+                    <ul id="navigation" class="uk-pagination">
+                    </ul>
+                </div>
+              </div>
+            </div>
+          </div>  
+   
+          <!-- Image Area -->
+          <div class="uk-width-medium-3-10" id="active-alarm">
+            <div class="md-card uk-margin-medium-bottom" id="card" style="margin-right:0px;">
+              <div class="md-card-content" style="height:370px;" >
+
+                <div class="tb4"> 
+                <div class="uk-button-group">
+                  <button class="uk-button" onclick="img_s()">
+                    <i class="uk-icon-camera white" data-uk-tooltip="{pos:'bottom'}" title="Image"></i>
+                  </button>
+                  <button class="uk-button" onclick="video_s()">
+                    <i class="uk-icon-video-camera white" data-uk-tooltip="{pos:'bottom'}" title="Video"></i>
+                  </button>
+                   <button class="uk-button" onclick="app_s()"> 
+                    <i class="uk-icon-mobile-phone  white" data-uk-tooltip="{pos:'bottom'}" title="Mobile App"></i>
+                  </button>
+                  <button class="uk-button" onclick="sms_s()"> 
+                    <i class="uk-icon-envelope-o white" data-uk-tooltip="{pos:'bottom'}" title="SMS"></i>
+                  </button>
+                </div>
+              </div>
+
+                <div class="" style="height:340px; overflow-y:hidden;" id="img">
+                  <table width="100%">
+                    <tr>
+                      <td colspan="2">
+                      <div class="txt-center">
+                          <img src="/img/img1.jpg" class="img-sz3" data-uk-modal="{target:'#modal_overflow1'}">
+                      </div>
+                      </td>
+                    </tr>
+                  </table>
+
+                  <ul class="uk-pagination" style="padding-top:5px;">
+                    <li><a href=""><<</a></li>
+                    <li class="uk-active"><span>1</span></li>
+                    <li ><a href=""><span>2</span></a></li>
+                    <li><span>>></span></li>
+                  </ul>
+                </div>
+
+                
+              </div>
+
+            </div>      
+          </div>  
+          <!-- End of Image Area -->
+      </div>
+      <!--End of first Row -->
+      <!-- Dialog Box Start -->
+      <div id="dialog_box" class="mnk-modal-bg" style="display:none">
+            <div id="dbg" class="mnk-modal-box">
+                <i class="uk-icon-exclamation-triangle"  style="color:#757575; padding-right:5px;">
+                </i>Acknowledge?
+                <p class='uk-text-small'>One alarm will be acknowledged.</p>
+                <div class="uk-text-center" style="margin-top:10px;">
+                    <button class="md-btn md-btn-small md-btn-primary" id="ok_btn">
+                        <i class="uk-icon-save" style="padding-right:3px;"></i>Yes
+                    </button>
+                    <button class="md-btn md-btn-small md-btn-danger" id="close_btn" onclick="close()">
+                        <i class="uk-icon-remove" style="padding-right:3px;"></i>No
+                    </button>
+                </div>
+            </div>
+<<<<<<< HEAD
+          </li>
+          <li>      
+            <div class="uk-grid" >
+              <div class="uk-width-medium-1-1">
+                <div class="uk-form-row site-esc alarmborder">
+                  <table class="uk-table">
+                    <tr>
+                      <td><span>Sankeeth</span></td>
+                      <td><span>+91 9485623656</span></td>
+                      <td>
+                        <select class="md-input md-input-success">
+                          <option>Intimated</option>
+                          <option>Not Answering</option>
+                          <option>Switched Off</option>    
+                        </select>
+                      </td>
+                      <td><input type="button" class="md-btn md-btn-success" value="Update"></td>
+                    </tr>
+                    <tr>
+                      <td><span>Gowrish</td>
+                      <td><span>+91 9485623656</span></td>
+                      <td><select class="md-input md-input-success">
+                              <option>Intimated</option>
+                              <option>Not Answering</option>
+                              <option>Switched Off</option>    
+                          </select>
+                      </td>
+                      <td><input type="button" class="md-btn md-btn-success" value="Update"></td>
+                    </tr>
+                    <tr>
+                      <td><span>Naveen</td>
+                      <td><span>+91 9485623656</span></td>
+                      <td><select class="md-input md-input-success">
+                              <option>Intimated</option>
+                              <option>Not Answering</option>
+                              <option>Switched Off</option>  
+                          </select>
+                      </td>
+                      <td><input type="button" class="md-btn md-btn-success" value="Update"></td>
+                    </tr>
+                  </table>
+                </div>
+              </div> 
+            </div> 
+          </li>
+          <li>      
+            <div class="uk-grid" data-uk-grid-margin style="margin-top:15px;">
+              <div class="uk-width-medium-1-1">
+                <div class="uk-form-row site-esc alarmborder">
+                  <table class="uk-table">
+                    <tr>
+                      <td><span>Praveen</span></td>
+                      <td><span>+91 9485623656</span></td>
+                      <td><select class="md-input md-input-success">
+                              <option>Intimated</option>
+                              <option>Not Answering</option>
+                              <option>Switched Off</option>  
+                          </select>
+                      </td>
+                      <td><input type="button" class="md-btn md-btn-success" value="Update"></td>
+                    </tr>
+                    <tr>
+                      <td><span>Jaffar</td>
+                      <td><span>+91 9485623656</span></td>
+                      <td><select class="md-input md-input-success">
+                              <option>Intimated</option>
+                              <option>Not Answering</option>
+                              <option>Switched Off</option>    
+                          </select>
+                      </td>
+                      <td><input type="button" class="md-btn md-btn-success" value="Update"></td>
+                    </tr>
+                    <tr>
+                      <td><span>Loknath</td>
+                      <td><span>+91 9485623656</span></td>
+                      <td><select class="md-input md-input-success">
+                              <option>Intimated</option>
+                              <option>Not Answering</option>
+                              <option>Switched Off</option>  
+                          </select>
+                      </td>
+                      <td><input type="button" class="md-btn md-btn-success" value="Update"></td>
+                    </tr>
+                  </table>
+=======
+        </div>
+        <div id="dialog_box2" class="mnk-modal-bg" style="display:none">
+            <div id="dbg" class="mnk-modal-box">
+                <i class="uk-icon-exclamation-triangle"  style="color:#757575; padding-right:5px;">
+                </i>Already Acknowledged.
+                <div class="uk-text-center" style="margin-top:10px;">
+                    <button class="md-btn md-btn-small md-btn-primary" id="ok_btn2">
+                      <i class="uk-icon-save" style="padding-right:3px;"></i>Ok
+                    </button>
+>>>>>>> e2ef91d86ccd233d59011e2ca0a65ce7a5094458
+                </div>
+            </div>
+        </div>
+        <!-- Dialog Box End -->
+        
+      <!--Number Escalation -->   
+      <div class="uk-grid uk-grid-small">
+        <div class="uk-width-medium-7-10">
+          <div class="md-card">
+            <div class="md-card-content" style="height:210px;">
+              <ul class="uk-tab" data-uk-tab="{connect:'#tabs_1'}">
+                <li class="uk-active"><a href="#">QRT</a></li>
+                <li><a href="#">O&M</a></li>
+                <li><a href="#">Customers</a></li>
+                <li><a href="#">Police</a></li>
+                <li><a href="#">Fire</a></li>
+              </ul>
+                                          
+              <ul id="tabs_1" class="uk-switcher">
+                <li>
+                  <div class="uk-grid" >
+                    <div class="uk-width-medium-1-1">
+                      <div class="uk-form-row site-esc alarmborder">
+                        <table class="uk-table">
+                          <tr>
+                            <td><span>Rajesh</span></td>
+                            <td>
+                              <select class="md-input md-input-success">  
+                                    <option>+91 9485623656</option>
+                                    <option>+91 9965222356</option>
+                                    <option>+91 7894561231</option>   
+                                </select>
+                            </td>
+                            <td><select class="md-input md-input-success">  
+                                    <option>Intimated</option>
+                                    <option>Not Answering</option>
+                                    <option>Switched Off</option>   
+                                </select>
+                            </td>
+                            <td>
+                              <button class="md-btn md-btn-success">
+                                <i class="uk-icon-save white paddingleft"></i>Update
+                              </button>
+                            </td>
+                          </tr>
+                          <tr>
+                              <td><span>Harshvardhan</td>
+                              <td>
+                                <select class="md-input md-input-success">  
+                                      <option>+91 9485623656</option>
+                                      <option>+91 9965222356</option>
+                                      <option>+91 7894561231</option>   
+                                  </select>
+                              </td>
+                              <td><select class="md-input md-input-success">
+                                      <option>Intimated</option>
+                                      <option>Not Answering</option>
+                                      <option>Switched Off</option>    
+                                  </select>
+                              </td>
+                              <td>
+                                <button class="md-btn md-btn-success">
+                                  <i class="uk-icon-save white paddingleft"></i>Update
+                                </button>
+                              </td>
+                          </tr>
+                          <tr>
+                              <td><span>Manjunath</td>
+                              <td>
+                                <select class="md-input md-input-success">  
+                                      <option>+91 9485623656</option>
+                                      <option>+91 9965222356</option>
+                                      <option>+91 7894561231</option>   
+                                  </select>
+                              </td>
+                              <td><select class="md-input md-input-success">
+                                      <option>Intimated</option>
+                                      <option>Not Answering</option>
+                                      <option>Switched Off</option>   
+                                  </select>
+                              </td>
+                              <td>
+                                <button class="md-btn md-btn-success">
+                                  <i class="uk-icon-save white paddingleft"></i>Update
+                                </button>
+                              </td>
+                          </tr>
+                        </table>
+                      </div>
+                    </div>                                         
+                  </div>
+                </li>
+                <li>      
+                  <div class="uk-grid" >
+                    <div class="uk-width-medium-1-1">
+                      <div class="uk-form-row site-esc alarmborder">
+                        <table class="uk-table">
+                          <tr>
+                            <td><span>Sankeeth</span></td>
+                            <td><span>+91 9485623656</span></td>
+                            <td>
+                              <select class="md-input md-input-success">
+                                <option>Intimated</option>
+                                <option>Not Answering</option>
+                                <option>Switched Off</option>    
+                              </select>
+                            </td>
+                            <td><input type="button" class="md-btn md-btn-success" value="Update"></td>
+                          </tr>
+                          <tr>
+                            <td><span>Gowrish</td>
+                            <td><span>+91 9485623656</span></td>
+                            <td><select class="md-input md-input-success">
+                                    <option>Intimated</option>
+                                    <option>Not Answering</option>
+                                    <option>Switched Off</option>    
+                                </select>
+                            </td>
+                            <td><input type="button" class="md-btn md-btn-success" value="Update"></td>
+                          </tr>
+                          <tr>
+                            <td><span>Naveen</td>
+                            <td><span>+91 9485623656</span></td>
+                            <td><select class="md-input md-input-success">
+                                    <option>Intimated</option>
+                                    <option>Not Answering</option>
+                                    <option>Switched Off</option>  
+                                </select>
+                            </td>
+                            <td><input type="button" class="md-btn md-btn-success" value="Update"></td>
+                          </tr>
+                        </table>
+                      </div>
+                    </div> 
+                  </div> 
+                </li>
+                <li>      
+                  <div class="uk-grid" data-uk-grid-margin>
+                    <div class="uk-width-medium-1-1">
+                      <div class="uk-form-row site-esc alarmborder">
+                        <table class="uk-table">
+                          <tr>
+                            <td><span>Praveen</span></td>
+                            <td><span>+91 9485623656</span></td>
+                            <td><select class="md-input md-input-success">
+                                    <option>Intimated</option>
+                                    <option>Not Answering</option>
+                                    <option>Switched Off</option>  
+                                </select>
+                            </td>
+                            <td><input type="button" class="md-btn md-btn-success" value="Update"></td>
+                          </tr>
+                          <tr>
+                            <td><span>Jaffar</td>
+                            <td><span>+91 9485623656</span></td>
+                            <td><select class="md-input md-input-success">
+                                    <option>Intimated</option>
+                                    <option>Not Answering</option>
+                                    <option>Switched Off</option>    
+                                </select>
+                            </td>
+                            <td><input type="button" class="md-btn md-btn-success" value="Update"></td>
+                          </tr>
+                          <tr>
+                            <td><span>Loknath</td>
+                            <td><span>+91 9485623656</span></td>
+                            <td><select class="md-input md-input-success">
+                                    <option>Intimated</option>
+                                    <option>Not Answering</option>
+                                    <option>Switched Off</option>  
+                                </select>
+                            </td>
+                            <td><input type="button" class="md-btn md-btn-success" value="Update"></td>
+                          </tr>
+                        </table>
+                      </div>
+                    </div> 
+                  </div>
+                </li>
+                <li>      
+                  <div class="uk-grid" data-uk-grid-margin>
+                    <div class="uk-width-medium-1-1">
+                      <div class="uk-form-row site-esc alarmborder">
+                        <table class="uk-table">
+                          <tr>
+                              <td><span>Sarabjith</span></td>
+                              <td><span>+91 9485623656</span></td>
+                              <td><select class="md-input md-input-success">
+                                      <option>Intimated</option>
+                                      <option>Not Answering</option>
+                                      <option>Switched Off</option>    
+                                  </select>
+                              </td>
+                              <td><input type="button" class="md-btn md-btn-success" value="Update"></td>
+                          </tr>
+                          <tr>
+                              <td><span>Rajvardhan</td>
+                              <td><span>+91 9485623656</span></td>
+                              <td><select class="md-input md-input-success">
+                                      <option>Intimated</option>
+                                      <option>Not Answering</option>
+                                      <option>Switched Off</option>    
+                                  </select>
+                              </td>
+                              <td><input type="button" class="md-btn md-btn-success" value="Update"></td>
+                          </tr>
+                          <tr>
+                              <td><span>Girish</td>
+                              <td><span>+91 9485623656</span></td>
+                              <td><select class="md-input md-input-success">
+                                      <option>Intimated</option>
+                                      <option>Not Answering</option>
+                                      <option>Switched Off</option>    
+                                  </select>
+                              </td>
+                              <td><input type="button" class="md-btn md-btn-success" value="Update"></td>
+                          </tr>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </li> 
+                <li>      
+                  <div class="uk-grid" data-uk-grid-margin>
+                    <div class="uk-width-medium-1-1">
+                      <div class="uk-form-row site-esc alarmborder">
+                        <table class="uk-table">
+                          <tr>
+                            <td><span>Karthik</span></td>
+                            <td><span>+91 9485623656</span></td>
+                            <td><select class="md-input md-input-success">
+                                    <option>Intimated</option>
+                                    <option>Not Answering</option>
+                                    <option>Switched Off</option>    
+                                </select>
+                            </td>
+                            <td><input type="button" class="md-btn md-btn-success" value="Update"></td>
+                          </tr>
+                          <tr>
+                            <td><span>Rajvardhan</td>
+                            <td><span>+91 9485623656</span></td>
+                            <td><select class="md-input md-input-success">
+                                    <option>Intimated</option>
+                                    <option>Not Answering</option>
+                                    <option>Switched Off</option>    
+                                </select>
+                            </td>
+                            <td><input type="button" class="md-btn md-btn-success" value="Update"></td>
+                          </tr>
+                          <tr>
+                            <td><span>Girish</td>
+                            <td><span>+91 9485623656</span></td>
+                            <td><select class="md-input md-input-success">
+                                    <option>Intimated</option>
+                                    <option>Not Answering</option>
+                                    <option>Switched Off</option>    
+                                </select>
+                            </td>
+                            <td><input type="button" class="md-btn md-btn-success" value="Update"></td>
+                          </tr>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </li>    
+              </ul>
+            </div>
+          </div>
+      </div>
+
+      <!-- Trouble Ticket Start -->
+      <div class="uk-width-medium-3-10" >
+        <div class="md-card">
+          <div class="md-card-content" style="height:210px;">
+            <ul class="uk-tab" data-uk-tab="{connect:'#tabs_2'}">
+              <li><a href="#">TT Status</a></li>
+              <li class="uk-active"><a href="#">Create TT</a></li>
+          </ul>
+                          
+          <ul id="tabs_2" class="uk-switcher">
+            <li>
+              <div class="uk-grid" data-uk-grid-margin>
+                <div class="uk-width-medium-1-1">
+                  <div class="uk-form-row site-esc alarmborder">
+                    <div class="uk-form-row">*</div>
+                  </div>
+                </div>                                         
+              </div>
+            </li>
+            <li>
+              <div class="uk-grid" data-uk-grid-margin>
+                <div class="uk-width-medium-1-1">
+                  <div class="uk-form-row site-esc alarmborder">
+                    <div class="uk-form-row ">
+                      <input type="text" class="md-input md-input-success" id="emp_num" name="emp_num" placeholder="TT Number"/>
+                    </div>
+                    <div class="uk-form-row">
+                      <textarea placeholder="Description" class="md-input md-input-success"></textarea>
+                    </div>
+                    <div class="uk-form-row">
+                      <div class="md-btn md-btn-success"/>
+                        <i class="uk-icon-save white paddingleft"></i>Save
+                      </div>
+                      <div class="md-btn md-btn-success"/>
+                        <i class="uk-icon-save white paddingleft"></i>Send
+                      </div>
+                    </div>
+                  </div>
+                </div>                                         
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+</div>   
+
+</div>
+<!--End of Second Row -->
+
+
+ <!--End Right Sidebar-->
+<script type="text/javascript">
+function img_s()
+{
+  document.getElementById("img").style.display="block";
+  document.getElementById("videos").style.display="none";
+  document.getElementById("msg").style.display="none";
+  document.getElementById("mb_app").style.display="none";
+}
+function video_s()
+{
+  document.getElementById("img").style.display="none";
+  document.getElementById("videos").style.display="block";
+  document.getElementById("msg").style.display="none";
+  document.getElementById("mb_app").style.display="none";
+}
+function sms_s()
+{
+  document.getElementById("img").style.display="none";
+  document.getElementById("videos").style.display="none";
+  document.getElementById("msg").style.display="block";
+  document.getElementById("mb_app").style.display="none";
+}
+function app_s()
+{
+  document.getElementById("img").style.display="none";
+  document.getElementById("videos").style.display="none";
+  document.getElementById("msg").style.display="none";
+  document.getElementById("mb_app").style.display="block";
+}
+
+</script>
+
+
+<!--Start Script-->
+
+<script src="/js/common.min.js"></script>
+<script src="/js/uikit_custom.min.js"></script>
+<script src="/js/altair_admin_common.min.js"></script>
+
+<script>
+   
+    var custid;
+    var currentposition;
+    var endposition;
+    var lastposition;
+    var nextbuttonstatus;
+    var sms_status;
+    var video_status;
+    var session_id = "<%= sess_id %>";
+    //console.log("custid"+custid);
+    $(document).ready(function(){
+        $("#search").hide();
+        $(".searchbtn").click(function(){
+            $("#search").toggle();
+        });
+    });
+
+    refreshing();
+    function refreshing(){   
+        $.ajax({
+            url: '/activealarm/getcustInfo',
+            type:'post',
+            cache: false,
+            success: function (data1){
+                var data=[];
+                var arr1=data1;
+                var options = '<option value="">--ALL--</option>';
+                 for( var i=0;i<arr1.custdata.length;i++) {
+                    if(custid == arr1.custdata[i].customer_id){
+                        options += '<option value="' + arr1.custdata[i].customer_id + '" selected>' + arr1.custdata[i].customer_name + '</option>';    
+                    }else{    
+                        options += '<option value="' + arr1.custdata[i].customer_id + '">' + arr1.custdata[i].customer_name + '</option>';
+                    }
+                }
+                $('#customer_id').html(options);
+            }
+        });    
+        tabledata();
+    }
+
+    function tabledata(){    
+        var customerid=document.getElementById("customer_id").value;
+        var nextval=document.getElementById("nextval").value;
+        var rowsperpageval = document.getElementById("rowsperpageval").value;
+        var statusvalue = document.getElementById("statusvalue").value;
+        console.log("CID :"+customerid+" NextVal="+nextval+" RowsPerPage:"+rowsperpageval+" Status:"+statusvalue);
+        //console.log("nextttttt"+nextval);
+        $.ajax({
+            beforeSend:function(){
+               $('#ajaxBusy').show();
+            },    
+
+            url: '/activealarm/getdata',
+            type: 'POST',
+            cache: false, 
+            data:{custid:customerid,rowsperpageval:rowsperpageval,statusvalue:statusvalue,nextval:nextval},
+            success: function(data){
+                //console.log("Success Triggered");
+                render(data);     
+            },error: function(jqXHR, textStatus, err){
+                //console.log("Error Triggered");
+                //alert('text status '+textStatus+', err '+err);
+                 $('#ajaxBusy').hide();
+            },complete: function(jqXHR, textStatus, err){
+                //console.log("completed Triggered");
+                $('#ajaxBusy').hide();
+            }    
+        });
+    }
+     
+    function render(data){
+        currentposition=data.currentposition;
+        endposition=data.endposition;
+        lastposition=data.lastposition;
+        nextbuttonstatus=data.nextbuttonstatus;
+        sms_status=data.sms;
+        video_status=data.video;
+        //console.log("nextpagevalue......."+data.nextpagevalue);
+        document.getElementById("nextval").value=data.nextpagevalue;
+        //console.log("currentposition"+currentposition+"endposition"+endposition+"nextbuttonstatus"+nextbuttonstatus);
+        //console.log("sms_status"+sms_status);
+        //console.log("video_status"+video_status);
+        var html  = '<table class="uk-table uk-table-striped uk-table-hover">'+
+                            '<thead><tr>'+
+                             '<th><strong>Priority</strong></th>'+   
+                            '<th><strong>Ack</strong></th>'+   
+                            '<th><strong>Open Time</strong></th>';
+        if(session_id=="1"){
+            html += '<th><strong>Customer</strong></th>';
+        }    
+        html += '<th><strong>Site ID</strong></th>'+
+                '<th><strong>Site Name</strong></th>'+
+                '<th><strong>Location</strong></th>'+
+                '<th><strong>Alarm</strong></th>';
+       
+        html+='</tr></thead><tbody>';
+        var newcontent = '';
+        if(data.datas.length>0){
+            for (var i = 0; i < data.datas.length; i++){
+                var siteID = data.datas[i].siteid;
+                var siteclass = "siteid_"+data.datas[i].siteid;
+                var ackid = "ackby_"+data.datas[i].id;
+                var site_address = data.datas[i].site_address;
+                var split_data = site_address.split(",");
+                var alarmpin_priority = data.datas[i].alarmpin_priority;
+                var location="";
+                var priority = "";
+                if(alarmpin_priority == '0'){
+                  priority = "uk-icon-circle red"; //critical
+                }else if(alarmpin_priority == '1'){
+                  priority = "uk-icon-circle green"; //minor
+                }else if(alarmpin_priority == '2'){
+                  priority = "uk-icon-circle blue"; //major
+                }
+                if(split_data.length>1){
+                    location = split_data[0]+",<br/>"+split_data[split_data.length-1];
+                }else{
+                    location = site_address;
+                }
+                //console.log("Site ID:"+siteID);
+                // We store html as a var then add to DOM after for efficiency
+                newcontent += "<tr >"+
+                            "<td><i class='"+priority+"'></i></td>"+
+                            "<td onclick='test("+'"'+data.datas[i].Siteid+'",'+'"'+data.datas[i].site_name+'",'+' "'+data.datas[i].id+'",'+'"'+data.datas[i].user_name+'",'+'"'+data.datas[i].alarmpin_tt+'",'+'"'+data.datas[i].ackflag+'",'+'"'+data.datas[i].use_videolink+'",'+'"'+data.datas[i].site_videolink+'"'+");' id='"+ackid+"'>";
+                if(data.datas[i].ackflag=='1'){
+                    newcontent +=  "<i class='uk-icon-thumbs-up green' data-uk-tooltip='{pos:'bottom'}' title="+data.datas[i].user_name+">";
+                }else{
+                    //newcontent += data[i].ackflag;
+                }
+                newcontent += "</td>"+ 
+                         "<td class='password'>"+moment(data.datas[i].Opentime).format('DD-MM-YYYY H:mm:ss')+"</td>";
+                          if(session_id=="1"){  
+                            newcontent += "<td class='customername'>"+data.datas[i].customer_name+"</td>";
+                          }  
+                          newcontent += "<td class='siteid'>"+data.datas[i].Siteid+"</td>"+
+                          "<td class='sitename'>"+data.datas[i].site_name+"</td>"+
+                          "<td class='siteadd'>"+location+"</td>"+
+                          "<td class='username'>"+data.datas[i].alarmpin_name+"</td>";
+                newcontent+="</tr>";
+            }
+        }
+        html += newcontent+'</tbody></table>';
+        document.getElementById("alarm-tbl").innerHTML = html;
+        pagination();
+    }
+
+    function pagination(){
+            
+            document.getElementById("navigation").innerHTML="";
+            var rownumber=document.getElementById("rowsperpageval").value;
+            var rowsShown = rownumber;
+            rowsShown=parseInt(rowsShown);
+            numberofrecords=100*(rowsShown/10);
+            console.log("rowsShown"+rowsShown);
+            currentposition=parseInt(currentposition);
+            var rowsTotal = $('#alarm-tbl tbody tr').length;
+            console.log("datas are:::"+rowsTotal)
+            if(((currentposition*rowsShown)>numberofrecords) ){
+                    $('#navigation').append('<li><a onclick="previousrecords()" style="display:block" id="previousid" ><span>Prev</span></a></li>');
+                }
+                if((currentposition*rowsShown)<=numberofrecords){
+                    $('#navigation').append('<li ><a onclick="previousrecords()" style="display:none" id="previousid" ><span>Prev</span></a></li>');
+                }
+             if(endposition>1){
+                for(currentposition;currentposition<=endposition;currentposition++) {
+                        //console.log("appending");
+                        var pagenum=currentposition-1;
+                        $('#navigation').append('<li><a href="#" rel="'+pagenum+'">'+currentposition+'</a><li> ');
+                    }
+
+             }
+             
+             if((endposition<lastposition)|| nextbuttonstatus==1)
+             {
+             $('#navigation').append(' <li><a onclick="nextrecords()" style="display:block"><span>Next</span></a></li>');
+            }
+            if((endposition==lastposition) || nextbuttonstatus==0)
+             {
+             $('#navigation').append(' <li><a onclick="nextrecords()" style="display:none"><span>Next</span></a></li>');
+            }
+                $('#alarm-tbl tbody tr').hide();
+                $('#alarm-tbl tbody tr').slice(0, rowsShown).show();
+                $('#navigation a:first').addClass('active');
+                $('#navigation a').bind('click', function(){
+                $('#navigation a').removeClass('active');
+                $(this).addClass('active');
+                var currPage = $(this).attr('rel');
+                //console.log("currentpagepos"+currPage);
+                    if(currPage>10){
+                        var divval=Math.floor(currPage/10,0);
+                        console.log("divval"+divval);
+                        var num=currPage%(10*divval);
+                        console.log("remainder vvalue"+num);
+                        currPage=num;
+                        if(num==0){
+                            currPage=10;
+                        }
+                        console.log("currPage"+currPage);
+                    }
+                    if(currPage==10){
+                        currPage=0;
+                    }
+
+                    var startItem = currPage * rowsShown;
+                    var endItem = startItem + rowsShown;
+                //console.log("startItem"+startItem+"endItem"+endItem);
+                $('#alarm-tbl tbody tr').css('opacity','0.0').hide().slice(startItem, endItem).
+                                    css('display','table-row').animate({opacity:1}, 300);
+                });
+    }
+
+    $("#rowsperpageval").change(function(){
+        statuschange();
+        tabledata();
+    })
+
+    function previousrecords(){
+        document.getElementById("statusvalue").value=1;
+        tabledata();
+    }
+    function nextrecords(){
+        var nextval=document.getElementById("nextval").value;
+        var nextvalue=parseInt(nextval);
+        document.getElementById("nextval").value=nextvalue+numberofrecords;
+        //console.log("after clicking....."+document.getElementById("nextval").value)
+        document.getElementById("statusvalue").value=0;
+        tabledata();
+    }
+
+    function statuschange(){
+        //document.getElementById("nextval").value=numberofrecords*(rowsperpageval/10);
+        document.getElementById("statusvalue").value=2;
+    }
+
+    $("#customer_id").change(function(){
+        document.getElementById("nextval").value="";
+        document.getElementById("rowsperpageval").value="10";
+        document.getElementById("statusvalue").value="";
+        
+        //console.log("customer_id"+document.getElementById("customer_id").value);
+        statuschange();
+        tabledata();
+    });
+
+
+    var checkval;
+    var mob_numbers=[];
+    function showmodal(siteid,sitename,ids,username,alarmtt,ackflag, url){
+        //console.log("Test Triggered :"+ackflag+ "AlarmTT :"+alarmtt+ " ID:"+ids+"UserName"+username+"Siteid:"+siteid);
+        //console.log("modal triggred");
+         $.ajax({
+            url: '/activealarm/get-compliant',
+            type:'post',
+            cache: false,
+            data: { siteid: siteid,sno: ids},
+            success: function (data){
+                //console.log(data);
+              modalcontent(data);
+            }
+        });
+      
+       var modal = UIkit.modal("#modal_overflow1");
+        if ( modal.isActive() ) {
+            modal.hide();
+            } else {
+                modal.show();
+        }
+    }
+
+    function modalcontent(data){
+        //console.log(data.custdata.length);
+        var qrtcontent="<table class='uk-table'>";
+        var customercontent="<table class='uk-table'>";
+         for(var i = 0; i < data.custdata.length; i++) {
+            if(data.custdata[i].title == 'QRT' && data.custdata[i].person_mobno!=""){
+                //console.log("name"+data.custdata[i].person_name);
+              qrtcontent+="<tr><td><input type='checkbox' id='qrt_"+i+"' onchange='addqrtnumbers("+'"'+data.custdata[i].person_mobno+'",'+'"'+i+'"'+")'/></td>"+"<td>"+data.custdata[i].person_name+"</td>"+"<td>"+data.custdata[i].person_mobno+"</td</tr>";
+            }
+            if(data.custdata[i].title == 'CUSTOMER' && data.custdata[i].person_mobno!=""){
+                //console.log("name"+data.custdata[i].person_name);
+              customercontent+="<tr><td><input type='checkbox' id='cust_"+i+"' onchange='addcustnumbers("+'"'+data.custdata[i].person_mobno+'",'+'"'+i+'"'+")'/></td>"+"<td>"+data.custdata[i].person_name+"</td>"+"<td>"+data.custdata[i].person_mobno+"</td</tr>";
+            }
+        }
+        qrtcontent+="</table>";
+        customercontent+="</table>";
+        document.getElementById("QRTcontent").innerHTML=qrtcontent;
+        document.getElementById("customerscontent").innerHTML=customercontent;
+       //console.log(mob_numbers.length);
+        displaymobilenumbersdata();
+    }
+   
+    function addqrtnumbers(mobilenumber,colid){
+        checkval=document.getElementById("qrt_"+colid).checked; 
+        if(checkval==true){
+            var obj={"mob_number":mobilenumber};
+            mob_numbers.push(obj);
+        }else if(checkval==false){
+            for(i=0;i<mob_numbers.length;i++){
+                if(mob_numbers[i].mob_number==mobilenumber){
+                    mob_numbers.splice(i,1);
+                }
+            }
+            checkval=0;
+        }
+        displaymobilenumbersdata();
+    }
+
+    function addcustnumbers(mobilenumber,colid){
+        checkval=document.getElementById("cust_"+colid).checked; 
+        if(checkval==true){
+            var obj={"mob_number":mobilenumber};
+            mob_numbers.push(obj);
+        }else if(checkval==false){
+            for(i=0;i<mob_numbers.length;i++){
+                if(mob_numbers[i].mob_number==mobilenumber){
+                    mob_numbers.splice(i,1);
+                }
+            }
+        }
+        displaymobilenumbersdata();
+    }
+    
+    var text;
+    var number;
+    $("#add_btn").click(function(){
+        number=document.getElementById("add_number").value;
+        if(number!="" && number.length==10){
+            console.log(number);
+            var obj={"mob_number":number};
+            mob_numbers.push(obj);
+            text="";
+            document.getElementById("err").innerHTML=text;
+            displaymobilenumbersdata();
+        }else{
+            text="enter valid data";
+            document.getElementById("err").innerHTML=text;
+        }
+    });
+
+    $("#send_btn").click(function(){
+        var numberstr="numbers="+document.getElementById("add_number").value;
+        var smsurl="http://api.textlocal.in/send?"+
+            "username=ananth.menon%40nisatechsolutions.com&message=Test+message&"+numberstr+"&sender=TXTLCL&hash=f34ba10d16bea04e62478f4d8a2d61e26ad710ba";
+        //console.log("smsurl"+smsurl);
+        $.ajax({
+            url: '/activealarm/send-sms',
+            type:'get',
+            cache: false,
+            
+            success: function (data){
+               console.log(data);
+            }
+        });
+    })
+    
+    $("#add_number").keyup(function(){
+        number=document.getElementById("add_number").value;
+        var re = /^[0-9]+$/;
+        if((re.test(number))){
+           text="";
+            document.getElementById("err").innerHTML=text;
+        }else{
+            text="enter valid data";
+            document.getElementById("err").innerHTML=text; 
+        }
+    });
+    
+    $("#cancel_btn").click(function(){
+       //console.log("length"+mob_numbers.length);
+        while(mob_numbers.length!=0){ 
+            console.log("entered"+i);
+            mob_numbers.pop();
+        }
+        text="";
+        document.getElementById("err").innerHTML=text;
+        //console.log("length"+mob_numbers.length);
+        displaymobilenumbersdata();
+    });
+
+    function displaymobilenumbersdata(){
+        var mobilenumberdata="<table class='uk-table'>";
+        for(i=0;i<mob_numbers.length;i++){
+            mobilenumberdata+="<tr><td>"+mob_numbers[i].mob_number+"</td></tr>";
+        }
+        mobilenumberdata+="</table>";
+        document.getElementById("addnumbers").innerHTML=mobilenumberdata;
+    }
+</script>
+
+<script>
+    var userselection = "cam1";
+    var myVar ="";
+    var url = "";
+    var txt = " ";
+    var iframeUrl="";
+    var siteid_var = ""; 
+    var id_var = "";
+    var videourl="";
+    var image_data;
+    var acknowledge_status=0;
+    test = function(siteid,sitename,ids,username,alarmtt,ackflag,use_videolink,url){
+        
+        var count=0;
+        console.log("AckFlag Value =="+ackflag);
+        ackresponse = getRemote(siteid,ids);
+        console.log("report :"+ackresponse);
+        if(ackresponse === '{}'){ //ackflag==1 || 
+            $("#dialog_box").show();
+            $("#close_btn").click(function(){
+                $("#dialog_box").hide();
+            });
+        }else{ // if(ackflag==0)
+            $("#dialog_box2").show();
+        }
+        console.log("Third Line Triggered");
+        frameUrl="";
+        var rawdataIp;
+        url = url;
+       
+        //console.log("url"+url+"siteid"+siteid);
+         
+        $("#ok_btn").click(function(){
+            $("#dialog_box").hide();
+            if(count<1){
+                acknowledge(siteid,sitename,ids,username,alarmtt,ackflag,use_videolink,url);
+                ticketdisplay(siteid,sitename,ids,username,alarmtt,ackflag,use_videolink,url);
+                count++;
+            }
+        });
+
+        $("#ok_btn2").click(function(){
+            $("#dialog_box2").hide();
+               ticketdisplay(siteid,sitename,ids,username,alarmtt,ackflag,use_videolink,url);
+        });
+    }
+    // Speed up calls to hasOwnProperty
+    var hasOwnProperty = Object.prototype.hasOwnProperty;
+    function isEmpty(obj) {
+
+        // null and undefined are "empty"
+        if (obj == null) return true;
+
+        // Assume if it has a length property with a non-zero value
+        // that that property is correct.
+        if (obj.length > 0)    return false;
+        if (obj.length === 0)  return true;
+
+        // Otherwise, does it have any properties of its own?
+        // Note that this doesn't handle
+        // toString and valueOf enumeration bugs in IE < 9
+        for (var key in obj) {
+            if (hasOwnProperty.call(obj, key)) return false;
+        }
+
+        return true;
+    }
+
+    function getRemote(siteid,ids) {
+        return $.ajax({
+            type: "POST",
+            data: { siteid: siteid,sno: ids},
+            url: '/activealarm/get-ack',
+            async: false
+        }).responseText;
+    }
+    setChoiceForQuestion = function(reqdata){
+       
+        if(reqdata == "STOP"){
+            console.log("stop above");
+             myStopFunction();
+         }else{
+            userselection = reqdata;
+            myStopFunction();
+            imageDisplay(videourl);
+        }    
+    }
+
+    checkImageUrl=function(siteid,sitename,url)
+    {
+        document.getElementById("siteval").innerHTML=sitename;
+        videourl=url;
+        //console.log("url"+url+"siteid"+siteid);
+         if(url=="")
+        {
+            console.log("if triggered"+siteid);
+           $.ajax({
+            url: '/activealarm/get-url',
+            type:'get',
+            cache: false,
+            data: {siteid:siteid},
+            success: function (data){
+                console.log(data);
+                if(data.length>0){
+                    rawdataIp=data[0].IP;
+                    rawdataIp=rawdataIp.slice(7);
+                    url=rawdataIp;
+                    console.log("urlll"+url);
+                    videourl=rawdataIp;
+                    console.log("videourl"+videourl);
+                }
+                imageDisplay(url);
+            }
+        });
+        }
+        else if(url!=""){
+            imageDisplay(url);
+        } 
+    }
+
+    ticketdisplay = function(siteid,sitename,ids,username,alarmtt,ackflag,use_videolink,url){
+        console.log("ticket display entered");
+        alarmtt = alarmtt;
+        siteid_var =  siteid;
+        id = ids;
+        id_var = ids;
+        /* QRT, Customer */
+        $.ajax({
+            url: '/activealarm/get-compliant',
+            type:'post',
+            cache: false,
+            data: { siteid: siteid_var,sno: id},
+            success: function (data){
+                //console.log(data);
+               QRT(data);
+            }
+        });
+
+        if(alarmtt == '1'){ 
+            $.ajax({
+                url: '/activealarm/create-tt',
+                type:'post',
+                cache: false,
+                data: { siteid: siteid_var,alarmtt:alarmtt,sno: id},
+                success: function (data){
+                    viewTT();
+                }
+            });      
+            
+        }else{  
+
+            viewTT();
+        }  
+        $("#ttEsc").css('display','block');
+        $("#ttPanel").css('display','block'); 
+    }
+
+
+    imageDisplay = function(url){
+        console.log("videourl"+videourl);
+        console.log("imageclicked"+url);
+        //console.log("userselection"+userselection);
+        txtTitle = " ";
+        txtTitle = "Image for the Site : "+ txt;
+        if(userselection=="cam1"){
+             //document.getElementById('r1').checked =true;
+            frameUrl = 'http://admin:admin@'+url+'/cgi-bin/snapshot.cgi?channel=0';
+            //console.log("frameUrl"+frameUrl);
+        }else if(userselection=="cam2"){
+            //console.log("cam2 Triggered :"+url);
+             //document.getElementById('r2').checked =true;
+            frameUrl = 'http://admin:admin@'+url+'/cgi-bin/snapshot.cgi?channel=1';
+            //console.log("frameUrl"+frameUrl);
+        }else{
+            //document.getElementById('r3').checked =true;
+            frameUrl = "";
+            myStopFunction();
+        }
+            iframeUrl = frameUrl;
+            document.getElementById("testframe").src = frameUrl;
+            //console.log("site_name"+sitename);
+            oldframe = iframeUrl;
+            image_data= setInterval(function(){
+            refreshiframe();
+        }, 20000);
+            //image_data=myVar;
+        // console.log("siteid"+siteid_var+"id"+id);
+        /* Enable ttPanel, ttEsc */
+       
+    }
+
+    /* Ack */
+    acknowledge = function (siteid,sitename,ids,username,alarmtt,ackflag,use_videolink,url){
+        //console.log("ackflag"+ackflag);
+        if(ackflag != '1'){   
+           console.log("update acknowledge calling above"); 
+            $.ajax({
+                url: '/activealarm/update-ack',
+                type:'post',
+                cache: false,
+                data: { siteid: siteid,sno: ids},
+                async: false,
+                success: function (data){
+                    console.log("siteid"+siteid+"sno"+ids);
+                   
+                }
+            }); 
+           
+             
+            $.ajax({
+                    url: '/activealarm/get-ack',
+                    type:'post',
+                    cache: false,
+                    data: { siteid: siteid,sno: ids},
+                    async: false,
+                    success: function (data){
+                       console.log(data.length);
+                       if(data.length!=undefined)
+                       {
+                         $("#ackby_"+ids).html("<i class='uk-icon-thumbs-up green' data-uk-tooltip='{pos:'bottom'}' title='"+data[0].user_name+"'>");
+                       }
+                       else if(data.length==undefined){
+                        console.log("undefined");
+                       }
+                    }
+                });   
+            
+        }    
+    }
+
+   
+    QRT = function(outdata){
+       // console.log("output ::"+JSON.stringify(outdata));
+        
+        var qrtoutput = '<table class="uk-table">';
+        var custoutput = '<table class="uk-table">';
+        var plcoutput = '<table class="uk-table">';
+        var fireoutput = '<table class="uk-table">';
+        for(var i = 0; i < outdata.custdata.length; i++) {
+            if(outdata.custdata[i].title == 'QRT'){
+
+                if(outdata.custdata[i].person_name != '' && outdata.custdata[i].person_no !=''){
+                    qrtoutput +="<tr>" ;
+                    qrtoutput += "<td><span>"+outdata.custdata[i].person_name+"</span></td>";
+                    qrtoutput += "<td><span>"+outdata.custdata[i].person_mobno+"</span></td>";
+                    qrtoutput += "<td>";
+                    qrtoutput += "<select class='md-input md-input-small' name='qrtcall_"+i+"' id='qrtcall_"+i+"'>";
+
+                    if(outdata.custdata[i].no_attempt == '2'){
+                        qrtoutput += "<option value='1'>1</option>";
+                        qrtoutput += "<option value='2' selected>2</option>";
+                        qrtoutput += "<option value='3'>3</option>";
+                        qrtoutput += "<option value='4'>4</option>"; 
+                           
+                    }else if(outdata.custdata[i].no_attempt == '3'){
+                        qrtoutput += "<option value='1'>1</option>";
+                        qrtoutput += "<option value='2'>2</option>";
+                        qrtoutput += "<option value='3' selected>3</option>"; 
+                        qrtoutput += "<option value='4'>4</option>";   
+                    }else if(outdata.custdata[i].no_attempt == '4'){
+                        qrtoutput += "<option value='1'>1</option>";
+                        qrtoutput += "<option value='2'>2</option>";
+                        qrtoutput += "<option value='3'>3</option>"; 
+                        qrtoutput += "<option value='4' selected>4</option>";   
+                    }else{
+                        qrtoutput += "<option value='1' selected>1</option>";
+                        qrtoutput += "<option value='2'>2</option>";
+                        qrtoutput += "<option value='3'>3</option>"; 
+                        qrtoutput += "<option value='4'>4</option>";    
+                    } 
+                    qrtoutput += "</select>";
+                    qrtoutput += "</td>";
+                    qrtoutput += "<td>";
+                    qrtoutput += "<select class='md-input md-input-small' name='qrtopt_"+i+"' id='qrtopt_"+i+"'>";
+                
+                    if(outdata.custdata[i].call_status_id == '2'){
+                        qrtoutput += "<option value='1'>Not Answering</option>";  
+                        qrtoutput += "<option value='2' selected>Intimated</option>";
+                        qrtoutput += "<option value='3'>Switched Off</option>";  
+                    }else if(outdata.custdata[i].call_status_id == '3'){
+                        qrtoutput += "<option value='1'>Not Answering</option>";  
+                        qrtoutput += "<option value='2'>Intimated</option>";
+                        qrtoutput += "<option value='3' selected>Switched Off</option>";  
+                    }else{
+                        qrtoutput += "<option value='1' selected>Not Answering</option>";
+                        qrtoutput += "<option value='2'>Intimated</option>";
+                        qrtoutput += "<option value='3'>Switched Off</option>"; 
+                    }     
+                    qrtoutput += "</select>";
+                    qrtoutput += "</td>";
+                    qrtoutput += "<td>";
+                    qrtoutput += "<input type='button' class='esc-btn' value='Update' name='qrtbtn_"+i+"' onClick='Update_Qrt_CallStatus("+""+outdata.custdata[i].compliant_id+","+i+")'>";
+                    qrtoutput += "</td>"
+                    qrtoutput += "</tr>";
+                } 
+            }//QRT if
+
+            //POLICE
+            if(outdata.custdata[i].title == 'POLICE'){
+                if(outdata.custdata[i].person_name != '' && outdata.custdata[i].person_no !=''){
+                    plcoutput +="<tr>" ;
+                    plcoutput += "<td><span>"+outdata.custdata[i].person_name+"</span></td>";
+                    plcoutput += "<td><span>"+outdata.custdata[i].person_mobno+"</span></td>";
+                    plcoutput += "<td>";
+                    plcoutput += "<select class='md-input md-input-small' name='plccall_"+i+"' id='plccall_"+i+"'>";
+                    if(outdata.custdata[i].no_attempt == '2'){
+                        plcoutput += "<option value='1'>1</option>";
+                        plcoutput += "<option value='2' selected>2</option>";
+                        plcoutput += "<option value='3'>3</option>"; 
+                        plcoutput += "<option value='4'>4</option>";      
+                    }else if(outdata.custdata[i].no_attempt == '3'){
+                        plcoutput += "<option value='1'>1</option>";
+                        plcoutput += "<option value='2'>2</option>";
+                        plcoutput += "<option value='3' selected>3</option>";
+                        plcoutput += "<option value='4'>4</option>"; 
+                           
+                    }else if(outdata.custdata[i].no_attempt == '4'){
+                        plcoutput += "<option value='1'>1</option>";
+                        plcoutput += "<option value='2'>2</option>";
+                        plcoutput += "<option value='3'>3</option>"; 
+                        plcoutput += "<option value='4' selected>4</option>";   
+                    }else{
+                        plcoutput += "<option value='1' selected>1</option>";
+                        plcoutput += "<option value='2'>2</option>";
+                        plcoutput += "<option value='3'>3</option>"; 
+                        plcoutput += "<option value='4'>4</option>";    
+                    } 
+                    plcoutput += "</select>";
+                    plcoutput += "</td>";
+                    plcoutput += "<td>";
+                    plcoutput += "<select class='md-input md-input-small' name='plcopt_"+i+"' id='plcopt_"+i+"'>";
+                
+                    if(outdata.custdata[i].call_status_id == '2'){
+                        plcoutput += "<option value='1'>Not Answering</option>";  
+                        plcoutput += "<option value='2' selected>Intimated</option>";
+                        plcoutput += "<option value='3'>Switched Off</option>";  
+                    }else if(outdata.custdata[i].call_status_id == '3'){
+                        plcoutput += "<option value='1'>Not Answering</option>";  
+                        plcoutput += "<option value='2'>Intimated</option>";
+                        plcoutput += "<option value='3' selected>Switched Off</option>";  
+                    }else{
+                        plcoutput += "<option value='1' selected>Not Answering</option>";
+                        plcoutput += "<option value='2'>Intimated</option>";
+                        plcoutput += "<option value='3'>Switched Off</option>"; 
+                    }     
+                    plcoutput += "</select>";
+                    plcoutput += "</td>";
+                    plcoutput += "<td>";
+                    plcoutput += "<input type='button' class='esc-btn' value='Update' name='qrtbtn_"+i+"' onClick='Update_Plc_CallStatus("+""+outdata.custdata[i].compliant_id+","+i+")'>";
+                    plcoutput += "</td>"
+                    plcoutput += "</tr>";
+                } 
+            }//POLICE if
+
+            //CUSTOMER
+            if(outdata.custdata[i].title == 'CUSTOMER'){
+                if(outdata.custdata[i].person_name != '' && outdata.custdata[i].person_no !=''){
+                    custoutput +="<tr>" ;
+                    custoutput += "<td><span>"+outdata.custdata[i].person_name+"</span></td>";
+                    custoutput += "<td><span>"+outdata.custdata[i].person_mobno+"</span></td>";
+                    custoutput += "<td>";
+                    custoutput += "<select class='md-input md-input-small' name='custcall_"+i+"' id='custcall_"+i+"'>";
+                    if(outdata.custdata[i].no_attempt == '2'){
+                        custoutput += "<option value='1'>1</option>";
+                        custoutput += "<option value='2' selected>2</option>";
+                        custoutput += "<option value='3'>3</option>"; 
+                        custoutput += "<option value='4'>4</option>";      
+                    }else if(outdata.custdata[i].no_attempt == '3'){
+                        custoutput += "<option value='1'>1</option>";
+                        custoutput += "<option value='2'>2</option>";
+                        custoutput += "<option value='3' selected>3</option>";
+                        custoutput += "<option value='4'>4</option>"; 
+                           
+                    }else if(outdata.custdata[i].no_attempt == '4'){
+                        custoutput += "<option value='1'>1</option>";
+                        custoutput += "<option value='2'>2</option>";
+                        custoutput += "<option value='3'>3</option>"; 
+                        custoutput += "<option value='4' selected>4</option>";   
+                    }else{
+                        custoutput += "<option value='1' selected>1</option>";
+                        custoutput += "<option value='2'>2</option>";
+                        custoutput += "<option value='3'>3</option>"; 
+                        custoutput += "<option value='4'>4</option>";    
+                    } 
+                    custoutput += "</select>";
+                    custoutput += "</td>";
+                    custoutput += "<td>";
+                    custoutput += "<select class='md-input md-input-small' name='custopt_"+i+"' id='custopt_"+i+"'>";
+                
+                    if(outdata.custdata[i].call_status_id == '2'){
+                        custoutput += "<option value='1'>Not Answering</option>";  
+                        custoutput += "<option value='2' selected>Intimated</option>";
+                        custoutput += "<option value='3'>Switched Off</option>";  
+                    }else if(outdata.custdata[i].call_status_id == '3'){
+                        custoutput += "<option value='1'>Not Answering</option>";  
+                        custoutput += "<option value='2'>Intimated</option>";
+                        custoutput += "<option value='3' selected>Switched Off</option>";  
+                    }else{
+                        custoutput += "<option value='1' selected>Not Answering</option>";
+                        custoutput += "<option value='2'>Intimated</option>";
+                        custoutput += "<option value='3'>Switched Off</option>"; 
+                    }     
+                    custoutput += "</select>";
+                    custoutput += "</td>";
+                    custoutput += "<td>";
+                    custoutput += "<input type='button' class='esc-btn' value='Update' name='qrtbtn_"+i+"' onClick='Update_Cust_CallStatus("+""+outdata.custdata[i].compliant_id+","+i+")'>";
+                    custoutput += "</td>"
+                    custoutput += "</tr>";
+                } 
+            }//CUSTOMER if
+
+            //FIRE
+            if(outdata.custdata[i].title == 'FIRE'){
+                if(outdata.custdata[i].person_name != '' && outdata.custdata[i].person_no !=''){
+                    fireoutput +="<tr>" ;
+                    fireoutput += "<td><span>"+outdata.custdata[i].person_name+"</span></td>";
+                    fireoutput += "<td><span>"+outdata.custdata[i].person_mobno+"</span></td>";
+                    fireoutput += "<td>";
+                    fireoutput += "<select class='md-input md-input-small' name='firecall_"+i+"' id='firecall_"+i+"'>";
+                    if(outdata.custdata[i].no_attempt == '2'){
+                        fireoutput += "<option value='1'>1</option>";
+                        fireoutput += "<option value='2' selected>2</option>";
+                        fireoutput += "<option value='3'>3</option>"; 
+                        fireoutput += "<option value='4'>4</option>";      
+                    }else if(outdata.custdata[i].no_attempt == '3'){
+                        fireoutput += "<option value='1'>1</option>";
+                        fireoutput += "<option value='2'>2</option>";
+                        fireoutput += "<option value='3' selected>3</option>";
+                        fireoutput += "<option value='4'>4</option>"; 
+                           
+                    }else if(outdata.custdata[i].no_attempt == '4'){
+                        fireoutput += "<option value='1'>1</option>";
+                        fireoutput += "<option value='2'>2</option>";
+                        fireoutput += "<option value='3'>3</option>"; 
+                        fireoutput += "<option value='4' selected>4</option>";   
+                    }else{
+                        fireoutput += "<option value='1' selected>1</option>";
+                        fireoutput += "<option value='2'>2</option>";
+                        fireoutput += "<option value='3'>3</option>"; 
+                        fireoutput += "<option value='4'>4</option>";    
+                    } 
+                    fireoutput += "</select>";
+                    fireoutput += "</td>";
+                    fireoutput += "<td>";
+                    fireoutput += "<select class='md-input md-input-small' name='fireopt_"+i+"' id='fireopt_"+i+"'>";
+                
+                    if(outdata.custdata[i].call_status_id == '2'){
+                        fireoutput += "<option value='1'>Not Answering</option>";  
+                        fireoutput += "<option value='2' selected>Intimated</option>";
+                        fireoutput += "<option value='3'>Switched Off</option>";  
+                    }else if(outdata.custdata[i].call_status_id == '3'){
+                        fireoutput += "<option value='1'>Not Answering</option>";  
+                        fireoutput += "<option value='2'>Intimated</option>";
+                        fireoutput += "<option value='3' selected>Switched Off</option>";  
+                    }else{
+                        fireoutput += "<option value='1' selected>Not Answering</option>";
+                        fireoutput += "<option value='2'>Intimated</option>";
+                        fireoutput += "<option value='3'>Switched Off</option>"; 
+                    }     
+                    fireoutput += "</select>";
+                    fireoutput += "</td>";
+                    fireoutput += "<td>";
+                    fireoutput += "<input type='button' class='esc-btn' value='Update' name='qrtbtn_"+i+"' onClick='Update_Fire_CallStatus("+""+outdata.custdata[i].compliant_id+","+i+")'>";
+                    fireoutput += "</td>"
+                    fireoutput += "</tr>";
+                } 
+            }//FIRE if
+        }//for    
+          
+        qrtoutput += '</table>';
+        custoutput += '</table>';
+        plcoutput += '</table>';
+        fireoutput += '</table>';
+       // console.log(qrtoutput);
+       // console.log(plcoutput);
+        $("#escQRT").html(qrtoutput);
+        $("#escPOLICE").html(plcoutput);
+        $("#escCUST").html(custoutput);
+        $("#escFIRE").html(fireoutput);
+    }
+    Update_Qrt_CallStatus = function(vn,colid){
+        //console.log("complaintid"+vn+"colid"+colid);
+        var callstatus = $("#qrtopt_"+colid).val();
+        var callno = $("#qrtcall_"+colid).val();
+        //console.log("ghj"+callno);
+        var compno = vn;
+        $.ajax({
+            url: '/activealarm/update-call-status',
+            type:'post',
+            cache: false,
+            data: { siteid: siteid_var,sno: id_var,comp_no: compno,call_status: callstatus,call_cnt: callno},
+            success: function (data){
+               QRT(data);
+            }
+        });
+        //console.log("Data: "+vn+" ColID:"+document.getElementById(colname).value);
+    }
+     Update_Cust_CallStatus = function(vn,colid){
+       
+        var callstatus = $("#custopt_"+colid).val();
+        var callno = $("#custcall_"+colid).val();
+        //console.log("ghj"+callno);
+        var compno = vn;
+        $.ajax({
+            url: '/activealarm/update-call-status',
+            type:'post',
+            cache: false,
+            data: { siteid: siteid_var,sno: id_var,comp_no: compno,call_status: callstatus,call_cnt: callno},
+            success: function (data){
+               QRT(data);
+            }
+        });
+        //console.log("Data: "+vn+" ColID:"+document.getElementById(colname).value);
+    }
+    Update_Fire_CallStatus = function(vn,colid){
+        var callstatus = $("#fireopt_"+colid).val();
+        var callno = $("#firecall_"+colid).val();
+        //console.log("ghj"+callno);
+        var compno = vn;
+        $.ajax({
+            url: '/activealarm/update-call-status',
+            type:'post',
+            cache: false,
+            data: { siteid: siteid_var,sno: id_var,comp_no: compno,call_status: callstatus,call_cnt: callno},
+            success: function (data){
+               QRT(data);
+            }
+        });
+        //console.log("Data: "+vn+" ColID:"+document.getElementById(colname).value);
+    }
+    Update_Plc_CallStatus = function(vn,colid){
+       
+        var callstatus = $("#plcopt_"+colid).val();
+        var callno = $("#plccall_"+colid).val();
+        //console.log("ghj"+callno);
+        var compno = vn;
+        $.ajax({
+            url: '/activealarm/update-call-status',
+            type:'post',
+            cache: false,
+            data: { siteid: siteid_var,sno: id_var,comp_no: compno,call_status: callstatus,call_cnt: callno},
+            success: function (data){
+               QRT(data);
+            }
+        });
+        //console.log("Data: "+vn+" ColID:"+document.getElementById(colname).value);
+    }
+
+    createTT = function (){
+        //console.log("Create TT Triggered");
+        $.ajax({
+            url: '/activealarm/generate-tt',
+            type:'post',
+            cache: false,
+            success: function (data){
+                //console.log("Data :"+data);
+                $("#ticketid").val(data.custdata[0].cnt + 1);    
+            }
+        });    
+    }
+
+    function submitTroubleTicket(){
+        var t_desc = $("#ticketdesc").val();
+        var t_id = $("#ticketid").val();
+        var tp = $("#tpriority").val();
+        $.ajax({
+            url: '/activealarm/create-tt',
+            type:'post',
+            cache: false,
+            data: { siteid: siteid_var,alarmtt:'0',tdesc: t_desc, tid: t_id, tpriority: tp,sno: id_var},
+            success: function (data){
+               viewTT();
+            }
+        });    
+    }
+
+    viewTT = function() {
+        $.ajax({
+            url: '/activealarm/getTT',
+            type:'post',
+            cache: false,
+            data: { siteid: siteid_var,sno: id_var},
+            success: function (data){
+                var findata = "<table class='uk-table'><tr><td>TicektID</td><td>Desc</td><td>State</td></tr>";
+                for (var i = 0; i < data.custdata.length; i++) {
+                    findata += "<tr><td>"+data.custdata[i].ticket_id+"</td>"+"<td>"+data.custdata[i].ticket_desc+"</td>"+"<td>"+data.custdata[i].ticket_state+"</td></tr>"
+                }
+                $("#ticketlist").html(findata);
+            }
+           
+        });
+    }
+
+    function refreshiframe() {
+        $('#testframe').attr('src', $('#testframe').attr('src'));
+    }
+    function getUserName(iby){
+        //console.log("By :"+iby);
+    }
+    function myStopFunction() {
+        //console.log(image_data);
+        clearInterval(image_data);
+    }
+</script>
+
+</body>
+</html>

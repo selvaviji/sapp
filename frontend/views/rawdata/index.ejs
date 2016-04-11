@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+    <script src="/js/common.min.js"></script>
+     <script>
+      var sid = "<%= sess_id %>";
+      var sname = "<%= sess_name %>";
+        $(document).ready(function(){
+            $("#search").hide();
+                $(".searchbtn").click(function(){
+                $("#search").toggle();
+            });
+            $("#fromdate").datepicker();
+            $("#todate").datepicker();     
+        });
+    
+      //console.log("session id:"+sid+"::session name:"+sname);
+    </script>
+    <!--Filter-->
+    
+    <!--Filter-->
+</head>
+
+<body class="sidebar_main_swipe">
+    <!--Top Header-->
+    <% include ../../partials/mainheader %>
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+    <!--Dashboard-->
+        <div id="page_content">
+         <div id="ajaxBusy"><p id="ajaxBusyMsg">Please Wait..</p></div>
+        <div id="page_content_inner">
+        <div class="searchbtn"><i class="uk-icon-search"></i></div>
+        <form method="post">
+            <div class="dwnbtn" id="exl">
+                <a><i class="uk-icon-download padright"></i></a>
+            </div>
+            <div class="dwnbtn" id="pdf" >
+                <a><i class="uk-icon-file-pdf-o padright"></i></a>
+            </div>
+         </form>
+        <h3 class="heading_b uk-margin-bottom">Rawdata</h3>
+        <!--End Dashboard-->
+     <!--Start Content-->
+        <div class="md-card" id="search">
+            <div class="md-card-content">
+                <div class="uk-grid uk-grid-small">
+                    <div class="uk-width-1-4">
+                        <div class="searchlabel">Site ID</div>
+                        <input type="text" class="md-input md-input-success"  name="siteid" id="siteid"  >
+                    </div>
+                                    
+                    <div class="uk-width-1-4">
+                        <div class="searchlabel">FROM DATE</div>
+                        <input type="text" class="md-input md-input-success" placeholder="From Date" name="fromdate" id="fromdate" value="<%= moment().format('MM/DD/YYYY') %>">
+                    </div>
+
+                    <div class="uk-width-1-4">
+                        <div class="searchlabel">TO DATE</div>
+                        <input type="text" class="md-input md-input-success" placeholder="To Date" name="todate" id="todate" value="<%= moment().format('MM/DD/YYYY') %>">
+                    </div>
+                </div>
+                <div class="uk-grid">
+                    <div class="uk-width-1-4" style="">
+                        <button type="button"  class="md-btn md-btn-success" id="searchbtn1">
+                            <i class="uk-icon-search white padright"></i>Search</button>
+                        <button type="button" class="md-btn md-btn-success" onClick="refreshPage()">
+                            <i class="uk-icon-refresh white padright"></i>Reset</button>
+                    </div>
+                </div>    
+            </div>    
+        </div>    
+
+            <div class="uk-width-1-4" style="display:none;">
+             <div class="searchlabel"></div>
+             <input type="text" class="md-input md-input-success"  style="display:none" name="nextval" id="nextval"  >
+           </div>
+
+           <div class="uk-width-1-4" style="display:none;">
+              <div class="searchlabel"></div>
+             <input type="text" class="md-input md-input-success" style="display:none;" name="statusvalue" id="statusvalue" >
+           </div>
+  
+                    <div class="md-card ">
+                        <div class="md-card-content">
+                            <div class="uk-width-1-1" style="text-align:right;">
+                                Rows Per Page
+                                <select style="width:50px; display:inline"  name="rowsperpageval" id="rowsperpageval">
+                                <% for(var i=minRange;i<=maxRange;i=i+stepRange){ %>
+                                <option value=<%= i%>> <%= i%> </option>
+                                <% } %>
+                                </select>
+                            </div> 
+                            <% if(sess_id==1 || sess_id==2){%>
+                                <div class="uk-width-2-10 " style="visibiity:visible;">
+                                    <div class="customer">  CUSTOMER :
+                                     <select id="customer_id" name="customer_id" onClick="changeCustomer()">
+                                     </select></div>
+                                </div>
+                            <%}else{ %> 
+                                <div class="uk-width-2-10 " style=" visibility:hidden;">
+                                     <div class="customer"> CUSTOMER :
+                                    <select id="customer_id" name="customer_id">
+                                    </select></div>
+                                </div>
+                            <%}%> 
+                           
+
+                         
+
+
+                        <!-- Data Table Area -->
+                         <div class="uk-overflow-container" >
+                            <table class="uk-table uk-table-striped uk-table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Site ID</th>
+                                        <th>Serial No</th>
+                                        <th>RTUType</th>
+                                        <th>Prod-Rev</th>
+                                        <th>GPSLat</th>
+                                        <th>GPSLong</th>
+                                        <th>GPSAlt</th>
+                                        <th>RecordingTimeStamp</th>
+                                        <th>RecType</th>
+                                        <th>RecNum</th>
+                                        <th>Di1</th>
+                                        <th>Di2</th>
+                                        <th>Di3</th>
+                                        <th>Di4</th>
+                                        <th>Di5</th>
+                                        <th>Di6</th>
+                                        <th>Di7</th>
+                                        <th>Di8</th>
+                                        <th>Di9</th>
+                                        <th>Di10</th>
+                                        <th>Di11</th>
+                                        <th>Di12</th>
+                                        <th>Di13</th>
+                                        <th>Di14</th>
+                                        <th>Di15</th>
+                                        <th>Di16</th>
+                                        <th>Di17</th>
+                                        <th>Di18</th>
+                                        <th>Di19</th>
+                                        <th>Di20</th>
+                                        <th>Do1</th>
+                                        <th>Do2</th>
+                                        <th>Do3</th>
+                                        <th>Do4</th>
+                                        <th>Do5</th>
+                                        <th>Do6</th>
+                                        <th>Do7</th>
+                                        <th>Do8</th>
+                                        <th>RTD1</th>
+                                        <th>RTD2</th>
+                                        <th>Ai1</th>
+                                        <th>Ai2</th>
+                                        <th>Ai3</th>
+                                        <th>Ai4</th>
+                                        <th>Ai5</th>
+                                        <th>Ai6</th>
+                                        <th>Ai7</th>
+                                        <th>Ai8</th>
+                                        <th>HealthErrCode</th>
+                                        <th>OnboardTemp</th>
+                                        <th>EDI21</th>
+                                        <th>EDI22</th>
+                                        <th>EDI23</th>
+                                        <th>EDI24</th>
+                                        <th>EDI25</th>
+                                        <th>EDI26</th>
+                                        <th>EDI27</th>
+                                        <th>EDI28</th>
+                                        <th>EDI29</th>
+                                        <th>EDI30</th>
+                                        <th>EDI31</th>
+                                        <th>EDI32</th>
+                                        <th>EDI33</th>
+                                        <th>EDI34</th>
+                                        <th>EDI35</th>
+                                        <th>EDI36</th>
+                                        <th>EDI37</th>
+                                        <th>EDI38</th>
+                                        <th>EDI39</th>
+                                        <th>EDI40</th>
+                                        <th>Da1</th>
+                                        <th>Da2</th>
+                                        <th>Da3</th>
+                                        <th>Da4</th>
+                                        <th>Da5</th>
+                                        <th>Da6</th>
+                                        <th>Da7</th>
+                                        <th>Da8</th>
+                                        <th>Da9</th>
+                                        <th>Da10</th>
+                                        <th>Da11</th>
+                                        <th>Da12</th>
+                                        <th>Da13</th>
+                                        <th>Da14</th>
+                                        <th>Da15</th>
+                                        <th>Da16</th>
+                                        <th>Da17</th>
+                                        <th>Da18</th>
+                                        <th>Da19</th>
+                                        <th>Da20</th>
+                                        <th>Da21</th>
+                                        <th>Da22</th>
+                                        <th>Da23</th>
+                                        <th>Da24</th>
+                                        <th>Da25</th>
+                                        <th>Da26</th>
+                                        <th>Da27</th>
+                                        <th>Da28</th>
+                                        <th>Da29</th>
+                                        <th>Da30</th>
+                                        <th>ApiKey</th>
+                                        <th>IP</th>
+                                        <th>ID</th>
+                                        <th>Created At</th>
+                                        <th>Upadated At</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="alarm-tbl">
+                                </tbody>
+                            </table> 
+                         </div>
+                        <!-- End of Data Table Area -->
+
+                        <!-- Pagination Area -->
+                         <ul id="navigation" class="uk-pagination">
+                         </ul>
+                        <!-- End of Pagination -->
+                    </div> 
+                </div>
+                <div class="uk-overflow-container " id="k1" style="visibility: hidden"  ></div>       
+            </div>   
+
+    
+<!--End page inner-->
+
+<!--Start Script-->
+<script src="/moment/min/moment.min.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/js/uikit_custom.min.js"></script>
+<script src="/js/altair_admin_common.min.js"></script>
+<script src="/js/pagination.js"></script>
+<script>
+   
+    var custid;
+    var siteid;
+    var session_id = "<%= sess_id %>";
+    var currentposition;
+    var endposition;
+    var lastposition;
+    var nextbuttonstatus;
+    refreshing();
+    
+
+    function refreshing(){  
+
+        //siteid combo
+        $.ajax({
+            url: '/common/getsiteinfo',
+            type:'get',
+            cache: false,
+            success: function (data1){
+                var data=[];
+                var arr2=data1;
+                for( var i=0;i<arr2.custdata.length;i++) {
+                    var obj={"value":arr2.custdata[i].site_code,"label":arr2.custdata[i].site_code};
+                    data.push(obj);
+                }renderSiteCombo(data);                  
+            }
+        });
+
+
+       //customer combo     
+        $.ajax({
+            url: '/common/getcustInfo',
+            type:'post',
+            cache: false,
+            success: function (data1){
+                var data=[];
+                var arr1=data1;
+                var options = '<option value="">--ALL--</option>';
+                 for( var i=0;i<arr1.custdata.length;i++) {
+                    if(custid == arr1.custdata[i].customer_id){
+                        options += '<option value="' + arr1.custdata[i].customer_id + '" selected>' + arr1.custdata[i].customer_name + '</option>';    
+                    }else{    
+                        options += '<option value="' + arr1.custdata[i].customer_id + '">' + arr1.custdata[i].customer_name + '</option>';
+                    }
+                }
+                $('#customer_id').html(options);
+            }
+        });
+        
+        tabledata();
+    }
+
+  
+    //site combo function
+    function renderSiteCombo(data){
+        $("#siteid").autocomplete({
+                    source: data,
+                    minLength: -1,
+        });
+    }
+
+
+    //Function for change of siteID based on customer selection
+    function changeCustomer(){
+        var customerid=document.getElementById("customer_id").value;
+        $.ajax({
+            url:'/common/getsiteinfo',
+            type:'get',
+            cache:false,
+            data:{custid:customerid},
+            success:function(data1){
+                var data=[];
+                var arr2=data1;
+                for(var i=0;i<arr2.custdata.length;i++){
+                    var obj={"value":arr2.custdata[i].site_code,"label":arr2.custdata[i].site_code};
+                    data.push(obj);
+                }renderSiteCombo(data); 
+            }
+        });    
+    }
+
+    //getdata function
+    function tabledata(){    
+        var customerid=document.getElementById("customer_id").value;
+        var siteid=document.getElementById("siteid").value;
+        var nextval=document.getElementById("nextval").value;
+        var fromdate=document.getElementById("fromdate").value;
+        var todate=document.getElementById("todate").value;
+        
+         $.ajax({
+            beforesend:function(){
+                $('#ajaxBusy').show();
+            },
+            url: '/rawdata/getdata',
+            type: 'post',
+            cache: false, 
+            data:{siteid:siteid,fromdate:fromdate,todate:todate,custid:customerid,rowsperpageval:document.getElementById("rowsperpageval").value,statusvalue:document.getElementById("statusvalue").value,nextval:document.getElementById("nextval").value},
+            success: function(data){
+                render(data);
+                $("#exl").click(function(){
+                    JSONToCSVConvertor(data.datas);
+                });
+                 $("#exl").unbind().click(function() {
+                     JSONToCSVConvertor(data.datas);
+                });    
+                $("#pdf").click(function(){
+                    JSONToPDF(data.datas);
+                });
+                $("#pdf").unbind().click(function() {
+                    JSONToPDF(data.datas);
+                });
+            },error: function(jqXHR, textStatus, err){
+                alert('text status '+textStatus+', err '+err);
+                $('#ajaxBusy').hide();
+            },complete: function(jqXHR,textStatus,err){
+                $('#ajaxBusy').hide();
+            }
+        });
+    }
+     
+    //render function start
+    function render(data){
+        currentposition=data.currentposition;
+        endposition=data.endposition;
+        lastposition=data.lastposition;
+        nextbuttonstatus=data.nextbuttonstatus;
+
+        document.getElementById("nextval").value=data.nextpagevalue;
+        var newcontent = '';
+        var outageDatas=data.datas;
+        //console.log("outagedatas=="+JSON.stringify(outageDatas));
+        if(data.datas.length>0){
+            for (var i = 0; i < data.datas.length; i++){
+
+              newcontent += "<tr><td >"+outageDatas[i].Siteid+"</td>"+
+                            "<td align='center'>"+outageDatas[i].SerialNo+"</td>"+
+                            "<td align='center'>"+outageDatas[i].RTUtype+"</td>"+
+                            "<td align='center'>"+outageDatas[i].ProductRevision+"</td>"+
+                            "<td align='center'>"+outageDatas[i].GPSLat+"</td>"+
+                            "<td align='center'>"+outageDatas[i].GPSLong+"</td>"+
+                            "<td align='center'>"+outageDatas[i].GPSAlt+"</td>"+
+                            "<td>"+moment(outageDatas[i].RecordingTimeStamp).format('DD-MM-YYYY H:mm:ss')+"</td>";
+                            if(outageDatas[i].RecordType == '0'){
+                                newcontent+="<td><i class='uk-icon-clock-o orange' title='Periodic'></i></td>";
+                            }else{
+                                newcontent+="<td><i class='uk-icon-exclamation-triangle orange' title='Alarm'></i></td>";
+                            }
+                            newcontent+="<td align='center'>"+outageDatas[i].RecordNum+"</td>" ;
+                            if(outageDatas[i].Di1=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Di1=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Di1=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Di1=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Di1=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+
+                            if(outageDatas[i].Di2=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Di2=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Di2=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Di2=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Di2=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+
+                            if(outageDatas[i].Di3=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Di3=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Di3=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Di3=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Di3=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+
+                            if(outageDatas[i].Di4=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Di4=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Di4=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Di4=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Di4=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+
+                            if(outageDatas[i].Di5=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Di5=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Di5=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Di5=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Di5=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+
+                            if(outageDatas[i].Di6=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Di6=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Di6=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Di6=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Di6=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                             if(outageDatas[i].Di7=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Di7=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Di7=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Di7=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Di7=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].Di8=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Di8=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Di8=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Di8=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Di8=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].Di9=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Di9=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Di9=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Di9=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Di9=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].Di10=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Di10=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Di10=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Di10=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Di10=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                             if(outageDatas[i].Di11=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Di11=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Di11=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Di11=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Di11=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                             if(outageDatas[i].Di12=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Di12=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Di12=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Di12=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Di12=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].Di13=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Di13=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Di13=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Di13=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Di13=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].Di14=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Di14=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Di14=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Di14=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Di14=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].Di15=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Di15=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Di15=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Di15=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Di15=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].Di16=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Di16=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Di16=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Di16=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Di16=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].Di17=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Di17=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Di17=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Di17=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Di17=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}                                                                          
+
+                            if(outageDatas[i].Di18=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Di18=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Di18=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Di18=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Di18=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].Di19=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Di19=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Di19=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Di19=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Di19=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].Di20=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Di20=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Di20=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Di20=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Di20=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}        
+                            if(outageDatas[i].Do1=='0'){
+                                newcontent+="<td><i class='uk-icon-power-off green' title='OFF'></td>";} 
+                            else if(outageDatas[i].Do1=='1'){
+                                newcontent+="<td><i class='uk-icon-power-off red' title='ON'></td>";} 
+
+                            if(outageDatas[i].Do2=='0'){
+                                newcontent+="<td><i class='uk-icon-power-off green' title='OFF'></td>";} 
+                            else if(outageDatas[i].Do2=='1'){
+                                newcontent+="<td><i class='uk-icon-power-off red' title='ON'></td>";} 
+                                
+                            if(outageDatas[i].Do3=='0'){
+                                newcontent+="<td><i class='uk-icon-power-off green' title='OFF'></td>";} 
+                            else if(outageDatas[i].Do3=='1'){
+                                newcontent+="<td><i class='uk-icon-power-off red' title='ON'></td>";} 
+                                
+                            if(outageDatas[i].Do4=='0'){
+                                newcontent+="<td><i class='uk-icon-power-off green' title='OFF'></td>";} 
+                            else if(outageDatas[i].Do4=='1'){
+                                newcontent+="<td><i class='uk-icon-power-off red' title='ON'></td>";} 
+                                
+                            if(outageDatas[i].Do5=='0'){
+                                newcontent+="<td><i class='uk-icon-power-off green' title='OFF'></td>";} 
+                            else if(outageDatas[i].Do5=='1'){
+                                newcontent+="<td><i class='uk-icon-power-off red' title='ON'></td>";} 
+                                
+                            if(outageDatas[i].Do6=='0'){
+                                newcontent+="<td><i class='uk-icon-power-off green' title='OFF'></td>";} 
+                            else if(outageDatas[i].Do6=='1'){
+                                newcontent+="<td><i class='uk-icon-power-off red' title='ON'></td>";} 
+                                
+                            if(outageDatas[i].Do7=='0'){
+                                newcontent+="<td><i class='uk-icon-power-off green' title='OFF'></td>";} 
+                            else if(outageDatas[i].Do7=='1'){
+                                newcontent+="<td><i class='uk-icon-power-off red' title='ON'></td>";} 
+                                
+                            if(outageDatas[i].Do8=='0'){
+                                newcontent+="<td><i class='uk-icon-power-off green' title='OFF'></td>";} 
+                            else if(outageDatas[i].Do8=='1'){
+                                newcontent+="<td><i class='uk-icon-power-off red' title='ON'></td>";}
+
+                            newcontent+="<td>"+outageDatas[i].RTD1+"</td>"+
+                                        "<td>"+outageDatas[i].RTD2+"</td>"+
+                                        "<td>"+outageDatas[i].Ai1+"</td>"+
+                                        "<td>"+outageDatas[i].Ai2+"</td>"+
+                                        "<td>"+outageDatas[i].Ai3+"</td>"+
+                                        "<td>"+outageDatas[i].Ai4+"</td>"+
+                                        "<td>"+outageDatas[i].Ai5+"</td>"+
+                                        "<td>"+outageDatas[i].Ai6+"</td>"+
+                                        "<td>"+outageDatas[i].Ai7+"</td>"+
+                                        "<td>"+outageDatas[i].Ai8+"</td>"+
+                                        "<td align='center'>"+outageDatas[i].HealtherrorCode+"</td>"+
+                                        "<td align='center'>"+outageDatas[i].OnboardTemp+"</td>";                      
+                            if(outageDatas[i].EDI21=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].EDI21=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].EDI21=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].EDI21=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].EDI21=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+
+                            
+                            if(outageDatas[i].EDI22=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].EDI22=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].EDI22=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].EDI22=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].EDI22=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                             if(outageDatas[i].EDI23=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].EDI23=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].EDI23=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].EDI23=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].EDI23=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                             if(outageDatas[i].EDI24=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].EDI24=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].EDI24=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].EDI24=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].EDI24=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].EDI25=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].EDI25=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].EDI25=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].EDI25=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].EDI25=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].EDI26=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].EDI26=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].EDI26=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].EDI26=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].EDI26=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].EDI27=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].EDI27=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].EDI27=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].EDI27=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].EDI27=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].EDI28=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].EDI28=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].EDI28=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].EDI28=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].EDI28=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].EDI29=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].EDI29=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].EDI29=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].EDI29=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].EDI29=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}                                                                          
+
+                            if(outageDatas[i].EDI30=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].EDI30=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].EDI30=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].EDI30=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].EDI30=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].EDI31=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].EDI31=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].EDI31=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].EDI31=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].EDI31=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                           
+
+                               if(outageDatas[i].EDI32=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].EDI32=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].EDI32=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].EDI32=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].EDI32=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+
+                           
+                            if(outageDatas[i].EDI33=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].EDI33=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].EDI33=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].EDI33=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].EDI33=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                             if(outageDatas[i].EDI34=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].EDI34=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].EDI34=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].EDI34=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].EDI34=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                             if(outageDatas[i].EDI35=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].EDI35=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].EDI35=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].EDI35=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].EDI35=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].EDI36=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].EDI36=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].EDI36=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].EDI36=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].EDI36=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].EDI37=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].EDI37=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].EDI37=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].EDI37=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].EDI37=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].EDI38=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].EDI38=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].EDI38=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].EDI38=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].EDI38=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].EDI39=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].EDI39=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].EDI39=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].EDI39=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].EDI39=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].EDI40=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].EDI40=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].EDI40=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].EDI40=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].EDI40=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}                                                                          
+
+                           if(outageDatas[i].Da1=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Da1=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Da1=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Da1=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Da1=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+
+                            
+                            if(outageDatas[i].Da2=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Da2=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Da2=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Da2=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Da2=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                             if(outageDatas[i].Da3=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Da3=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Da3=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Da3=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Da3=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                             if(outageDatas[i].Da4=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Da4=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Da4=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Da4=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Da4=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].Da5=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Da5=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Da5=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Da5=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Da5=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].Da6=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Da6=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Da6=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Da6=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Da6=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].Da7=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Da7=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Da7=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Da7=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Da7=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].Da8=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Da8=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Da8=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Da8=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Da8=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].Da9=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Da9=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Da9=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Da9=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Da9=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}                                                                          
+
+                            if(outageDatas[i].Da10=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Da10=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Da10=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Da10=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Da10=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+
+                            
+                            if(outageDatas[i].Da11=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Da11=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Da11=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Da11=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Da11=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+
+                            
+                            if(outageDatas[i].Da12=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Da12=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Da12=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Da12=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Da12=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                             if(outageDatas[i].Da13=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Da13=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Da13=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Da13=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Da13=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                             if(outageDatas[i].Da14=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Da14=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Da14=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Da14=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Da14=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].Da15=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Da15=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Da15=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Da15=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Da15=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].Da16=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Da16=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Da16=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Da16=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Da16=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].Da17=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Da17=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Da17=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Da17=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Da17=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].Da18=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Da18=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Da18=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Da18=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Da18=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].Da19=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Da19=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Da19=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Da19=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Da19=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}                      
+                                     
+                             if(outageDatas[i].Da20=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Da20=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Da20=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Da20=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Da20=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                            if(outageDatas[i].Da21=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Da21=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Da21=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Da21=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Da21=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+
+                            
+                            if(outageDatas[i].Da22=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Da22=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Da22=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Da22=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Da22=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                             if(outageDatas[i].Da23=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Da23=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Da23=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Da23=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Da23=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                             if(outageDatas[i].Da24=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Da24=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Da24=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Da24=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Da24=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].Da25=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Da25=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Da25=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Da25=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Da25=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].Da26=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Da26=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Da26=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Da26=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Da26=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].Da27=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Da27=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Da27=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Da27=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Da27=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].Da28=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Da28=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Da28=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Da28=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Da28=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            if(outageDatas[i].Da29=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Da29=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Da29=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Da29=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Da29=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}                                                                          
+
+                            if(outageDatas[i].Da30=='0'){ newcontent+="<td><i class='uk-icon-bell red' title='Alarm'></td>";}
+                            else if(outageDatas[i].Da30=='1'){ newcontent+="<td><i class='uk-icon-thumbs-up green' title='Normal'></td>";}
+                            else if(outageDatas[i].Da30=='2'){
+                                newcontent+="<td><i class='uk-icon-bell blue' title='Alarm Open'></td>";}
+                            else if(outageDatas[i].Da30=='3'){
+                                newcontent+="<td><i class='uk-icon-bell green' title='Alarm Closed'></td>";}
+                            else if(outageDatas[i].Da30=='4'){
+                               newcontent+="<td><i class='uk-icon-remove iconblack' title='Not Used'></td>";}
+                               
+                            newcontent+="<td align='center'>"+outageDatas[i].APIkey +"</td>"+
+                                        "<td align='center'>"+(outageDatas[i].IP).replace("::ffff:","") +"</td>"+
+                                        "<td align='center'>"+outageDatas[i].id +"</td>"+
+                                        "<td align='center'>"+moment(outageDatas[i].createdAt).format('DD-MM-YYYY H:mm:ss')+"</td>"+
+                                        "<td align='center'>"+moment(outageDatas[i].updatedAt).format('DD-MM-YYYY H:mm:ss')+"</td>";
+                                                                                                   
+
+                                          
+              newcontent+="</tr>";
+            }
+        }
+        else{
+            newcontent+="<tr><td colspan='9'  align='center'>No Data Found</td></tr>";
+        }
+        document.getElementById("alarm-tbl").innerHTML = newcontent;
+        pagination();
+    }
+    //render function end
+
+
+
+
+    $("#customer_id").change(function(){
+        statuschange();
+        tabledata();
+    });
+
+
+    $("#searchbtn1").click(function(){
+        statuschange();
+        tabledata();    
+    })
+    
+    //reset function
+    function refreshPage(){
+        window.location.href="/rawdata";
+    }
+    
+</script>
+
+</body>
+</html>

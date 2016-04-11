@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ../../partials/head %>
+
+    <link rel="stylesheet" href="/css/ui.dropdownchecklist.themeroller.css" type="text/css" media="all" />
+    
+    <!-- Include the DropDownCheckList supoprt -->
+    <script type="text/javascript" src="/js/ui.dropdownchecklist.js"></script>
+    <!-- Apply dropdown check list to the selected items  -->
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+        $("#msg_from").dropdownchecklist( { firstItemChecksAll: true } );
+      });
+    </script>
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+ 	  <% include ../../partials/mainheader %>
+    <% include ../../partials/sidemenu %>
+    
+     <!--Start Content-->
+
+    <div id="page_content">
+      <div id="page_content_inner">
+		      <h3 class="heading_b uk-margin-bottom">New</h3>
+          <form id="form" class="new" action="/messages/composesave" method="post">
+  			    <div class="md-card" style="height:auto; padding:20px;">
+                <div class="uk-grid">
+                  <div class="uk-width-medium-1-2" >
+                      <div class="uk-form-row valid" >
+
+                          <select multiple="multiple" id="msg_from" name="msg_from"  class="md-input" style="width:482px">
+                            <option>(all)</option>
+                            <option value="School">School</option>
+                            <option value="Teacher">Teacher</option>
+                            <option value="Finance">Finance</option>
+                          </select><span class="req">*</span>
+
+                      </div>
+                      <div class="uk-form-row valid" >
+                          <select multiple="multiple" id="class_id" name="class_id"  class="md-input" style="width:482px">
+                            <option>(all)</option>
+                          </select><span class="req">*</span>
+                      </div>
+                      <div class="uk-form-row valid" >
+                          <select id="student_id" name="student_id" class="md-input">
+                            <option value="all">All</option>
+                          </select><span class="req">*</span>
+                      </div> 
+  	                  <div class="uk-form-row valid" >
+                        <input type="text" class="md-input md-input-success" id="msg_subject" name="msg_subject" placeholder="Subject"/><span class="req">*</span>
+                      </div>
+                      <div class="uk-form-row valid" >
+                          <textarea  class="md-input" id="msg_content" name="msg_content" placeholder="Content"></textarea>
+                      </div>
+                      <div class="uk-form-row" >
+                         <button type="submit"  class="md-btn md-btn-success"><i class="uk-icon-save white paddingleft"></i>Save</button>
+                         <a href="/messages" class="md-btn md-btn-success"><i class="uk-icon-remove white paddingleft"></i>Cancel</a>
+                      </div>
+                  </div>
+                </div>   
+  			    </div>
+          </form>  
+      </div>
+    </div>
+  <!--End Content--> 
+  <!--Start Script-->
+  <% include ../../partials/footer %>
+  <script type="text/javascript">
+      $(function(){
+          getClasses();
+      });    
+      $("#msg_from").on('change',function(e){
+          getClasses();
+          getStudents();
+      })
+      $("#class_id").on('change',function(e){
+          console.log("Change Event Triggered");
+          getStudents();
+      });
+
+      function getClasses(){
+          $.ajax({
+                url: '/messages/getclass',
+                type: 'post',
+                dataType: 'json',
+                success: function(data){
+                    var options = '<option value="">--Select Class--</option>';
+                    options += '<option value="all">All</option>';
+                    for (var i = 0; i < data.classdata.length; i++) {
+                        options += '<option value="' + data.classdata[i].class_id + '">' + data.classdata[i].class_name + '</option>';
+                    }
+                    $("#class_id").html(options);
+                }
+          });
+      }
+      function getStudents(){
+          $.ajax({
+                url: '/messages/getstudent',
+                type: 'post',
+                dataType: 'json',
+                data:{"classid":$("#class_id").val()},
+                success: function(data){
+                    var options = '<option value="">--Select Student--</option>';
+                    options += '<option value="all">All</option>';
+                    for (var i = 0; i < data.studentdata.length; i++) {
+                        options += '<option value="' + data.studentdata[i].student_id + '">' + data.studentdata[i].student_name + '</option>';
+                    }
+                    $("#student_id").html(options);
+                }
+          });
+      }
+  </script>
+
+</body>
+</html>

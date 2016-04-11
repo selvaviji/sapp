@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+    <% include ../../partials/mainheader %>
+    <% include ../../partials/sidemenu %>
+    <!--Start Content-->
+
+<div id="page_content">
+    <div id="page_content_inner">
+        <h3 class="heading_b uk-margin-bottom">Edit</h3>
+        <form id="uploadForm" class="edit" enctype="multipart/form-data" action="/gallery/update" method="post">   
+            <div class="md-card">
+            <div class="md-card-content">
+                <div class="uk-grid">
+                  <div class="uk-width-medium-1-2" >
+                    <div class="uk-form-row" >
+                      <input type="hidden" class="md-input md-input-success" id="userid" name="userid" value="<%=data[0].id%>" />
+                    </div>
+                    <div class="uk-form-row valid" >
+                        <div class="txtlabel">Gallery Name</div>
+                        <input type="text" class="md-input md-input-success mustdata alpha" id="galleryname" name="galleryname" value="<%=data[0].gallery_name%>"/><span class="req">*</span>
+                    </div>
+                    <div class="uk-form-row valid" >
+                        <div class="txtlabel">Display Name</div>
+                        <input type="password" class="md-input md-input-success" id="displayname" name="displayname" value="<%=data[0].display_name%>"/><span class="req">*</span>
+                    </div>
+                     <div class="uk-form-row" >
+                        <div class="txtlabel">Status</div>
+                        <select id="status" name="status">
+                            <% if(data[0].status == "0"){%>
+                                <option value="0" selected>Enable</option>
+                                <option value="1">Disable</option>
+                            <%}else{%>
+                                <option value="0">Enable</option>
+                                <option value="1" selected>Disable</option>
+                            <%}%>
+                        </select>        
+                    </div>
+                    <div class="uk-form-row" >
+                        <div class="txtlabel">Image</div>
+                        <input type="file" id="imgInp" name="imgInp" class="md-btn md-btn-warning"/>
+                        <% if(data[0].image_name == "" || typeof data[0].image_name == undefined){ %>
+                            <img id="blah" src="/uploads/noimage.png" alt="Your Image" width="100px" height="50px" />
+                        <%}else{ %>    
+                            <img id="blah" src="/gallery/<%=data[0].image_name%>" alt="Your Image" width="100px" height="50px" />
+                        <% } %>
+                        
+                    </div>
+                    <div class="uk-form-row" >
+                        <input type="hidden" id="imagename" name="imagename"> 
+                    </div>
+                    <div class="uk-form-row" >
+                       <button type="submit" class="md-btn md-btn-success"><i class="uk-icon-save white paddingleft"></i>Save</button>
+                       <a href="/gallery" class="md-btn md-btn-success"><i class="uk-icon-remove white paddingleft"></i>Cancel</a>
+                    </div>
+                   </div>
+                </div>
+            </div>        
+            </div>
+        </form> 
+    </div>
+</div>
+
+<!--End Content--> 
+
+
+
+ <!--Start Script-->
+<% include ../../partials/footer %>
+<script>
+    var imgdata = "<%= data[0].logo_name %>";
+    if(imgdata != ""){
+        document.getElementById("imagename").value = imgdata;
+    }
+    
+    
+    function readURL(input) {
+        
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            
+            reader.onload = function (e) {
+                $('#blah').attr('src', e.target.result);
+            }
+            
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    
+    $("#imgInp").change(function(){
+
+        readURL(this);
+        imgstatus = true;
+       
+
+    });
+
+</script>
+
+</body>
+</html>

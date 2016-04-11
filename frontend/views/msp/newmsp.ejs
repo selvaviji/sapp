@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ../../partials/head %>
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+ 	  <!--Top Header-->
+    <% include ../../partials/mainheader %>
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+    
+     <!--Start Content-->
+
+    <div id="page_content">
+      <div id="page_content_inner">
+		      <h3 class="heading_b uk-margin-bottom">MSP</h3>
+          <form id="form" class="new" action="/msp/savemsp" onsubmit="return mspvalidate()" method="post">
+  			    <div class="md-card" style="height:auto; padding:20px;">
+                <div class="uk-grid">
+                  <div class="uk-width-medium-1-2" >
+                       <div class="uk-form-row valid" >
+                      <% if(sess_id == '1' || sess_id == '2'){ %>
+                        <select id="customer_id" name="customer_id" class="md-input">
+                        </select><span class="req">*</span>
+                        
+                      <% }else{ %>
+                        <input type="hidden" id="customer_id" name="msp.customer_id" class="md-input" value="<%= sess_cid %>">
+                      <% } %>   
+                      </div> 
+  	                  <div class="uk-form-row valid" >
+                        <input type="text" class="md-input md-input-success" id="mspname" name="mspname" placeholder="MSP Name"/><span class="req">*</span>
+                      </div>
+                      <div class="uk-form-row valid" >
+                        <input type="text" class="md-input md-input-success" id="contactname" name="contactname" placeholder="Contact Name"/>
+                      </div>
+                      <div class="uk-form-row valid" >
+                        <input type="text" class="md-input md-input-success" id="mobileno" name="mobileno" placeholder="Mobile No"/>
+                      </div>
+                      <div class="uk-form-row valid" >
+                        <input type="text" class="md-input md-input-success" id="mspemail" name="mspemail" placeholder="Email"/>
+                      </div>
+                      <div class="uk-form-row" >
+                        <input type="text" class="md-input md-input-success" id="mspdesc" name="mspdesc" placeholder="Description"/>
+                      </div>
+                      <div class="uk-form-row" >
+                         <button type="submit"  class="md-btn md-btn-success"><i class="uk-icon-save white paddingleft"></i>Save</button>
+                         <button type="submit" onClick="cancelMSP();" class="md-btn md-btn-success"><i class="uk-icon-remove white paddingleft"></i>Cancel</button>
+                      </div>
+                  </div>
+                </div>   
+  			    </div>
+          </form>  
+      </div>
+    </div>
+  <!--End Content--> 
+  <!--Start Script-->
+  <% include ../../partials/footer %>
+  <script type="text/javascript">
+      $(function(){
+          $.ajax({
+                url: '/site/customer',
+                type: 'get',
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function(data){
+                    var options = '<option value="">--Select Customer--</option>';
+                    for (var i = 0; i < data.custdata.length; i++) {
+                        options += '<option value="' + data.custdata[i].customer_id + '">' + data.custdata[i].customer_name + '</option>';
+                    }
+                    $("#customer_id").html(options);
+                }
+            });
+      });    
+
+      $("#mspname").on('blur keyup',function(e){
+          alpha1('mspname');
+      });
+
+  </script>
+</body>
+</html>

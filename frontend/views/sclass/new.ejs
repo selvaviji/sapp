@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+    <link rel="stylesheet" href="/css/style.css" media="all">
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+ 	  <!--Top Header-->
+    <% include ../../partials/mainheader %>
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+    
+     <!--Start Content-->
+
+    <div id="page_content">
+      <div id="page_content_inner">
+		      <h3 class="heading_b uk-margin-bottom">Class</h3>
+          <form id="form" class="new" action="/sclass/save" method="post">
+  			    <div class="md-card" style="height:auto; padding:20px;">
+                <div class="uk-grid">
+                  <div class="uk-width-medium-1-2" >
+                      <div class="uk-form-row valid" >
+                        <input type="text" class="md-input md-input-success" id="classname" name="classname" placeholder="Class Name"/><span class="req">*</span>
+                      </div>
+                      <div class="uk-form-row valid" >
+                        <input type="text" class="md-input md-input-success" id="classnumeric" name="classnumeric" placeholder="Class Name Numeric"/><span class="req">*</span>
+                      </div>
+                      <div class="uk-form-row" >
+                         <button type="submit"  class="md-btn md-btn-success"><i class="uk-icon-save white paddingleft"></i>Save</button>
+                         <a href="/sclass" class="md-btn md-btn-success"><i class="uk-icon-remove white paddingleft"></i>Cancel</a>
+                      </div>
+                  </div>
+                </div>   
+  			    </div>
+          </form>  
+      </div>
+    </div>
+  <!--End Content--> 
+  <!--Start Script-->
+  <% include ../../partials/footer %>
+  
+</body>
+</html>

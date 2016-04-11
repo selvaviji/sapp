@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+     <script>
+        $(document).ready(function(){
+            $("#search").hide();
+
+            $(".searchbtn").click(function(){
+                $("#search").toggle();
+            });
+        });
+    </script>
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+    <!--Top Header-->
+    <% include ../../partials/mainheader %>
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+
+    <!--Start Content-->
+    <div id="page_content">
+    <div id="page_content_inner">
+        <div class="searchbtn"><i class="uk-icon-search"></i></div>
+        <div class="dwnbtn"><i class="uk-icon-download padright"></i></div>
+        <!--Dashboard-->
+        <h3 class="heading_b uk-margin-bottom">Detterence Ticket</h3>
+        <!--End Dashboard-->
+        <div class="md-card" id="search">
+        <div class="md-card-content">
+            <div class="uk-grid uk-dropdown-grid">
+                <div class="uk-width-1-4">
+                    <input type="text" class="md-input md-input-success" placeholder="From Date">
+                </div>
+                <div class="uk-width-1-4">
+                    <input type="text" class="md-input md-input-success" placeholder="To Date">
+                </div>
+            </div>  
+        </div>
+        </div>
+
+    </div>
+    </div>
+    <!--End Content--> 
+
+<!--Start Script-->
+<script src="/moment/min/moment.min.js"></script>
+<script src="/js/common.min.js"></script>
+<script src="/js/uikit_custom.min.js"></script>
+<script src="/js/altair_admin_common.min.js"></script>
+
+</body>
+</html>

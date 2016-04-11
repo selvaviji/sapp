@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../../partials/head %>
+    <script type="text/javascript">
+        var customid = "";
+        <% if(customerid !='undefined' || customerid == ''){ %>
+            customid = "<%= customerid %>";
+        <%} %>;
+    </script>
+    <script src="/js/alarmpin.js"></script> 
+</head>
+
+<body class="sidebar_main_open sidebar_main_swipe">
+    <!--Top Header-->
+    <% include ../../partials/mainheader %>
+    <!--Top Header-->
+    <% include ../../partials/sidemenu %>
+    <!--Content-->
+    <!--Start Content-->
+
+    <div id="page_content">
+        <div id="page_content_inner">
+        <!--Heading-->
+        <h3 class="heading_b uk-margin-bottom">Alarm Pin Details</h3>
+        <!--End Heading-->   
+
+        <!--Button-->
+        <div class="md-card">
+            <div class="md-card-content">
+                <div class="uk-grid">
+                   
+                    <div class="uk-width-medium-1-4 uk-push-3-4">
+
+                        <div class="uk-grid uk-grid-collapse">
+                            <div class="uk-width-medium-1-4" >
+                                <i class="uk-icon-search ap_search"></i>
+                            </div>
+
+                            <div class="uk-width-medium-3-4">
+                                <form action="/alarmpin/search" method="POST">
+                                <select name="customer_id" id="customer_id" class="md-input md-input-small" onchange="this.form.submit()">
+                                </select>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div> 
+            </div>
+        </div>
+        <!--End Button-->
+
+        <!-- Table-->
+        <div class="md-card uk-margin-medium-bottom">
+            <form>
+            <div class="md-card-content">
+                <div class="uk-overflow-container">
+                <table class="uk-table uk-table-striped">
+                <thead>
+                    <tr>
+                        <th><strong>Customer Name</strong></th>
+                        <th><strong>Pin No</strong></th>
+                        <th><strong>Pin Text</strong></th>
+                        <th><strong>Short Code</strong></th>
+                        <th><strong></strong></th>
+                        <th><strong>Visible</strong></th>
+                        <th><strong>Priority</strong></th>
+                        <th><strong>Trouble Ticket</strong></th>
+                        <th><strong>Operations</strong></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% 
+                    if(JSON.stringify(datas) === '{}'){
+                        console.log("step-2");
+                    }else{
+                        datas.forEach(function(d) { %>
+                            <tr id="<%= d.alarmpin_id%>" class="edit_tr">
+                                <td>
+                                    <% if(d.customer_name == null){ %>
+                                        Default
+                                    <%}else{%>
+                                    <%= d.customer_name%>
+                                    <%}%>
+                                </td>
+                                <td width="16%" class="edit_td">
+<input type="text" value="<%= d.alarmpin_no %>" id="alarmpin_no_input_<%= d.alarmpin_id%>" size="4" maxsize="4" disabled="true" class="md-input md-input-small" style="border:none"/>
+                                </td>
+                                 <td width="30%">
+                                   
+<input type="text" value="<%= d.alarmpin_name %>" id="alarmpin_name_input_<%= d.alarmpin_id%>" class="md-input md-input-small"/>
+                                </td>
+                                <td width="10%" class="txt-center">
+<input type="text" value="<%= d.alarmpin_sc %>" id="alarmpin_sc_input_<%= d.alarmpin_id%>" class="md-input md-input-small" />
+                                </td>
+
+                                 <td width="15%" class="txt-center">
+                                    <%if((d.alarmpin_no).match(/Do[0-9]/)){%>
+                                        <select class="md-input md-input-small" id="curl_<%= d.alarmpin_id%>" name="curl_<%= d.alarmpin_id%>">
+                                           <% if(d.curl_cmd == 'HOOTER=1'){ %>
+                                            <option value="HOOTER=1" selected>Hooter 1</option>
+                                           <% }else{ %>
+                                            <option value="HOOTER=1">Hooter 1</option>
+                                           <%}%> 
+                                           <% if(d.curl_cmd == 'HOOTER=2'){ %>
+                                           <option value="HOOTER=2" selected>Hooter 2</option>
+                                           <% }else{ %>
+                                           <option value="HOOTER=2">Hooter 2</option>
+                                           <% } %>
+                                           <% if(d.curl_cmd == 'LIGHT=1'){ %>
+                                           <option value="LIGHT=1" selected>Light 1</option>
+                                            <% }else{ %>
+                                            <option value="LIGHT=1">Light 1</option>
+                                            <% } %>
+                                            <% if(d.curl_cmd == 'LIGHT=2'){ %>
+                                           <option value="LIGHT=2" selected>Light 2</option>
+                                            <% }else{ %>
+                                           <option value="LIGHT=2">Light 2</option>
+                                            <% } %>
+                                            <% if(d.curl_cmd == 'SIGNAGE=1'){ %>
+                                           <option value="SIGNAGE=1" selected>Signage 1</option>
+                                           <% }else{ %> 
+                                           <option value="SIGNAGE=1">Signage 1</option>
+                                            <% } %>
+                                            <% if(d.curl_cmd == 'SIGNAGE=2'){ %>
+                                           <option value="SIGNAGE=2" selected>Signage 2</option>
+                                            <% }else{ %>
+                                           <option value="SIGNAGE=2">Signage 2</option>
+                                            <% } %>
+                                    </select>
+                                    <%}%>
+                                    
+                                </td>
+                               
+                                <td width="10%" class="txt-center">
+   
+ <% if(d.alarmpin_status=='0'){ %>
+<input type="checkbox" value="0" id="alarmpin_status_input_<%= d.alarmpin_id%>" checked />
+ <% }else{ %>
+ <input type="checkbox" value="1"  id="alarmpin_status_input_<%= d.alarmpin_id%>"/>
+ <%}%>
+                                </td>
+                                <td width="20%" class="txt-center">
+<select id="alarmpin_priority_input_<%= d.alarmpin_id%>" name="alarmpin_priority_input_<%= d.alarmpin_id%>" class="md-input md-input-small">
+    <script>setSelectValue("<%= d.alarmpin_priority %>","<%= d.alarmpin_id%>")</script>
+</select>
+                                </td>
+                                <td width="10%" class="txt-center">
+ <% if(d.alarmpin_tt=='0'){ %>
+<input type="checkbox" value="0" id="alarmpin_tt_input_<%= d.alarmpin_id%>" checked />
+ <% }else{ %>
+ <input type="checkbox" value="1" id="alarmpin_tt_input_<%= d.alarmpin_id%>"/>
+ <%}%>
+                                </td>    
+                                <td class="txt-center">
+                                <button id="btn_<%= d.alarmpin_id%>" class="md-btn md-btn-small" type="button" onclick="UpdateEdit('<%= d.alarmpin_id%>');" value="Edit">
+                                <i class="uk-icon-save editicon" data-uk-tooltip="{pos:'bottom'}"></i>
+                                </button>
+                                </td>
+                            </tr>
+                        <% });  
+                    }%>
+                </tbody>
+                </table>    
+                </div>
+            </div>
+            </form>
+        </div>    
+    </div>
+</div>
+<!--End Content--> 
+
+
+<script type="text/javascript">
+/*var cmds = ["Hooter", "Light", "Signage"];
+var option; 
+option += "<option>"+cmds[0]+"</option>";
+option += "<option>"+cmds[1]+"</option>";
+option += "<option>"+cmds[2]+"</option>";
+$("#curl").html(option);*/
+</script>
+<!--Start Script-->
+<% include ../../partials/footer %> 
+</body>
+</html>
